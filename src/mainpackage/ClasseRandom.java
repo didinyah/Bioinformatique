@@ -5,5 +5,6 @@ public class ClasseRandom {
 	private int y;
 	private String succes;
 	private int bite;
-	private int didiRelou;
+	private int didiRelou;	
 }
+
