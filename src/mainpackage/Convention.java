@@ -1,6 +1,7 @@
 package mainpackage;
 
-/* Classe Convention
+/* 
+ * Classe Convention
  * Contient la nomenclature du projet
  * 
  * C'est à dire : comment nommer les classes, les fonctions et les variables
@@ -11,7 +12,7 @@ public class Convention {
 	//Constante de test
 	private static int CONST = 0;
 	//Variable de test
-	private String nucleotide = "AAA";
+	private String nucleotideOne = "AAA";
 	
 	//Accesseurs
 	static int GetCONST(){

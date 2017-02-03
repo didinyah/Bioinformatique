@@ -1,7 +1,7 @@
 package mainpackage;
 
 /*
- * Main
+ * Classe Main
  * Classe principale qui charge l'interface et lance les tests
  */
 public class Main {
