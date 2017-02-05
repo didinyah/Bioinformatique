@@ -7,49 +7,24 @@ public class Nucleotide {
 	// (à voir si c'est utile) 
 	
 	// On définit les constants 
-	public HashMap<String, Integer> hmap = new HashMap<String, Integer>();
+	private HashMap<String, Integer> HMAP = new HashMap<String, Integer>();
 
 	
+	//acc
+	public HashMap<String, Integer> GetHMAP(){
+		return this.HMAP;
+	}
+	
+	public void SetHMAP(HashMap<String, Integer> hm){
+		this.HMAP = hm;
+	}
 	// Todo fonction de frequence 
 	
-}
-
-
-public class Trinucleotide extends Nucleotide{	
-	// Un tableau de trinucléotide
-	// (On le définit en dur car c'est plus optimal que de les générer) 
-	
-	
-	public Trinucleotide(){
-		
-		
-	}
-	
-	
-	
-	// Todo faire une fonction qui incrémente un trinucleotide 
-	public void addTriN(String triN,int i){
-		
-	}
-	
-	// Remove ? 
-	
-	
-	// Todo Fusion de deux tableaux 
-	
-	//public void addHashMap() 
-	
-	// Todo fusion avec un autre trinucl
 	
 	
 }
 
 
-public class Dinucleotide extends Nucleotide{	
-	// Un tableau de binucléotide 
-	// (De même) 
-	
-	
-}
+
 
 

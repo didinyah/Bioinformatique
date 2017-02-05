@@ -1,4 +1,6 @@
 package mainpackage;
+import mainpackage.Dinucleotide;
+import mainpackage.Trinucleotide;
 
 /*
  * Classe Main
@@ -15,6 +17,13 @@ public class Main {
 	public static void main(String[] args) {
 		//loadInterface();
 		//testNucleotide();
+		System.out.println("Hello World");
+		//load data
+		// test
+		Trinucleotide tridata = new Trinucleotide();
+		System.out.println(tridata.GetHMAP().size());
+		Dinucleotide didata = new Dinucleotide();
+		System.out.println(didata.GetHMAP().size());
 	}
 
 }

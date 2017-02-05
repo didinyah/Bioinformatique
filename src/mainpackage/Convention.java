@@ -20,11 +20,11 @@ public class Convention {
 	}
 	
 	String GetNucleotide(){
-		return this.nucleotide;
+		return this.nucleotideOne;
 	}
 	
 	void SetNucleotide(String n){
-		this.nucleotide = n;
+		this.nucleotideOne = n;
 	}
 	
 	//Méthodes
