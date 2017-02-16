@@ -26,7 +26,6 @@ public class Convention {
 	void SetNucleotide(String n){
 		this.nucleotideOne = n;
 	}
-	
 	//Méthodes
 	/* 
 	 * checkNucleotide
