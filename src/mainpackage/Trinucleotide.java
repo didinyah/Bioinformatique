@@ -17,7 +17,7 @@ public class Trinucleotide extends Nucleotide{
 		HashMap<String, Integer> HMAP = this.GetHMAP();
 		
 		
-		for (String temp : Utils.getLSTTRINU()) {
+		for (String temp : Utils.getListOfTriNucleotide()) {
 			HMAP.put(temp, 0);
 		}
 		

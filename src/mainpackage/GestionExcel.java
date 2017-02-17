@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -20,9 +21,29 @@ public class GestionExcel
 {
 	
 	//Crée un fichier excel vide
-	public static void CreationFichier(String file)
+	public static void CreationFichierVide(String file)
 	{
 		HSSFWorkbook wb = new HSSFWorkbook();
+		FileOutputStream fileOut;
+		try 
+		{
+			fileOut = new FileOutputStream(file);
+			wb.write(fileOut);
+			fileOut.close(); 
+		} 
+		catch (FileNotFoundException e) 
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+		
+			e.printStackTrace();
+		}
+	}
+	
+	public static void CreationFichier(String file, HSSFWorkbook wb)
+	{
 		FileOutputStream fileOut;
 		try 
 		{
@@ -104,18 +125,18 @@ public class GestionExcel
 		fonte.setFontName(police);
 		fonte.setColor(couleur.getIndex());
 	}
-	public static void RemplirLigne(HSSFSheet sheet, int ligne, String[]data)
+	public static void RemplirLigne(HSSFSheet sheet, int ligne, int debutColonne, ArrayList<String> data)
 	{
-		for(int i =0; i < data.length; i++)
+		for(int i =debutColonne; i < data.size(); i++)
 		{
-			CreationCellule(sheet, data[i], ligne, i);
+			CreationCellule(sheet, data.get(i), ligne, i);
 		}
 	}
-	public static void RemplirColonne(HSSFSheet sheet, int colonne, String[]data)
+	public static void RemplirColonne(HSSFSheet sheet, int colonne, int debutLigne, ArrayList<String>data)
 	{
-		for(int i =0; i < data.length; i++)
+		for(int i =debutLigne; i < data.size(); i++)
 		{
-			CreationCellule(sheet, data[i], i, colonne);
+			CreationCellule(sheet, data.get(i), i, colonne);
 		}
 	}
 	public static void SupprimerLigne(HSSFSheet sheet, int ligne)
@@ -141,26 +162,9 @@ public class GestionExcel
 	{
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("ma feuille");
-		/****
-		 *
-		 *  do code
-		 */
-		FileOutputStream fileOut;
-		try 
-		{
-			fileOut = new FileOutputStream("monfichier.xls");
-			wb.write(fileOut);
-			fileOut.close(); 
-		} 
-		catch (FileNotFoundException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-		
-			e.printStackTrace();
-		}
-		CreationFichier("test.xml");
+		ArrayList<String> trinucleotides = Utils.getListOfTriNucleotideCAPSLOCK();
+		RemplirColonne(sheet, 0, 1, trinucleotides);
+
+		CreationFichier("bwaaa.xlsx", wb);
 	}
 }

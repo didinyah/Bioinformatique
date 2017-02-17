@@ -15,7 +15,7 @@ public class Dinucleotide extends Nucleotide{
 		HashMap<String, Integer> HMAP = this.GetHMAP();
 		
 		
-		for (String temp : Utils.getLSTDINU()) {
+		for (String temp : Utils.getListOfDiNucleotide()) {
 			HMAP.put(temp, 0);
 		}
 		

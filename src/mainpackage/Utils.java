@@ -68,31 +68,58 @@ public class Utils {
 			"CA", "CC", "CT", "CG",
 			"TA", "TC", "TT", "TG",
 			"GA", "GC", "GT", "GG"));
+	// Pour l'excel, les titres des feuilles General_information
+	private static ArrayList<String> EXCELTITLESGENERALINFO = new ArrayList<>(Arrays.asList(
+			"Information", "Name", "Modification Date", "Number of CDS sequences", 
+			"Number of invalids CDS", "Number of Organisms"));
+	
+	private static ArrayList<String> EXCELTITLESGENOMEINFO = new ArrayList<>(Arrays.asList(
+			"Genome", "Chromosome", "Plasmid", "DNA"));
+		
+	// Pour l'excel, les titres des feuilles Sum_toto avec les phases
+	private static ArrayList<String> EXCELTITLESPHASETRI = new ArrayList<>(Arrays.asList(
+			"Phase 0", "Freq Phase 0", "Phase 1", "Freq Phase 1", "Phase 2", "Freq Phase 2",
+			"Pref Phase 0", "Pref Phase 1", "Pref Phase 2"));
+	
+	private static ArrayList<String> EXCELTITLESPHASEDI = new ArrayList<>(Arrays.asList(
+			"Phase 0", "Freq Phase 0", "Phase 1", "Freq Phase 1",
+			"Pref Phase 0", "Pref Phase 1"));
+	
+	private static ArrayList<String> EXCELTITLESPHASEINFO = new ArrayList<>(Arrays.asList(
+			"Informations", "Number of CDS sequences", "Number of invalid CDS"));
 	
 	//Accesseurs
-	
-	public static ArrayList<String> getLSTTRINU(){
+	public static ArrayList<String> getListOfTriNucleotide(){
 		return LSTTRINU;
 	}
-	
-	public static ArrayList<String> getLSTDINU(){
+	public static ArrayList<String> getListOfDiNucleotide(){
 		return LSTDINU;
 	}
-	
-	//Beautifull accesseurs ?? (utile ?)
-	public static ArrayList<String> getListOfTriNucleotide(){
-		return Utils.getLSTTRINU();
-	}
-	public static ArrayList<String> getListOfDiNucleotide(){
-		return Utils.getLSTDINU();
-	}
-	
-	//Accesseurs old 
-	public static ArrayList<String> getLSTNUCL(){
+ 
+	public static ArrayList<String> getListOfTriNucleotideCAPSLOCK(){
 		return LSTNUCL;
 	}
 	
-	public static ArrayList<String> getLSDNUCL(){
+	public static ArrayList<String> getListOfDiNucleotideCAPSLOCK(){
 		return LSDNUCL;
+	}
+	
+	public static ArrayList<String> getExcelTitlesGeneralInfo(){
+		return EXCELTITLESGENERALINFO;
+	}
+	public static ArrayList<String> getExcelTitlesGenomeInfo(){
+		return EXCELTITLESGENOMEINFO;
+	}
+	
+	public static ArrayList<String> getExcelTitlesPhaseTri(){
+		return EXCELTITLESPHASETRI;
+	}
+	
+	public static ArrayList<String> getExcelTitlesPhaseDi(){
+		return EXCELTITLESPHASEDI;
+	}
+	
+	public static ArrayList<String> getExcelTitlesPhaseInfo(){
+		return EXCELTITLESPHASEINFO;
 	}
 }
