@@ -24,6 +24,11 @@ public class Main {
 		System.out.println(tridata.GetHMAP().size());
 		Dinucleotide didata = new Dinucleotide();
 		System.out.println(didata.GetHMAP().size());
+
+		// file test
+
+		System.out.println("Working Directory = " +
+				System.getProperty("user.dir"));
 	}
 
 }
