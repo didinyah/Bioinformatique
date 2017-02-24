@@ -3,7 +3,7 @@ package mainpackage;
 import java.util.ArrayList;
 
 /**
- * Created by SandrosLaptop on 21/02/2017.
+ * Créé par l'équipe qu'elle est forte en BioInfo
  */
 public class Analyzer {
 
