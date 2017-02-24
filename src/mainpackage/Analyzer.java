@@ -21,6 +21,12 @@ public class Analyzer {
         return true;
     }
 
+    /*
+    * Les bornes inf et sup existent dans la séquence
+    * Les bornes inf et sup sont des nombres
+    * La borne inf est inf à la borne sup
+    * les bornes inf et sup sont séparées par ..
+    */
     public static boolean checkIsCDS (String line){
 
 
@@ -103,4 +109,40 @@ public class Analyzer {
         }
         return true;
     }
+
+    /*
+    * Fonctions à faire pour le join
+    */ 
+    /* TODO
+    * Fonction qui doit tester si une chaine est un intervalle de la forme : a..b
+    *    - a<b
+    *    - a est un int
+    *    - b est un int
+    */
+    public static boolean isInterval (String intervalle){
+        return true;
+    }
+    /*
+     * Calcule le nombre de caractères à récupérer pour utiliser la méthode substring
+     */
+    public static int nbCaract (int inf, int sup){
+    	return (sup-inf);
+    }
+    
+    /* TODO
+     * Fonction qui permet de join plusieurs chaines de caractères
+     * join([string1,string2,string3,...], string_global)
+     * chaque string doit être de la forme d'un intervalle : int..int
+     * Il faut récupérer l'intervalle de chaque string et aller chercher dans la chaine globale chaque chaine correspondant aux intervalles précédente
+     * On retourne la contraction de tous les chaînes
+     * 
+     * utiliser substring
+     * 
+     */
+    public static String join (ArrayList<String> list_interval, String global_string){
+        return "";
+    }
+    
+    
+    
 }
