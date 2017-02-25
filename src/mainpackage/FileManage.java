@@ -9,7 +9,7 @@ package mainpackage;
 
 public class FileManage {
 
-    private static final String FILENAME_SIMPLE = "data/simple.txt";
+    public static final String FILENAME_SIMPLE = "files/test/simple.txt";
 
     public static void readFileByLine(String fileName){
 
@@ -133,18 +133,6 @@ public class FileManage {
 
 
         // DE MÊME AVEC LES DINUCLEOTIDE !!!!
-
-    }
-
-    public static void main(String[] args) {
-
-        readFileByChar(FILENAME_SIMPLE);
-
-        // test
-        /*
-        if (Analyzer.checkCds("CDS")){
-            System.out.println("CDS hihi");
-        }*/
 
     }
 

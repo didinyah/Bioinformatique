@@ -11,14 +11,30 @@ public class Nucleotide {
 
 	
 	//acc
-	public HashMap<String, Integer> GetHMAP(){
+	public HashMap<String, Integer> getHMAP(){
 		return this.HMAP;
 	}
 	
-	public void SetHMAP(HashMap<String, Integer> hm){
+	public void setHMAP(HashMap<String, Integer> hm){
 		this.HMAP = hm;
 	}
-	// Todo fonction de frequence 
+
+	/* Fait la fusion de HMAP càd additionne les deux hmap en envoie les résultats dans le hmap mère*/
+	// Todo à tester
+	public void fusion(HashMap<String, Integer> hm){
+		HashMap<String, Integer> HMAP = getHMAP();
+		for(HashMap.Entry<String, Integer> entry : hm.entrySet()) {
+			String key = entry.getKey();
+			Integer value = entry.getValue();
+
+			HMAP.put(key,HMAP.get(key) + value);
+		}
+
+	}
+
+	// Todo fonction de frequence
+	// à reflechir de les mettres
+
 	
 	
 	

@@ -1,6 +1,7 @@
 package mainpackage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Créé par l'équipe qu'elle est forte en BioInfo
@@ -174,13 +175,4 @@ public class Analyzer {
 
     }
 
-    private class Borne {
-        private Integer borninf;
-        private Integer bornsup;
-
-        // Todo fonction d'appertenance de borne
-        // Todo fonction de verification de borne
-
-
-    }
 }

@@ -2,9 +2,6 @@ package mainpackage;
 
 import java.util.HashMap;
 
-import mainpackage.Nucleotide;
-import mainpackage.Utils;
-
 public class Dinucleotide extends Nucleotide{	
 	// Un tableau de binucléotide 
 	// (De même) 
@@ -12,7 +9,7 @@ public class Dinucleotide extends Nucleotide{
 
 	public Dinucleotide(){
 		
-		HashMap<String, Integer> HMAP = this.GetHMAP();
+		HashMap<String, Integer> HMAP = this.getHMAP();
 		
 		
 		for (String temp : Utils.getListOfDiNucleotide()) {
