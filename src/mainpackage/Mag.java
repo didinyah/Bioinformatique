@@ -1,5 +1,7 @@
 package mainpackage;
 
+import java.util.List;
+
 public class Mag {
 	public static String Complement (String string1){
 		String res = new String();
@@ -21,4 +23,5 @@ public class Mag {
 	    StringBuffer buffer = new StringBuffer(res);
         return (buffer.reverse().toString());
     }
+	
 }
