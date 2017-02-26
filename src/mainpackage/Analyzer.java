@@ -21,6 +21,13 @@ public class Analyzer {
         listBorne.add(b);
     }
 
+    public void addListBorne(int inf, int sup){
+        Borne b = new Borne();
+        b.setBorninf(inf);
+        b.setBornsup(sup);
+        listBorne.add(b);
+    }
+
     // TODO (à voir) FONCTION VERIFIANT QUE LA LIST TRIE et QUI LA TRIE OU ADDLISTBORN DOIT AJOUTER DE MANIERE TRIE
 
     public static boolean checkString (String string1, String string2){
@@ -166,12 +173,19 @@ public class Analyzer {
 
 
     private class Borne {
+        public void setBorninf(Integer borninf) {
+            this.borninf = borninf;
+        }
+
+        public void setBornsup(Integer bornsup) {
+            this.bornsup = bornsup;
+        }
+
         private Integer borninf;
         private Integer bornsup;
 
         // Todo fonction d'appertenance de borne
         // Todo fonction de verification de borne
-
 
     }
 
