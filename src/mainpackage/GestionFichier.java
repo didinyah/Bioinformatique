@@ -1,9 +1,6 @@
 package mainpackage;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 import com.opencsv.CSVReader;
 
@@ -133,6 +130,108 @@ public class GestionFichier {
 
 
 		// DE MÊME AVEC LES DINUCLEOTIDE !!!!
+
+
+		// ***************************************
+
+		// List disjoncteur
+
+		boolean HEADER = true;
+		boolean CONTENT = false;
+
+
+		BufferedReader br = null;
+		FileReader fr = null;
+
+		try {
+			// On lit un fichier on sait au début, --> on est dans l'entête (on crée un dijoncteur HEADER = 1)
+			// (optionel) on vérife avec des mots clè qu'on est dans l'entête au cas ou
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
+
+			// on reconstruit la ligne ?
+			String reconstructLine = "";
+			// compte
+			int content_line = 0;
+			int header_line = 0;
+			int block_transition = 0;
+			br = new BufferedReader(new FileReader(fileName));
+
+			int r;
+			while ((r = br.read()) != -1) {
+				char ch = (char) r;
+				if(ch != '\n'){
+					reconstructLine += ch;
+				}
+				else
+				{
+					// Attention n'affiche pas la dernière ligne si il n'y a pas de \n (mais bon c'est juste un test)
+					//System.out.println(reconstructLine);
+
+					if(Analyzer.checkInit(reconstructLine) && HEADER){ // TODO checkInit -> isInit
+						// PHASE CONTENT
+						HEADER = false;
+						CONTENT = true;
+						// TODO on calcul avec les phases 0 1 2  (ANALYZER)
+						// on ressort 3 HMAP (ou on additione à un HMAP global)
+						// TODO on calcul les pref  (ANALYZER)
+						// Si on stock tout les HMAP on peut faire post processing
+						// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
+
+
+					}else if(Analyzer.checkEnd((reconstructLine)) && CONTENT){ // Todo checkEnd -> isEnd
+						// PHASE HEADER
+						HEADER = true;
+						CONTENT = false;
+						// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
+						// TODO cds list (ANALYZER)
+						// ... (à vérifier avec l'enonce) (ANALYZER)
+
+						block_transition += 1;
+
+					}
+
+
+					if(HEADER && !CONTENT){
+						header_line += 1;
+					}
+					else if(CONTENT && !HEADER)
+					{
+						content_line += 1;
+					}
+					reconstructLine = "";
+				}
+
+			}
+
+			// après la fin de la boucle
+
+			System.out.println("BlockTransition detected:" + block_transition);
+			System.out.println("Header line:" + header_line);
+			System.out.println("Content line:" + content_line);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			try {
+
+				if (br != null)
+					br.close();
+
+				if (fr != null)
+					fr.close();
+
+
+			} catch (IOException ex) {
+
+				ex.printStackTrace();
+
+			}
+
+		}
 
 	}
 

@@ -2,6 +2,8 @@ package mainpackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Créé par l'équipe qu'elle est forte en BioInfo
@@ -167,12 +169,64 @@ public class Analyzer {
      * utiliser substring
      *
      */
-    public static String join (ArrayList<String> list_interval, String global_string){
-        return "";
+    public static List<Borne> join (String global_string) throws Exception {
+        List<Borne> listTmp = new ArrayList<>();
+        Pattern p = Pattern.compile("join\\((.*)\\)");
+        Matcher m = p.matcher(global_string);
+        if(m.find()){
+            String tmp = m.group(1); // ex: 20..30,50..60,90..500
+            Pattern p2 = Pattern.compile(",");
+            Matcher m2 = p2.matcher(tmp);
+            if(m2.find()){
+                // cas ou il y a des virgules
+                String[] items = p2.split(tmp);
+                for ( String it : items){
+                    Borne b = extractBorne(it);
+                    System.out.println(b);
+                    listTmp.add(b);
+                }
+            }else{
+                // cas ou il n'y en pas
+                Borne b = extractBorne(tmp);
+                System.out.println(b);
+                listTmp.add(b);
+            }
+
+        }else{
+            throw new Exception();
+        }
+        return listTmp;
     }
 
 
-    private class Borne {
+    public static Borne extractBorne(String it) throws Exception {
+    // Prend un string de type int..int et renvoie une Borne en vérifiant si tout est bon
+        Pattern p = Pattern.compile("([0-9]+)\\.\\.([0-9]+)");
+        Matcher m = p.matcher(it);
+        if(m.find()){
+            if(m.groupCount() == 2){
+                Borne b = new Borne();
+                int inftmp = Integer.parseInt(m.group(1));
+                int suptmp = Integer.parseInt(m.group(2));
+                // TODO vérifier que toute les vérifications sont faites !!
+                if(inftmp < suptmp){
+                    b.setBorninf(inftmp);
+                    b.setBornsup(suptmp);
+                    return b;
+                }else{
+                    throw new Exception();
+                }
+            }else{
+                throw new Exception();
+            }
+        }else{
+            throw new Exception();
+        }
+
+    }
+
+
+    private static class Borne {
         public void setBorninf(Integer borninf) {
             this.borninf = borninf;
         }
@@ -187,6 +241,11 @@ public class Analyzer {
         // Todo fonction d'appertenance de borne
         // Todo fonction de verification de borne
 
+
+        @Override
+        public String toString() {
+            return borninf+ " i .. s "+bornsup;
+        }
     }
 
 }
