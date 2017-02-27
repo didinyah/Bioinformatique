@@ -36,7 +36,7 @@ public class TestScript {
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
 
-        GestionFichier.readFileByChar(GestionFichier.FILENAME_SIMPLE);
+        GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff");
 
         // test
         /*
@@ -67,7 +67,8 @@ public class TestScript {
         // Extrait d'un fichier d'exemple
         // les 5 premières lignes sont apriori bonne
         // la 6 eme est un test de fail car le symbole < est présent (PS si vous trouvez des CDS particuliers vous pouvez les insérer ici pour voir si sa work)
-        // la dernière est pour tester un bug possible car dans la séquence suivante il y a le mot CDS
+        // le 7eme est pour tester un bug possible car dans la séquence suivante il y a le mot CDS
+        // le 8eme est un fail car join plus petit que l'autre
         List<String> listLineCds = new ArrayList<String>();
         listLineCds.add("     CDS             complement(388..813)");
         listLineCds.add("     CDS             complement(1206..2420)");
@@ -76,6 +77,8 @@ public class TestScript {
         listLineCds.add("     CDS             4064..5311");
         listLineCds.add("     CDS             <143859..144731");
         listLineCds.add("                     KLITNSGATIYPFKKSENIYSFMLPAGVESVRVVSRSSRPCDSIGPFVDDRRQMGVAV");
+        listLineCds.add("     CDS             complement(join(182789..182940,1..571))");
+
 
 
         // TODO fonction check + extract info par ligne
@@ -94,7 +97,15 @@ public class TestScript {
 
         System.out.println("***************************************");
 
-        testNucleotide();
+        //testFile();
+
+
+        try {
+            Analyzer.join("join(50..60,80..90,a..b)");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 }
