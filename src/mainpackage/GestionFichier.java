@@ -234,21 +234,39 @@ public class GestionFichier {
 		}
 
 	}
-
-	public static void main(String[] args) throws IOException {
-		// TODO faire une fonction !
+	
+	public static void readCSVFile(String filename) {
 		CSVReader reader;
 		try {
-			reader = new CSVReader(new FileReader("files/genomes_euks.csv"));
+			reader = new CSVReader(new FileReader(filename));
 		    String[] nextLine = reader.readNext();
-		    /*while ((nextLine = reader.readNext()) != null) {
-		       // nextLine[] is an array of values from the line*/
-		    for(int i=0; i<nextLine.length; i++)
-		    {
-		    	System.out.println(nextLine[i]);
+		    String[] nextLine2 = reader.readNext();
+		    
+		    for(int i =0; i<nextLine.length; i++) {
+		    	System.out.println(nextLine[i]+ "|||" + nextLine2[i]);
 		    }
+		    //while ((nextLine = reader.readNext()) != null) {
+			    /* INFO EUKARYOTES
+			     * nextLine[0] = Nom de l'organisme
+			     * nextLine[4] = Groupe de l'organisme
+			     * nextLine[5] = Sous-groupe de l'organisme
+			     * nextLine[6] = Taille en Mb
+			     * nextLine[9] = A REGARDER POUR CHECK SI Y A NC
+			     * nextLine[12] = Nombre de genes
+			     * nextLine[14] = Date de sortie
+			     * nextLine[15] = Date de modification
+			     * nextLine[17] = Lien FTP du refseq
+			     * nextLine[18] = Lien FTP du genbank
+			     */
+			    
+			    // On vérifie que c'est bien un élément que l'on veut
+		    	
+			    if(nextLine[9].contains("NC")) {
+			    	System.out.println(nextLine[17]);
+			    }
 		       
 		    //}
+		    
 		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -256,5 +274,14 @@ public class GestionFichier {
 		catch (IOException e) {
             e.printStackTrace();
         }
+	}
+
+	public static void main(String[] args) throws IOException {
+		String eukaryotes = "files/genomes_euks.csv";
+		String organelles = "files/genomes_organelles.csv";
+		String plasmids = "files/genomes_plasmids.csv";
+		String prokaryotes = "files/genomes_proks.csv";
+		String viruses = "files/genomes_viruses.csv";
+		readCSVFile(viruses);
 	}
 }
