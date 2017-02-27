@@ -7,24 +7,10 @@ import org.junit.Test;
 public class TestMag extends Mag {
 
 	@Test
-	public void testCheckCds() throws Exception {
-		assertTrue("Failure : checkCds", Mag.checkCds("CDS"));
-		assertFalse("Failure : checkCds", Mag.checkCds("CDm"));
-		assertFalse("Failure : checkCds", Mag.checkCds("no CDS"));
-	}
-
-	@Test
-	public void testCheckInit() throws Exception {
-		assertTrue("Failure : checkCds", Mag.checkInit("ORIGIN"));
-		assertFalse("Failure : checkCds", Mag.checkInit("ORI no origin"));
-		assertFalse("Failure : checkCds", Mag.checkInit("no origin"));
-	}
-
-	@Test
-	public void testCheckEnd() throws Exception {
-		assertTrue("Failure : checkCds", Mag.checkEnd("//"));
-		assertFalse("Failure : checkCds", Mag.checkEnd("/no end"));
-		assertFalse("Failure : checkCds", Mag.checkEnd("no end //"));
+	public void testComplement() throws Exception {
+		assertEquals("Failure : Complement", "gcta", Mag.Complement("tagc"));
+		assertEquals("Failure : Complement", "a", Mag.Complement("t"));
+		assertEquals("Failure : Complement", "ttcgctaaac", Mag.Complement("gtttagcgaa"));
 	}
 
 }

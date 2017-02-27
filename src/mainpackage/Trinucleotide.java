@@ -1,8 +1,5 @@
 package mainpackage;
 
-import mainpackage.Nucleotide;
-import mainpackage.Utils;
-
 import java.util.HashMap;
 
 
@@ -14,7 +11,7 @@ public class Trinucleotide extends Nucleotide{
 	
 	public Trinucleotide(){
 		
-		HashMap<String, Integer> HMAP = this.GetHMAP();
+		HashMap<String, Integer> HMAP = this.getHMAP();
 		
 		
 		for (String temp : Utils.getListOfTriNucleotide()) {
@@ -24,9 +21,10 @@ public class Trinucleotide extends Nucleotide{
 	}
 	
 	
-	
-	// Todo faire une fonction qui incrémente un trinucleotide 
+
 	public void addTriN(String triN,int i){
+		HashMap<String, Integer> HMAP = this.getHMAP();
+		HMAP.put(triN,1+HMAP.get(triN));
 		
 	}
 	
