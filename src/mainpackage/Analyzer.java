@@ -122,6 +122,7 @@ public class Analyzer {
 
     public static boolean checkInit (String line) {
         String origin = "ORIGIN";
+        line = line.trim();
         for (int i = 0; i < origin.length(); i++) {
             if (origin.charAt(i) != line.charAt(i)) {
                 return false;
@@ -132,6 +133,7 @@ public class Analyzer {
 
     public static boolean checkEnd (String line) {
         String end = "//";
+        line = line.trim();
         for (int i = 0; i < end.length(); i++) {
             if (end.charAt(i) != line.charAt(i)) {
                 return false;
