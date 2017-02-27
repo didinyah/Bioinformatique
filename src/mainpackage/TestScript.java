@@ -78,7 +78,26 @@ public class TestScript {
         listLineCds.add("     CDS             <143859..144731");
         listLineCds.add("                     KLITNSGATIYPFKKSENIYSFMLPAGVESVRVVSRSSRPCDSIGPFVDDRRQMGVAV");
         listLineCds.add("     CDS             complement(join(182789..182940,1..571))");
-
+        listLineCds.add("     CDS             join(54151..54545,54597..54999,55107..>55883)");
+        listLineCds.add("     CDS             complement(join(<9538..9972,10012..10266,10843..11391))\n");
+        // TODO comment interpreter ces cas là sur plusieurs lignes? pendant le reader line car sa saute actuellement la deuxième partie
+        // cas 2
+        listLineCds.add("     CDS             join(1950..2004,2076..2861,2933..3211,3281..3291,\n" +
+                "                     3343..3597,3670..4362)");// fuuu
+        //cas 3
+        listLineCds.add("     CDS             join(104713..104780,104838..105015,105068..105285,\n" +
+                "                     105347..105480,105539..105774,105825..106013,\n" +
+                "                     106073..106180,106317..106559,106628..106828)");
+        //cas 4 (conclusion à généraliser)
+        listLineCds.add("     CDS             join(172641..172693,172748..172841,172899..173051,\n" +
+                "                     173101..173382,173442..173548,173598..173839,\n" +
+                "                     173895..174048,174102..174369,174425..174639,\n" +
+                "                     174697..174820,174906..175134,175196..175275)");
+        // mix complement join 4 line l'enfer
+        listLineCds.add("     CDS             complement(join(20208..20521,20614..20708,20772..20895,\n" +
+                "                     20954..21169,21231..21240,21292..21353,21408..21492,\n" +
+                "                     21544..21910,21956..21982,22036..22214,22265..22447,\n" +
+                "                     22497..22551,22601..23079,23131..23183,23237..23912))");
 
 
         // TODO fonction check + extract info par ligne
@@ -97,11 +116,11 @@ public class TestScript {
 
         System.out.println("***************************************");
 
-        //testFile();
+        testFile();
 
 
         try {
-            Analyzer.join("join(50..60,80..90,a..b)");
+            Analyzer.join("join(50..60,80..90)");
         } catch (Exception e) {
             e.printStackTrace();
         }

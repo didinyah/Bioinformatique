@@ -138,6 +138,7 @@ public class GestionFichier {
 
 		boolean HEADER = true;
 		boolean CONTENT = false;
+		boolean CDS_MULTI_LINE = false;
 
 
 		BufferedReader br = null;
@@ -194,6 +195,7 @@ public class GestionFichier {
 
 					if(HEADER && !CONTENT){
 						header_line += 1;
+
 					}
 					else if(CONTENT && !HEADER)
 					{
@@ -259,7 +261,7 @@ public class GestionFichier {
 			     * nextLine[18] = Lien FTP du genbank
 			     */
 			    
-			    // On vérifie que c'est bien un élément que l'on veut
+			    // On vï¿½rifie que c'est bien un ï¿½lï¿½ment que l'on veut
 		    	
 			    if(nextLine[9].contains("NC")) {
 			    	System.out.println(nextLine[17]);

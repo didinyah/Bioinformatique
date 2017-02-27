@@ -1,5 +1,7 @@
 package mainpackage;
 
+import jdk.nashorn.internal.runtime.ECMAException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -112,6 +114,7 @@ public class Analyzer {
 
     public static boolean checkCds (String line) {
         String cds = "CDS";
+        line = line.trim();
         for (int i = 0; i < cds.length(); i++) {
             if (cds.charAt(i) != line.charAt(i)) {
                 return false;
@@ -122,7 +125,6 @@ public class Analyzer {
 
     public static boolean checkInit (String line) {
         String origin = "ORIGIN";
-        line = line.trim();
         for (int i = 0; i < origin.length(); i++) {
             if (origin.charAt(i) != line.charAt(i)) {
                 return false;
@@ -133,7 +135,6 @@ public class Analyzer {
 
     public static boolean checkEnd (String line) {
         String end = "//";
-        line = line.trim();
         for (int i = 0; i < end.length(); i++) {
             if (end.charAt(i) != line.charAt(i)) {
                 return false;
@@ -142,19 +143,8 @@ public class Analyzer {
         return true;
     }
 
-    /*
-    * Fonctions à faire pour le join
-    */
-    /* TODO
-    * Fonction qui doit tester si une chaine est un intervalle de la forme : a..b
-    *    - a<b
-    *    - a est un int
-    *    - b est un int
-    */
-    public static boolean isInterval (String intervalle){
-        return true;
-    }
-    /*
+
+     /*
      * Calcule le nombre de caractères à récupérer pour utiliser la méthode substring
      */
     public static int nbCaract (int inf, int sup){
@@ -183,13 +173,13 @@ public class Analyzer {
                 // cas ou il y a des virgules
                 String[] items = p2.split(tmp);
                 for ( String it : items){
-                    Borne b = extractBorne(it);
+                    Borne b = stringToBorne(it);
                     System.out.println(b);
                     listTmp.add(b);
                 }
             }else{
                 // cas ou il n'y en pas
-                Borne b = extractBorne(tmp);
+                Borne b = stringToBorne(tmp);
                 System.out.println(b);
                 listTmp.add(b);
             }
@@ -200,8 +190,16 @@ public class Analyzer {
         return listTmp;
     }
 
-
-    public static Borne extractBorne(String it) throws Exception {
+    /*
+    * Fonction qui doit tester et extraire si une chaine est un intervalle de la forme : a..b
+    *    - a<b
+    *    - a est un int
+    *    - b est un int
+    *    renvoi Borne a b
+    *    Rien d'autres
+    *    TODO vérifier les expections génré sont-elles les bonnes ?
+    */
+    public static Borne stringToBorne(String it) throws Exception {
     // Prend un string de type int..int et renvoie une Borne en vérifiant si tout est bon
         Pattern p = Pattern.compile("([0-9]+)\\.\\.([0-9]+)");
         Matcher m = p.matcher(it);
@@ -227,6 +225,25 @@ public class Analyzer {
 
     }
 
+    public static List<Borne> cdsToBornes(String cdsLine) throws Exception {
+        // TODO à finir stopé car multiligne cds detecté provoque bug et donc revnir à la source du pb avant !
+        Pattern p = Pattern.compile(" *CDS +(.*)");
+        Matcher m = p.matcher(cdsLine);
+        if(m.find()){
+            String strToExtract = m.group(1);
+            if(strToExtract.length() > 2){// car il y a au minimun ..
+                // le cas ou y a complement (join -> appeler join
+                // le cas join -> join
+                // le cas ou y a juste complement ( appeler stringtoborne
+                // le cas simple
+
+            }
+        }else{
+            throw new Exception();
+        }
+        return null;
+    }
+
 
     private static class Borne {
         public void setBorninf(Integer borninf) {
@@ -240,8 +257,10 @@ public class Analyzer {
         private Integer borninf;
         private Integer bornsup;
 
-        // Todo fonction d'appertenance de borne
-        // Todo fonction de verification de borne
+        public boolean isInBorne(int a){
+            return borninf <= a && a <= bornsup;
+        }
+
 
 
         @Override
