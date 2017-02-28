@@ -154,7 +154,7 @@ public class GestionFichier {
 
 			// on reconstruit la ligne ?
 			String reconstructLine = "";
-			List<String> multiLine = new ArrayList<>();
+			List<String> multiLine = new ArrayList<String>();
 
 			// compte TODO delete count in prod
 			int content_line = 0;

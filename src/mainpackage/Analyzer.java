@@ -158,7 +158,7 @@ public class Analyzer {
      *
      */
     public static List<Borne> join (String global_string) throws Exception {
-        List<Borne> listTmp = new ArrayList<>();
+        List<Borne> listTmp = new ArrayList<Borne>();
         Pattern p = Pattern.compile("join\\((.*)\\)");
         Matcher m = p.matcher(global_string);
         if(m.find()){
