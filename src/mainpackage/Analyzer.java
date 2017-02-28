@@ -113,15 +113,11 @@ public class Analyzer {
 
 
     public static boolean checkCds (String line) {
-        String cds = "CDS";
-        line = line.trim();
-        for (int i = 0; i < cds.length(); i++) {
-            if (cds.charAt(i) != line.charAt(i)) {
-                return false;
-            }
-        }
-        return true;
+        Pattern p = Pattern.compile(" *CDS +.*");
+        return p.matcher(line).find();
     }
+
+
 
     public static boolean checkInit (String line) {
         String origin = "ORIGIN";
@@ -244,6 +240,36 @@ public class Analyzer {
         return null;
     }
 
+    public static boolean isCdsMultiLine(String line1) {
+        // Il faut qu'il y a CDS dans la ligne et que la dernier caractère soit une virgule ,
+        Pattern p = Pattern.compile(" *CDS +.*,$");
+        return p.matcher(line1).find();
+    }
+
+    public static boolean isEndCdsMultiLine(String reconstructLine) {
+        Pattern p = Pattern.compile("\\)$");
+        return p.matcher(reconstructLine).find();
+    }
+
+    public static String cdsMultiLineToString(List<String> multiLine) throws Exception {
+        String fullLine = "";
+        boolean firstLine = true;
+        for ( String line : multiLine){
+            if(firstLine){
+                fullLine += line;
+                firstLine = false;
+            }else{
+                Pattern p = Pattern.compile(" *(.*)$");
+                Matcher m = p.matcher(line);
+                if(m.find()){
+                    fullLine += m.group(1);
+                }else{
+                    throw new Exception();
+                }
+            }
+        }
+        return fullLine;
+    }
 
     private static class Borne {
         public void setBorninf(Integer borninf) {

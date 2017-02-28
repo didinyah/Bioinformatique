@@ -1,6 +1,8 @@
 package mainpackage;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.opencsv.CSVReader;
 
@@ -152,10 +154,16 @@ public class GestionFichier {
 
 			// on reconstruit la ligne ?
 			String reconstructLine = "";
-			// compte
+			List<String> multiLine = new ArrayList<>();
+
+			// compte TODO delete count in prod
 			int content_line = 0;
 			int header_line = 0;
 			int block_transition = 0;
+			int cds_count = 0;
+			int cds_multi_line_count = 0;
+			int max_cds_size = 0;
+
 			br = new BufferedReader(new FileReader(fileName));
 
 			int r;
@@ -173,32 +181,64 @@ public class GestionFichier {
 						// PHASE CONTENT
 						HEADER = false;
 						CONTENT = true;
-						// TODO on calcul avec les phases 0 1 2  (ANALYZER)
-						// on ressort 3 HMAP (ou on additione à un HMAP global)
-						// TODO on calcul les pref  (ANALYZER)
-						// Si on stock tout les HMAP on peut faire post processing
-						// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
-
 
 					}else if(Analyzer.checkEnd((reconstructLine)) && CONTENT){ // Todo checkEnd -> isEnd
 						// PHASE HEADER
 						HEADER = true;
 						CONTENT = false;
-						// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
-						// TODO cds list (ANALYZER)
-						// ... (à vérifier avec l'enonce) (ANALYZER)
-
 						block_transition += 1;
 
 					}
 
 
 					if(HEADER && !CONTENT){
+						// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
+						// TODO cds list (ANALYZER)
+						// ... (à vérifier avec l'enonce) (ANALYZER)
 						header_line += 1;
+						if(Analyzer.checkCds(reconstructLine)){
+							cds_count += 1;
+							if(Analyzer.isCdsMultiLine(reconstructLine)){
+								cds_multi_line_count += 1;
+								CDS_MULTI_LINE = true;
+							}else{
+								// Todo push cds data
+							}
+						}
+
+						//cette partie gère les cds multi line
+						if(CDS_MULTI_LINE && !Analyzer.isEndCdsMultiLine(reconstructLine)){
+							multiLine.add(reconstructLine); // cela ajoute le premier jusqu'à l'avant dernier
+						}else if(CDS_MULTI_LINE)
+						{
+							// on ajoute le dernier (important)
+							multiLine.add(reconstructLine);
+							//System.out.println("* cds multi line size:"+multiLine.size());
+							//System.out.println(multiLine);
+							max_cds_size = Math.max(max_cds_size,multiLine.size());
+
+							CDS_MULTI_LINE = false;
+							try {
+								String tmpcds = Analyzer.cdsMultiLineToString(multiLine);
+								System.out.println(tmpcds);
+							} catch (Exception e) {
+								// TODO gestion de l'erreur
+								e.printStackTrace();
+							}
+							multiLine.clear();
+							// Todo push cds data
+						}
+
+
 
 					}
 					else if(CONTENT && !HEADER)
 					{
+						// TODO on calcul avec les phases 0 1 2  (ANALYZER)
+						// on ressort 3 HMAP (ou on additione à un HMAP global)
+						// TODO on calcul les pref  (ANALYZER)
+						// Si on stock tout les HMAP on peut faire post processing
+						// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
 						content_line += 1;
 					}
 					reconstructLine = "";
@@ -211,6 +251,9 @@ public class GestionFichier {
 			System.out.println("BlockTransition detected:" + block_transition);
 			System.out.println("Header line:" + header_line);
 			System.out.println("Content line:" + content_line);
+			System.out.println("cds count:" + cds_count);
+			System.out.println("\tcds multi line count :"+cds_multi_line_count);
+			System.out.println("\tmax multi cds size :"+max_cds_size);
 
 		} catch (IOException e) {
 

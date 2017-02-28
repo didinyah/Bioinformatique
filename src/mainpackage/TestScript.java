@@ -36,8 +36,8 @@ public class TestScript {
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
 
-        GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff");
-
+        //GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff");
+        GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff");
         // test
         /*
         if (Analyzer.checkCds("CDS")){
