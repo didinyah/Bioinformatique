@@ -9,6 +9,8 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 
+import javax.swing.JPanel;
+
 import com.sun.javafx.geom.Ellipse2D;
 
 /* 
@@ -18,8 +20,7 @@ import com.sun.javafx.geom.Ellipse2D;
  */
 public class Chargement extends Frame{
 	private Frame mainFrame;
-	private Panel controlPanel;
-	private MyCanvas mc;
+	private DrawPanel dp;
 
 	public Chargement(){
 	   prepareGUI();
@@ -40,9 +41,9 @@ public class Chargement extends Frame{
 	      }        
 	   });
 	   
-	   MyCanvas c = new MyCanvas(mainFrame.getHeight(),mainFrame.getWidth());
-	   mc = c;
-	   mainFrame.add(c);
+	   DrawPanel d = new DrawPanel(mainFrame.getHeight(),mainFrame.getWidth());
+	   dp = d;
+	   mainFrame.add(d);
 	   mainFrame.setVisible(true);  
 	}
 	
@@ -51,8 +52,8 @@ public class Chargement extends Frame{
 			public void run(){
 				for(int i = 1; i <= 100; i++){
 					try {
-						mc.updateProgress(i);
-						mc.repaint();
+						dp.updateProgress(i);
+						dp.repaint();
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -62,10 +63,10 @@ public class Chargement extends Frame{
 		}).start();
 	}
 	
-	class MyCanvas extends Canvas {
+	class DrawPanel extends JPanel {
 		private int progressCenter = 0;
 		
-		public MyCanvas (int lo, int la) {
+		public DrawPanel (int lo, int la) {
 			setSize(lo, la);
 	   }
 
