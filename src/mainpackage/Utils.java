@@ -88,6 +88,12 @@ public class Utils {
 	private static ArrayList<String> EXCELTITLESPHASEINFO = new ArrayList<String>(Arrays.asList(
 			"Informations", "Number of CDS sequences", "Number of invalid CDS"));
 	
+	// URL pour récupérer les données 
+
+	public static String TREE_EUKARYOTES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Eukaryota&mode=2&filterText=%7C%7C--+All+Eukaryota+--%7C--+All+Eukaryota+--%7C%7C50%2C40%2C30%2C20%7Cnopartial%7Cnoanomalous&pageSize=100&page=";
+	public static String TREE_PROKARYOTES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Bacteria&mode=2&filterText=%7C%7C--+All+Prokaryotes+--%7C--+All+Prokaryotes+--%7C%7C50%2C40%7Cnopartial%7Cnoanomalous&pageSize=100&page=";
+	public static String TREE_VIRUSES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Viruses&mode=2&pageSize=100&page=";
+	
 	//Accesseurs
 	public static ArrayList<String> getListOfTriNucleotide(){
 		return LSTTRINU;
