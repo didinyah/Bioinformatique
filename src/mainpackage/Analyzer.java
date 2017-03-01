@@ -4,6 +4,7 @@ import jdk.nashorn.internal.runtime.ECMAException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,24 +46,6 @@ public class Analyzer {
                 }
             }
         }
-        return true;
-    }
-
-    /*
-    * Les bornes inf et sup existent dans la séquence
-    * Les bornes inf et sup sont des nombres
-    * La borne inf est inf à la borne sup
-    * les bornes inf et sup sont séparées par ..
-    */
-    public static boolean checkIsCDS (String line){
-
-
-        // TODO revient à lire listBorne est vérifier si on est compris dans une borne
-        // deux problèmatique soit on considère que listBorn est trié en fonction de la premier borne par construction
-        // soit pas (temps de calcul très long)
-
-        //On ne doit pas vérifier ici si les bornes sont conformes par construction c'est bon
-
         return true;
     }
 
@@ -170,13 +153,11 @@ public class Analyzer {
                 String[] items = p2.split(tmp);
                 for ( String it : items){
                     Borne b = stringToBorne(it);
-                    System.out.println(b);
                     listTmp.add(b);
                 }
             }else{
-                // cas ou il n'y en pas
+                // cas ou il n'y en pas (todo cas inutile ???)
                 Borne b = stringToBorne(tmp);
-                System.out.println(b);
                 listTmp.add(b);
             }
 
@@ -186,6 +167,10 @@ public class Analyzer {
         return listTmp;
     }
 
+    public static boolean isJoin(String line){
+        Pattern p = Pattern.compile("join\\(.*\\)");
+        return p.matcher(line).find();
+    }
     /*
     * Fonction qui doit tester et extraire si une chaine est un intervalle de la forme : a..b
     *    - a<b
@@ -193,11 +178,11 @@ public class Analyzer {
     *    - b est un int
     *    renvoi Borne a b
     *    Rien d'autres
-    *    TODO vérifier les expections génré sont-elles les bonnes ?
+    *    TODO vérifier les expections génèré sont-elles les bonnes ?
     */
     public static Borne stringToBorne(String it) throws Exception {
     // Prend un string de type int..int et renvoie une Borne en vérifiant si tout est bon
-        Pattern p = Pattern.compile("([0-9]+)\\.\\.([0-9]+)");
+        Pattern p = Pattern.compile("^([0-9]+)\\.\\.([0-9]+)$");
         Matcher m = p.matcher(it);
         if(m.find()){
             if(m.groupCount() == 2){
@@ -222,23 +207,95 @@ public class Analyzer {
     }
 
     public static List<Borne> cdsToBornes(String cdsLine) throws Exception {
-        // TODO à finir stopé car multiligne cds detecté provoque bug et donc revnir à la source du pb avant !
         Pattern p = Pattern.compile(" *CDS +(.*)");
         Matcher m = p.matcher(cdsLine);
         if(m.find()){
             String strToExtract = m.group(1);
             if(strToExtract.length() > 2){// car il y a au minimun ..
-                // le cas ou y a complement (join -> appeler join
-                // le cas join -> join
-                // le cas ou y a juste complement ( appeler stringtoborne
-                // le cas simple
+                Pattern pcomplement = Pattern.compile("complement\\((.*)\\)");
+                Matcher mcomplement = pcomplement.matcher(strToExtract);
+                if(mcomplement.find()){
+                    strToExtract = mcomplement.group(1); // on enlève le texte complement( )
+                    if(isJoin(strToExtract)){
+                        // on crée l'unique id identifiant la même jointure
+                        String uniqueID = UUID.randomUUID().toString();
+                        List<Borne> joinList =  join(strToExtract);
 
+                        if(isCorrectListBorne(joinList)){
+                            // On ajoute des informations sur les bornes
+                            for(Borne b :joinList)
+                            {
+                                b.setComplement(true);
+                                b.setMultipleBorne(true);
+                                b.setLinkId(uniqueID);
+                            }
+                            return joinList;
+                        }else{
+                            throw new Exception();
+                        }
+                    }else{
+                        Borne b = stringToBorne(strToExtract);
+                        b.setComplement(true);
+                        List<Borne> singleElement = new ArrayList<Borne>();
+                        singleElement.add(b);
+                        return singleElement;
+                    }
+                }else{
+                    if(isJoin(strToExtract)){
+                        // on crée l'unique id identifiant la même jointure
+                        String uniqueID = UUID.randomUUID().toString();
+                        List<Borne> joinList =  join(strToExtract);
+
+                        if(isCorrectListBorne(joinList)){
+                        // On ajoute des informations sur les bornes
+                            for(Borne b :joinList)
+                            {
+                                b.setMultipleBorne(true);
+                                b.setLinkId(uniqueID);
+                            }
+                            return joinList;
+                        }else{
+                            throw new Exception();
+                        }
+                    }else{
+                        Borne b = stringToBorne(strToExtract);
+                        List<Borne> singleElement = new ArrayList<Borne>();
+                        singleElement.add(b);
+                        return singleElement;
+                    }
+                }
+            }else{
+                throw new Exception();
             }
         }else{
             throw new Exception();
         }
-        return null;
     }
+
+    private static boolean isCorrectListBorne(List<Borne> joinList) {
+        if(!joinList.isEmpty()){
+            Borne lastBorne = null;
+            for(Borne b: joinList){
+                if(!b.isCorrectBorne()){
+                    return false;
+                }
+                if(lastBorne == null){
+                    lastBorne =b;
+                }else{
+                    if(!b.isGreaterThan(lastBorne)){
+                        return false;
+                    }
+                    lastBorne = b;
+                }
+
+            }
+        }else{
+            return false;
+        }
+
+        return  true;
+    }
+
 
     public static boolean isCdsMultiLine(String line1) {
         // Il faut qu'il y a CDS dans la ligne et que la dernier caractère soit une virgule ,
@@ -272,6 +329,24 @@ public class Analyzer {
     }
 
     private static class Borne {
+
+        private Integer borninf;
+        private Integer bornsup;
+        private boolean complement; // savoir si la borne est complement
+        private boolean multipleBorne; // savoir si c'est une borne d'une jointure
+        private String  linkId; // l'id de lien avec les autres borne de la même jointure (todo créer un id plus complexe uniqid)
+
+        public Borne(){
+            // Variable par défaut
+            complement = false;
+            multipleBorne = false;
+            linkId = "error"; // -1 signifie qu'il n'y a pas de lien
+        }
+        public boolean isInBorne(int a){
+            return borninf <= a && a <= bornsup;
+        }
+
+
         public void setBorninf(Integer borninf) {
             this.borninf = borninf;
         }
@@ -280,18 +355,59 @@ public class Analyzer {
             this.bornsup = bornsup;
         }
 
-        private Integer borninf;
-        private Integer bornsup;
 
-        public boolean isInBorne(int a){
-            return borninf <= a && a <= bornsup;
+        @Override
+        // i = inf s =sup C = complement M = multiline
+        public String toString() {
+            String complementLetter = complement ? "C": "";
+            String multiLine = multipleBorne ? "M": "";
+            String addInfo = complement || multipleBorne ? " (I): " + complementLetter +" "+ multiLine : "";
+            return borninf+ " i .. s "+bornsup + addInfo ;
+        }
+
+        public void setComplement(boolean complement) {
+            this.complement = complement;
         }
 
 
+        public void setMultipleBorne(boolean multipleBorne) {
+            this.multipleBorne = multipleBorne;
+        }
 
-        @Override
-        public String toString() {
-            return borninf+ " i .. s "+bornsup;
+        public boolean isComplement() {
+            return complement;
+        }
+
+        public boolean isMultipleBorne() {
+            return multipleBorne;
+        }
+
+        public String getLinkId() {
+            return linkId;
+        }
+
+        public void setLinkId(String linkId) {
+            this.linkId = linkId;
+        }
+
+        public boolean isCorrectBorne(){
+            if(borninf < bornsup){
+                // test sur complement ?
+                if(multipleBorne){
+                    // on test que l'unique ID a bien été défini
+                    return !linkId.equals("error");
+                }else{
+                    return true;
+                }
+
+            }else{
+                return false;
+            }
+        }
+
+        // b1.isGreaterThan(b2) => b1.borninf >= b2.bornsup (todo vérifier >= ou > stric ? autre à verifier ?)
+        public boolean isGreaterThan(Borne b){
+            return borninf >= b.bornsup;
         }
     }
 
