@@ -1,7 +1,5 @@
 package mainpackage;
 
-import jdk.nashorn.internal.runtime.ECMAException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -92,7 +90,7 @@ public class Analyzer {
         return true;
     }
     // Voir si il faut bien checker les codons init et stop
-    public static void countTrinInString(String content, Trinucleotide current) throws Exception{
+    public static void countTrinInString(String content, Trinucleotide current, int phase) throws Exception{
     	if(content.length()%3==0){
 	    	Pattern p = Pattern.compile("([a|t|c|g][a|t|c|g][a|t|c|g])"); //permet de savoir si il y a autre chose que a c g t
 	        Matcher m = p.matcher(content);
@@ -100,7 +98,7 @@ public class Analyzer {
 	        	if(m.groupCount()*3==content.length()){
 		        	if(checkCodonInit(m.group(1)) && checkCodonStop(m.group(m.groupCount()))){
 		        		for(int i=1;i<m.groupCount()+1;i++){
-		        			current.addTriN(m.group(i),1);
+		        			current.addTriN(m.group(i),1,phase);
 		        		}
 		        	}else{
 		        		throw new Exception();
