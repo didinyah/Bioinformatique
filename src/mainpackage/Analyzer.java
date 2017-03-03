@@ -1,7 +1,5 @@
 package mainpackage;
 
-import jdk.nashorn.internal.runtime.ECMAException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -55,41 +53,11 @@ public class Analyzer {
     }
 
     public static boolean checkCodonInit (String line){
-        ArrayList<String> list = new ArrayList<String>();
-        boolean b = true;
-        for (int i=0; i<list.size();i++){
-            for (int j=0; j<list.get(i).length();j++){
-                if (line.charAt(j)!= list.get(i).charAt(j)){
-                    b = false;
-                }
-                if (b==true){
-                    return true;
-                }
-                else{
-                    b = true;
-                }
-            }
-        }
-        return false;
+        return Utils.getListOfCodonInit().contains(line);
     }
 
     public static boolean checkCodonStop (String line){
-        ArrayList<String> list = new ArrayList<String>();
-        boolean b = true;
-        for (int i=0; i<list.size();i++){
-            for (int j=0; j<list.get(i).length();j++){
-                if (line.charAt(j)!= list.get(i).charAt(j)){
-                    b = false;
-                }
-                if (b){
-                    return true;
-                }
-                else{
-                    b = true;
-                }
-            }
-        }
-        return false;
+        return Utils.getListOfCodonStop().contains(line);
     }
 
     public static boolean checkCorrectChar (char c){
@@ -126,8 +94,31 @@ public class Analyzer {
         }
         return true;
     }
-
-
+    // Voir si il faut bien checker les codons init et stop
+    public static void countTrinInString(String content, Trinucleotide current, int phase) throws Exception{
+    	if(content.length()%3==0){
+	    	Pattern p = Pattern.compile("([a|t|c|g][a|t|c|g][a|t|c|g])"); //permet de savoir si il y a autre chose que a c g t
+	        Matcher m = p.matcher(content);
+	        if(m.find()){
+	        	if(m.groupCount()*3==content.length()){
+		        	if(checkCodonInit(m.group(1)) && checkCodonStop(m.group(m.groupCount()))){
+		        		for(int i=1;i<m.groupCount()+1;i++){
+		        			current.addTriN(m.group(i),1,phase);
+		        		}
+		        	}else{
+		        		throw new Exception();
+		        	}
+	        	}else{
+	        		throw new Exception();
+	        	}
+	        }else{
+	            throw new Exception();
+	        }
+    	}else{
+    		throw new Exception();
+    	}
+    }
+    
      /*
      * Calcule le nombre de caractères à récupérer pour utiliser la méthode substring
      */

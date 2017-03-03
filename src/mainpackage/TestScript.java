@@ -156,6 +156,7 @@ public class TestScript {
 
         //testCdsExtractor();
         testFile();
+        testNucleotide();
 
     }
 }

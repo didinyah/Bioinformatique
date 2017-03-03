@@ -29,6 +29,11 @@ public class ChargingCircle {
 	protected float posX;
 	protected float posY;
 	
+	protected int inPosX;
+	protected int inPosY;
+	protected int outPosX;
+	protected int outPosY;
+	
 	public ChargingCircle (float lo, float la, float c, float c2) {
 		fW = (int)lo;
 		fH = (int)la;
@@ -36,14 +41,21 @@ public class ChargingCircle {
 		coeffY = c2;
 		posX = lo*coeffX;
 		posY = la*coeffY;
-   }
-      
-   public void drawFullCircle(Graphics2D g, int x, int y, int r) {
-	   x = x-(r/2);
-	   y = y-(r/2);
-	   g.fillOval(x,y,r,r);
+		
+		findInPos();
+		findOutPos();		
    }
    
+	public void findInPos(){
+		inPosX = (int)posX;
+		inPosY = (int)posY;
+	}
+	
+	public void findOutPos(){
+		outPosX = (int)posX;
+		outPosY = (int)posY;
+	}
+	
    public void updateProgress(int progress){
 	   progressCenter = progress;
    }

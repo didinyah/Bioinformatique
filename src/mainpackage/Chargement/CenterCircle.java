@@ -29,17 +29,20 @@ public class CenterCircle {
 	private int progressCenter = 0;
 	private int circleSize = 150;
 	
+	protected int inPosX;
+	protected int inPosY;
+	
 	public CenterCircle (int lo, int la) {
 		fW = lo;
 		fH = la;
-   }
-      
-   public void drawFullCircle(Graphics2D g, int x, int y, int r) {
-	   x = x-(r/2);
-	   y = y-(r/2);
-	   g.fillOval(x,y,r,r);
+		
+		findInPos();
    }
    
+	public void findInPos(){
+		inPosX = fW/2;
+		inPosY = fH/2;
+	}
    public void updateProgress(int progress){
 	   progressCenter = progress;
    }
