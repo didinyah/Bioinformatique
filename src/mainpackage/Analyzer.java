@@ -13,26 +13,31 @@ import java.util.regex.Pattern;
  */
 public class Analyzer {
 
+    public static String extractContentLine(String contentLine) throws Exception {
+        // Extrait d'une ligne de content les infos utiles
+        Pattern p1 = Pattern.compile("^ *([0-9]+) (.*)$");
+        Matcher m1 = p1.matcher(contentLine);
+        if(m1.find()){
+            int position = Integer.parseInt(m1.group(1));
+            String tmpgene = m1.group(2);
+            Pattern p2 = Pattern.compile(" ");
+            String[] items = p2.split(tmpgene);
+            if(items.length >0){
+                String res = ""; // le cas générique
+                for ( String item : items){
+                    res += item;
+                }
+                return res;
+            }else if(items.length ==0 && tmpgene.length() > 0 ){
+                return tmpgene; // le cas ou il y a juste un morceau de moin de 10 char de gene
+            }else{
+                throw new Exception();
+            }
 
-
-    // On définit la liste de Borne (c'est un couple private classe définit en bas)
-    private List<Borne> listBorne = new ArrayList<Borne>();
-
-    public List<Borne> getListBorne() {
-        return listBorne;
+        }else{
+            throw new Exception();
+        }
     }
-
-    public void addListBorne(Borne b){
-        listBorne.add(b);
-    }
-
-    public void addListBorne(int inf, int sup){
-        Borne b = new Borne();
-        b.setBorninf(inf);
-        b.setBornsup(sup);
-        listBorne.add(b);
-    }
-
     // TODO (à voir) FONCTION VERIFIANT QUE LA LIST TRIE et QUI LA TRIE OU ADDLISTBORN DOIT AJOUTER DE MANIERE TRIE
 
     public static boolean checkString (String string1, String string2){
@@ -140,7 +145,7 @@ public class Analyzer {
      * utiliser substring
      *
      */
-    public static List<Borne> join (String global_string) throws Exception {
+    public static List<Borne> join (String global_string) throws Exceptions.ExceptionCds {
         List<Borne> listTmp = new ArrayList<Borne>();
         Pattern p = Pattern.compile("join\\((.*)\\)");
         Matcher m = p.matcher(global_string);
@@ -162,7 +167,7 @@ public class Analyzer {
             }
 
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionCds();
         }
         return listTmp;
     }
@@ -180,7 +185,7 @@ public class Analyzer {
     *    Rien d'autres
     *    TODO vérifier les expections génèré sont-elles les bonnes ?
     */
-    public static Borne stringToBorne(String it) throws Exception {
+    public static Borne stringToBorne(String it) throws Exceptions.ExceptionCds {
     // Prend un string de type int..int et renvoie une Borne en vérifiant si tout est bon
         Pattern p = Pattern.compile("^([0-9]+)\\.\\.([0-9]+)$");
         Matcher m = p.matcher(it);
@@ -195,18 +200,18 @@ public class Analyzer {
                     b.setBornsup(suptmp);
                     return b;
                 }else{
-                    throw new Exception();
+                    throw new Exceptions.ExceptionCds();
                 }
             }else{
-                throw new Exception();
+                throw new Exceptions.ExceptionCds();
             }
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionCds();
         }
 
     }
 
-    public static List<Borne> cdsToBornes(String cdsLine) throws Exception {
+    public static List<Borne> cdsToBornes(String cdsLine) throws Exceptions.ExceptionCds {
         Pattern p = Pattern.compile(" *CDS +(.*)");
         Matcher m = p.matcher(cdsLine);
         if(m.find()){
@@ -231,7 +236,7 @@ public class Analyzer {
                             }
                             return joinList;
                         }else{
-                            throw new Exception();
+                            throw new Exceptions.ExceptionCds();
                         }
                     }else{
                         Borne b = stringToBorne(strToExtract);
@@ -255,7 +260,7 @@ public class Analyzer {
                             }
                             return joinList;
                         }else{
-                            throw new Exception();
+                            throw new Exceptions.ExceptionCds();
                         }
                     }else{
                         Borne b = stringToBorne(strToExtract);
@@ -265,10 +270,10 @@ public class Analyzer {
                     }
                 }
             }else{
-                throw new Exception();
+                throw new Exceptions.ExceptionCds();
             }
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionCds();
         }
     }
 
@@ -328,7 +333,7 @@ public class Analyzer {
         return fullLine;
     }
 
-    private static class Borne {
+    public static class Borne {
 
         private Integer borninf;
         private Integer bornsup;

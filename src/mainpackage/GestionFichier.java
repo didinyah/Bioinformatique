@@ -156,7 +156,7 @@ public class GestionFichier {
 			String reconstructLine = "";
 			List<String> multiLine = new ArrayList<String>();
 
-			// compte TODO delete count in prod
+			// compte TODO delete count in prod ou le sortir en bilan
 			int content_line = 0;
 			int header_line = 0;
 			int block_transition = 0;
