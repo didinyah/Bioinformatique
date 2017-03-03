@@ -153,9 +153,7 @@ public class TestScript {
         // test
 
         System.out.println("***************************************");
-
-        testCdsExtractor();
-
+        testNucleotide();
 
     }
 }

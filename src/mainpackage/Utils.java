@@ -31,6 +31,11 @@ public class Utils {
 			"atc", "ctc", "gtc", "ttc",
 			"act", "cct", "gct", "tct"));
 	
+	private static ArrayList<String> LSTCINIT = new ArrayList<String>(Arrays.asList(
+			"atg", "ctg", "ttg", "gtg", "ata", "atc", "att", "tta"));
+	
+	private static ArrayList<String> LSTCSTOP = new ArrayList<String>(Arrays.asList(
+			"taa", "tag", "tga", "tta"));			
 	
 	private static ArrayList<String> LSTDINU = new ArrayList<String>(Arrays.asList(
 			"aa", "ac", "at", "ag",
@@ -88,7 +93,7 @@ public class Utils {
 	private static ArrayList<String> EXCELTITLESPHASEINFO = new ArrayList<String>(Arrays.asList(
 			"Informations", "Number of CDS sequences", "Number of invalid CDS"));
 	
-	// URL pour récupérer les données 
+	// URL pour rï¿½cupï¿½rer les donnï¿½es 
 
 	public static String TREE_EUKARYOTES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Eukaryota&mode=2&filterText=%7C%7C--+All+Eukaryota+--%7C--+All+Eukaryota+--%7C%7C50%2C40%2C30%2C20%7Cnopartial%7Cnoanomalous&pageSize=100&page=";
 	public static String TREE_PROKARYOTES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Bacteria&mode=2&filterText=%7C%7C--+All+Prokaryotes+--%7C--+All+Prokaryotes+--%7C%7C50%2C40%7Cnopartial%7Cnoanomalous&pageSize=100&page=";
@@ -100,6 +105,14 @@ public class Utils {
 	}
 	public static ArrayList<String> getListOfDiNucleotide(){
 		return LSTDINU;
+	}
+	
+	public static ArrayList<String> getListOfCodonInit(){
+		return LSTCINIT;
+	}
+	
+	public static ArrayList<String> getListOfCodonStop(){
+		return LSTCSTOP;
 	}
  
 	public static ArrayList<String> getListOfTriNucleotideCAPSLOCK(){
