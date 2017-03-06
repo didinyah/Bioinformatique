@@ -95,30 +95,58 @@ public class Analyzer {
         return true;
     }
     // Voir si il faut bien checker les codons init et stop
-    public static void countTrinInString(String content, Trinucleotide current, int phase) throws Exception{
+    public static void countTrinFromString(String content, Trinucleotide current, int phase) throws Exception{
     	if(content.length()%3==0){
 	    	Pattern p = Pattern.compile("([a|t|c|g][a|t|c|g][a|t|c|g])"); //permet de savoir si il y a autre chose que a c g t
 	        Matcher m = p.matcher(content);
-	        if(m.find()){
-	        	if(m.groupCount()*3==content.length()){
-		        	if(checkCodonInit(m.group(1)) && checkCodonStop(m.group(m.groupCount()))){
-		        		for(int i=1;i<m.groupCount()+1;i++){
-		        			current.addTriN(m.group(i),1,phase);
-		        		}
-		        	}else{
-		        		throw new Exception();
-		        	}
-	        	}else{
-	        		throw new Exception();
-	        	}
-	        }else{
-	            throw new Exception();
-	        }
+            int countMatches = 0;
+            Trinucleotide tmpTri = new Trinucleotide();
+            String first = "";
+            String last = "";
+            while (m.find()) {
+                // On affecte le premier
+                if(countMatches==0){
+                    first = m.group();
+                }
+                //On affecte le dernier
+                last = m.group();
+
+                countMatches++;
+                tmpTri.addTriN(m.group(),1,phase);
+            }
+
+            if((checkCodonInit(first) && checkCodonStop(last) && phase == 0) || (phase == 1 || phase == 2) ){ // on ne vérife pas pour les phases 1 et 2
+                if(countMatches*3==content.length()){
+                    current.fusion(tmpTri,phase);
+                }else{
+                    throw new Exception("Group size is not multiple of 3 (found error in symbol)");
+                }
+            }else{
+                throw new Exception("Codont init or codont stop is not present");
+            }
+
     	}else{
-    		throw new Exception();
+    		throw new Exception("Length not multiple of 3");
     	}
     }
-    
+    // Fonction importante permertant de calculer les 3 phases d'un trinucléotide
+    public static void countTrinIn3PhasesFromString(String str,Trinucleotide current) throws Exception {
+        // Todo vérifier comment on phases un str
+        // Ne verifie rien car la fonction qu'on utilisera throw des exceptions
+
+        Pattern p1 = Pattern.compile("^(.)(.*)$");
+        Matcher m1 = p1.matcher(str);
+        Pattern p2 = Pattern.compile("^(..)(.*)$");
+        Matcher m2 = p2.matcher(str);
+        if(m1.find() && m2.find()){
+            countTrinFromString(str,current,0);
+            countTrinFromString(m1.group(2)+m1.group(1),current,1);
+            countTrinFromString(m2.group(2)+m2.group(1),current,2);
+        }else{
+            throw new Exception();
+        }
+    }
+
      /*
      * Calcule le nombre de caractères à récupérer pour utiliser la méthode substring
      */
@@ -126,7 +154,7 @@ public class Analyzer {
     	return (sup-inf);
     }
 
-    /* TODO
+    /*
      * Fonction qui permet de join plusieurs chaines de caractères
      * join([string1,string2,string3,...], string_global)
      * chaque string doit être de la forme d'un intervalle : int..int

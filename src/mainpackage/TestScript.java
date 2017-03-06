@@ -17,13 +17,13 @@ public class TestScript {
     public static void testNucleotide(){
 
         Trinucleotide tridata = new Trinucleotide();
-        System.out.println(tridata.getHMAP().size());
-        tridata.addTriN("aaa",1);
-        System.out.println("Nombre de aaa :" + tridata.getHMAP().get("aaa"));
+        System.out.println(tridata.getHMAP0().size());
+        tridata.addTriN("aaa",1,1);
+        System.out.println("Nombre de aaa :" + tridata.getHMAP0().get("aaa"));
 
-        System.out.println("Nombre de aac :" + tridata.getHMAP().get("aac"));
+        System.out.println("Nombre de aac :" + tridata.getHMAP0().get("aac"));
         Dinucleotide didata = new Dinucleotide();
-        System.out.println(didata.getHMAP().size());
+        System.out.println(didata.getHMAP0().size());
 
     }
 
@@ -44,6 +44,33 @@ public class TestScript {
             System.out.println("CDS hihi");
         }*/
     }
+
+    public static void testTrinucleotideExtractor(){
+
+        String lineContent =  "atggcaggcgtcgagttcattgaagagaaaggtggtggggctggagttagagttgaggaaa"+
+                "tgaattgtgtaaaagtcgatcccaataaaatttcactgcaccctaccggcatttccggtat"+
+                "gcccatcacccgcgcacggagggcctcaaaccgtgcaatctgggcagggcttggcttgcg"+
+                "ggggatgcatcttttcgatgtgttctgaaacacttggctagattttattgatctttttgg"+
+                "acgtgaccccgaaaaccgcgccacgtcagaatctcaaaacatgggaaatcaccatgttat"+
+                "agattcccctgttatggggattactcccggcatcccggtaagtttctgaaactgttta";
+
+        String line2 = "atgrrrtta";
+
+        Trinucleotide ttt = new Trinucleotide();
+        try {
+            Analyzer.countTrinIn3PhasesFromString(lineContent,ttt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(ttt.getHMAP0());
+
+        System.out.println(ttt.getHMAP1());
+
+        System.out.println(ttt.getHMAP2());
+
+    }
+
 
     public static void testTrinucleotideOriginExtractor(){
 
@@ -155,8 +182,8 @@ public class TestScript {
         System.out.println("***************************************");
 
         //testCdsExtractor();
-        testFile();
-        testNucleotide();
-
+        //testFile();
+        // testNucleotide();
+        testTrinucleotideExtractor();
     }
 }

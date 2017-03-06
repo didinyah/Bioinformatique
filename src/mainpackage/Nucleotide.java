@@ -37,8 +37,9 @@ public class Nucleotide {
 		HMAP2 = hMAP2;
 	}
 
+
 	/* Fait la fusion de HMAP càd additionne les deux hmap en envoie les résultats dans le hmap mère*/
-	// Todo à tester
+
 	public void fusion(HashMap<String, Integer> hm, int phase){
 		HashMap<String, Integer> HMAP = null;
 		switch(phase){
@@ -54,7 +55,7 @@ public class Nucleotide {
 			default:
 				HMAP = getHMAP0();
 		}
-		
+
 		for(HashMap.Entry<String, Integer> entry : hm.entrySet()) {
 			String key = entry.getKey();
 			Integer value = entry.getValue();
@@ -64,11 +65,36 @@ public class Nucleotide {
 
 	}
 
+	public void fusion(Nucleotide tmp,int phase){
+		switch(phase){
+			case 0:
+				fusion(tmp.getHMAP0(),0);
+				break;
+			case 1:
+				fusion(tmp.getHMAP1(),1);
+				break;
+			case 2:
+				fusion(tmp.getHMAP2(),2);
+				break;
+			default:
+				fusion(tmp.getHMAP0(),3);
+		}
+	}
 
+	public void fusion(Nucleotide tmp){
+
+		fusion(tmp.getHMAP0(),0);
+		fusion(tmp.getHMAP1(),1);
+		fusion(tmp.getHMAP2(),2);
+	}
 	// Todo fonction de frequence
 	// à reflechir de les mettres
 
-	
+
+	public String toString(){
+
+		return "Trinucleotide :  HMAP0\n"+ HMAP0.toString();
+	}
 	
 	
 }
