@@ -80,6 +80,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 				e.printStackTrace();
 				System.exit(1);
 			}
+			System.out.println(this.type.toString()+ " page : "+ this.currentPage);
 			currentPage ++;
 		}
 	}

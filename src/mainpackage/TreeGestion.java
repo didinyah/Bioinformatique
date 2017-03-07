@@ -39,6 +39,5 @@ public class TreeGestion {
 	
 	public static void main(String[] args) throws Exception {
 		Tree test = TreeGestion.construct();
-	    test.printTree();
 	}
 }
