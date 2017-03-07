@@ -7,44 +7,60 @@ public class ChargingCircleThread extends Thread {
 	private GlobalJPanel jp;
 	private int dataCount;
 	private ChargingCircle cc;
-	private Stack<Integer> data;
+	private Stack<String> data;
 	private int currentProgress = 0;
 	protected boolean ready = true;
 	private ArrayList<ChargingStick> delegate;
+	private String name;
 	
 	//OuterCircle
-	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c){
+	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, String da){
+		name = da;
 		jp = j;
 		cc = c;
 		delegate = null;
 	}
 	
 	//Middle circle
-	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ArrayList<ChargingStick> d, Stack<Integer> s){
+	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ArrayList<ChargingStick> d, Stack<String> s, String da){
+		name = da;
 		jp = j;
 		cc = c;
 		delegate = d;
 		data = s;
+		dataCount = s.size();
 	}
 	
 	public void run(){
 		ArrayList<ChargingCircleThread> cct = null;
 		ArrayList<ChargingStickThread> cst = null;
+		
+		cc.label = name;
+		
 		if(delegate != null){
 			cct = new ArrayList<ChargingCircleThread>();
 			cst = new ArrayList<ChargingStickThread>();
+
 			for(ChargingStick c : delegate){
-				cct.add(new ChargingCircleThread(jp, c.out));
-				cst.add(new ChargingStickThread(jp, c));
+				ChargingCircleThread nico = new ChargingCircleThread(jp, c.out, data.pop());
+				ChargingStickThread charge = new ChargingStickThread(jp, c);
 			}
-			
-			while(!data.empty()){
+			int i=0;
+			while(i <= dataCount){
 				
+				int m = 1;
+				while (m==1) {
+					for (ChargingCircleThread a : cct) {
+						if (a.getState() == State.TERMINATED) {
+							m=0;
+						}
+						if (m==0) {
+							break;
+						}
+					}
+				}
+				i++;
 			}
-		}
-		
-		
-		for (int i = 0; i <= dataCount; i++){
 			cc.updateProgress(i*(100/dataCount));
 			jp.repaint();
 			try{
@@ -54,8 +70,24 @@ public class ChargingCircleThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+		
+		else {
+			for (int i = 0; i <= 100; i++){
+				cc.updateProgress(i);
+				jp.repaint();
+				try{
+					Thread.sleep(15);
+				} catch (InterruptedException e){
+				e.printStackTrace();
+				}
+			}
+		}
+		
 		//stick1();
 		//cc.updateProgress(0);
+		
+		cc.label = "";
+		
 	}
 	
 	public boolean addData(int d){
