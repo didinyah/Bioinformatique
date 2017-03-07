@@ -1,22 +1,11 @@
 package mainpackage.Chargement;
 
 import java.awt.*;
-import java.awt.MultipleGradientPaint.CycleMethod;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 
-import javax.swing.JPanel;
-
-import com.sun.javafx.geom.Ellipse2D;
 
 /* 
  * Classe Chargement
@@ -25,11 +14,19 @@ import com.sun.javafx.geom.Ellipse2D;
  */
 
 public class Chargement extends Frame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static void main(String[] args){
+		@SuppressWarnings("unused")
 		Chargement  c = new Chargement();
+		c.send("Virus");
 	}
 	
 	private Frame mainFrame;
+	private GlobalJPanel panel;
 	
 	public Chargement(){
 		prepareGUI();
@@ -46,6 +43,7 @@ public class Chargement extends Frame{
 		
 		final GlobalJPanel gjp = new GlobalJPanel(mainFrame.getWidth(), mainFrame.getHeight());
 		mainFrame.add(gjp);
+		panel = gjp;
 		gjp.startCharging();
 		
 		mainFrame.addComponentListener(new ComponentAdapter() 
@@ -55,5 +53,10 @@ public class Chargement extends Frame{
 	        }
 		});
 		mainFrame.setVisible(true);  
+	}
+	
+	//Fonction qui récupère les catégories du chargement
+	public void send(String s){
+		panel.setElement(s);
 	}
 }

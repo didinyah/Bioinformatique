@@ -1,18 +1,15 @@
 package mainpackage.Chargement;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.RadialGradientPaint;
-import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Point2D;
-
-import javax.swing.JPanel;
 
 /*
  * 
@@ -33,6 +30,8 @@ public class ChargingCircle {
 	protected int inPosY;
 	protected int outPosX;
 	protected int outPosY;
+	
+	protected String label = "";
 	
 	public ChargingCircle (float lo, float la, float c, float c2) {
 		fW = (int)lo;
@@ -75,6 +74,7 @@ public class ChargingCircle {
 	   g.fill(arc);
 
 	   g.translate(-r/2, -r/2);
+
 	   // Couleur du centre
        g.setColor(Color.BLUE);
        g.fillOval(0, 0, r, r);
@@ -132,6 +132,12 @@ public class ChargingCircle {
 	   g.translate(-pSize/2, -pSize/2);
 	   
 	   g.translate((this.fW/2), (this.fH/2)-r/2-2);
+	   
+	   //Texte du cercle
+	   g.setColor(Color.WHITE);
+	   g.setFont(new Font("Verdana", Font.BOLD, r/5));
+	   g.drawString(label, -6, r-20);
+	   
 	   g.rotate(-Math.toRadians(arc.getAngleExtent()), pSize/2, pSize*2);
 	   p = new RadialGradientPaint(new Point2D.Double(pSize/2, pSize/2), 
 			   pSize,
