@@ -34,16 +34,18 @@ public class TreeGestion {
 		organisms.addAll(viruses.organisms());
 		
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Genomes");
-		DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-		
-		JCheckBoxTree mainTree = new JCheckBoxTree();
 		
 		for(Organism o : organisms){
-			o.updateTree(mainTree);
+			o.updateTree(rootNode);
 		}
-
+		
+		JCheckBoxTree mainTree = new JCheckBoxTree();
+		DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+		mainTree.setModel(treeModel);
 		return mainTree;
 	}
+	
+	
 	
 	public static void main(String[] args) throws Exception {
 		JCheckBoxTree test = TreeGestion.construct();

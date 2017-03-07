@@ -1,6 +1,7 @@
 package mainpackage;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -46,7 +47,7 @@ public class Organism {
 		}
 	}
 	
-	// Cr�� l'arborescence avec les organismes trait�s (kingom, group et subgroup)
+	/* Cr�� l'arborescence avec les organismes trait�s (kingom, group et subgroup)
 	
 	public void updateTree(JCheckBoxTree mainT){
 		DefaultMutableTreeNode kingdomT;
@@ -71,6 +72,53 @@ public class Organism {
 		if(mainT.contains(groupT, this.subgroup) != null){
 			subgroupT = mainT.contains(groupT, this.subgroup);
 		} else {
+			subgroupT = new DefaultMutableTreeNode(this.subgroup);
+			groupT.add(subgroupT);
+		}
+		
+		DefaultMutableTreeNode nameOrg = new DefaultMutableTreeNode(this.name);
+		subgroupT.add(nameOrg);
+	}
+	*/
+	
+	public void updateTree(DefaultMutableTreeNode mainT){
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)mainT.getRoot();
+		
+		//Récupération ou création du royaume
+		DefaultMutableTreeNode kingdomT = null;
+		for (Enumeration e = root.breadthFirstEnumeration(); e.hasMoreElements() && kingdomT == null;) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            if (node.toString() == this.kingdom) {
+            	kingdomT = node;
+            }
+        }
+		if(kingdomT == null){
+			kingdomT = new DefaultMutableTreeNode(this.kingdom);
+			root.add(kingdomT);
+		}
+
+		//Récupération ou création du groupe
+		DefaultMutableTreeNode groupT = null;
+		for (Enumeration e = kingdomT.breadthFirstEnumeration(); e.hasMoreElements() && groupT == null;) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            if (node.toString() == this.group) {
+            	groupT = node;
+            }
+        }
+		if(groupT == null){
+			groupT = new DefaultMutableTreeNode(this.group);
+			kingdomT.add(groupT);
+		}
+		
+		//Récupération ou création du sous-groupe
+		DefaultMutableTreeNode subgroupT = null;
+		for (Enumeration e = groupT.breadthFirstEnumeration(); e.hasMoreElements() && subgroupT == null;) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            if (node.toString() == this.subgroup) {
+            	subgroupT = node;
+            }
+        }
+		if(subgroupT == null){
 			subgroupT = new DefaultMutableTreeNode(this.subgroup);
 			groupT.add(subgroupT);
 		}
