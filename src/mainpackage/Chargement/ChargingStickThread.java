@@ -4,24 +4,24 @@ public class ChargingStickThread extends Thread {
 	private GlobalJPanel jp;
 	private int dataCount;
 	private ChargingStick cs;
+	protected ChargingCircleThread parent;
 	
-	public ChargingStickThread(GlobalJPanel j, ChargingStick c){
+	public ChargingStickThread(GlobalJPanel j, ChargingStick c, ChargingCircleThread p){
 		jp = j;
 		cs = c;
+		parent = p;
 	}
 	
 	public void run(){
-		for (int i = 0; i <= dataCount; i++){
-			//cc.updateProgress(i*(100/dataCount));
+		for (int i = 0; i <= 100; i++){
+			cs.updateProgress(i);
 			jp.repaint();
 			try{
-				//Récupération des données ici
-				Thread.sleep(2000);
+				Thread.sleep(10);
 			} catch (InterruptedException e){
 				e.printStackTrace();
 			}
 		}
-		//stick1(s);
-		//cc.updateProgress(0);
+		parent.enterData();
 	}
 }

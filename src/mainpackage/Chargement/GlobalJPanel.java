@@ -190,29 +190,24 @@ public class GlobalJPanel extends JPanel{
 	//Fonctions qui selon l'élément en train d'être chargé changent le texte des cercles
 	public void setElement(String s){
 		if(s.equals("Virus")){
-			//circles.get(2).label = s;
 			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
 			a.add(lines.get(0));
 			a.add(lines.get(1));
 			
-			//ChargingCircleThread c = new ChargingCircleThread(this, circles.get(2), a, new Stack<String>(), s.getKingdom());
-			//threads.put(s, c);
-			//c.start();
-			
-			repaint();
+			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(2), a, new Stack<String>(), s);
+			threads.put(s, c);
+			c.start();
 		}
 	}
 	
 	public void setElement(Organism s){
 		if(s.equals("Virus")){
-			//circles.get(2).label = s.getKingdom();
-			//threads.get(s).addStack(s.getKingdom());
-			repaint();
+			threads.get(s).addStack(s.getName());
 		}
 	}
 	
 	//Le début de l'animation se fait là
-	public void startCharging(){
+	public void startCharging2(){
 		new Thread(new Runnable(){
 			public void run(){
 				int centerCounter = 0;
@@ -258,10 +253,11 @@ public class GlobalJPanel extends JPanel{
 		}).start();
 	}
 	
-	public void startCharging2(){
+	public void startCharging(){
 		new Thread(new Runnable(){
 			public void run(){
 				//Compteur du cercle central
+				
 				int centerCounter = 0;
 				while(centerCounter < 100){
 					

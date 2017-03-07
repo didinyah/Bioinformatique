@@ -25,6 +25,14 @@ public class Chargement extends Frame{
 		@SuppressWarnings("unused")
 		Chargement  c = new Chargement();
 		c.send("Virus");
+		Organism o = new Organism();
+		o.setKingdom("Virus");
+		o.setName("Virus1");
+		Organism o2 = new Organism();
+		o2.setKingdom("Virus");
+		o2.setName("Virus2");
+		c.send(o);
+		c.send(o2);
 	}
 	
 	private Frame mainFrame;

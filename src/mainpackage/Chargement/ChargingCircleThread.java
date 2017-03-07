@@ -4,99 +4,112 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class ChargingCircleThread extends Thread {
+	//Attributs communs
 	private GlobalJPanel jp;
-	private int dataCount;
 	private ChargingCircle cc;
-	private Stack<String> data;
 	private int currentProgress = 0;
-	protected boolean ready = true;
-	private ArrayList<ChargingStick> delegate;
-	private String name;
+	private String name = null;
+	private int dataDone = 0;
 	
-	//OuterCircle
-	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, String da){
-		name = da;
+	//Attributs pour MiddleCircle
+	private Stack<String> data;
+	private ArrayList<ChargingStick> delegate;
+	
+	//Attributs pour OuterCircle
+	private ChargingStickThread sT;
+	protected boolean ready = true;
+	
+	//Attributs pour rien
+	private int dataCount = 10;
+	
+	
+	//Constructor OuterCircle
+	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ChargingStickThread t){
 		jp = j;
 		cc = c;
 		delegate = null;
+		sT = t;
 	}
 	
-	//Middle circle
+	//Constructor MiddleCircle
 	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ArrayList<ChargingStick> d, Stack<String> s, String da){
 		name = da;
 		jp = j;
 		cc = c;
 		delegate = d;
 		data = s;
-		dataCount = s.size();
 	}
 	
 	public void run(){
 		ArrayList<ChargingCircleThread> cct = null;
 		ArrayList<ChargingStickThread> cst = null;
 		
-		cc.label = name;
+		if(name == null)
+			cc.label =  "";
+		else
+			cc.label = name;
 		
+		//Si c'est un MiddleCircle
 		if(delegate != null){
 			cct = new ArrayList<ChargingCircleThread>();
-			cst = new ArrayList<ChargingStickThread>();
 
 			for(ChargingStick c : delegate){
-				ChargingCircleThread nico = new ChargingCircleThread(jp, c.out, data.pop());
-				ChargingStickThread charge = new ChargingStickThread(jp, c);
+				cct.add(new ChargingCircleThread(jp, c.out, new ChargingStickThread(jp, c, this)));
 			}
+			
+			for(ChargingCircleThread c : cct){
+				c.start();
+			}
+			
 			int i=0;
 			while(i <= dataCount){
-				
-				int m = 1;
-				while (m==1) {
-					for (ChargingCircleThread a : cct) {
-						if (a.getState() == State.TERMINATED) {
-							m=0;
-						}
-						if (m==0) {
-							break;
+				if(!data.empty()){
+					boolean m = true;
+					while (m) {
+						for (ChargingCircleThread a : cct) {
+							if (a.ready) {
+								m=false;
+								a.name = data.pop();
+								break;
+							}
 						}
 					}
+					i++;
 				}
-				i++;
-			}
-			cc.updateProgress(i*(100/dataCount));
-			jp.repaint();
-			try{
-				//Récupération des données ici
-				Thread.sleep(2000);
-			} catch (InterruptedException e){
-				e.printStackTrace();
 			}
 		}
-		
+		//Si c'est un OuterCircle
 		else {
-			for (int i = 0; i <= 100; i++){
-				cc.updateProgress(i);
-				jp.repaint();
-				try{
-					Thread.sleep(15);
-				} catch (InterruptedException e){
-				e.printStackTrace();
+			while(true){
+				if(name != null){
+					ready = false;
+					cc.label = name;
+					for (int i = 0; i <= 100; i++){
+						cc.updateProgress(i);
+						jp.repaint();
+						try{
+							Thread.sleep(40);
+						} catch (InterruptedException e){
+							e.printStackTrace();
+						}
+					}
+					sT.start();
+					name = null;
+					ready = true;
 				}
 			}
 		}
-		
-		//stick1();
-		//cc.updateProgress(0);
 		
 		cc.label = "";
-		
 	}
 	
-	public boolean addData(int d){
-		cc.updateProgress(d);
+	public void addStack(String g){
+		data.push(g);
+	}
+	
+	public void enterData(){
+		dataDone++;
+		cc.updateProgress(dataDone*(100/dataCount));
 		jp.repaint();
-		
-		if(d >= 100)
-			return false;
-		else
-			return true;
 	}
 }
