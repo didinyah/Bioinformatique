@@ -6,10 +6,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.JPanel;
 
 public class GlobalJPanel extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int fW;
 	private int fH;
 	
@@ -18,6 +23,14 @@ public class GlobalJPanel extends JPanel{
 	private ArrayList<ChargingStick> lines;
 	
 	public static int stickSpeed = 100;
+	public static int stickWait = 5;
+	public static int circleWait = 10;
+	
+	private int dataCountCircle3 = 0;
+	private int dataCountCircle6 = 0;
+	private int dataCountCenterCircle = 0;
+	
+	private GlobalJPanel jpanel;
 	
 	public GlobalJPanel(int lo, int la){
 		fW = lo;
@@ -27,6 +40,7 @@ public class GlobalJPanel extends JPanel{
 		lines = new ArrayList<ChargingStick>();
 		cc = new CenterCircle(lo,la);
 		createCirclesAndLines();
+		jpanel = this;
 	}
 	
 	public void paintComponent(Graphics g){
@@ -168,24 +182,56 @@ public class GlobalJPanel extends JPanel{
         repaint();
 	}
 	
+	//Fonction qui selon l'élément en train d'être chargé change le texte des cercles
+	public void setElement(String s){
+		if(s.equals("Virus")){
+			circles.get(2).label = s;
+			repaint();
+		}
+	}
+	
 	//Le début de l'animation se fait là
 	public void startCharging(){
 		new Thread(new Runnable(){
 			public void run(){
-				for(int i = 1; i <= 100; i++){
-					try {
-						cc.updateProgress(i);
-						for(ChargingCircle c : circles){
-							c.updateProgress(i);
+				int centerCounter = 0;
+				while(centerCounter < 100){
+					int midCounter = 0;
+					while(midCounter < 100){
+						for (int i = 0; i <= stickSpeed; i++){
+							lines.get(0).out.updateProgress(i);
+							lines.get(1).out.updateProgress(i);
+							repaint();
+							try{
+								Thread.sleep(circleWait);
+							} catch (InterruptedException e){
+							e.printStackTrace();
+							}
 						}
-						for(ChargingStick s : lines){
-							s.updateProgress(i);
+						for (int i = 0; i <= stickSpeed; i++){
+							lines.get(0).updateProgress(i);
+							lines.get(1).updateProgress(i);
+							repaint();
+							try{
+								Thread.sleep(stickWait);
+							} catch (InterruptedException e){
+								e.printStackTrace();
+							}
 						}
-						repaint();
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+						midCounter+=25;
+						lines.get(0).in.updateProgress(midCounter);
 					}
+					for (int i = 0; i <= stickSpeed; i++){
+						lines.get(4).updateProgress(i);
+						repaint();
+						try{
+							Thread.sleep(stickWait);
+						} catch (InterruptedException e){
+							e.printStackTrace();
+						}
+					}
+					centerCounter+=50;
+					cc.updateProgress(centerCounter);
 				}
 			}
 		}).start();
