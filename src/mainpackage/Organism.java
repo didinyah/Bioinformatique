@@ -3,6 +3,10 @@ package mainpackage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import Windows.JCheckBoxTree;
+
 
 public class Organism {
 	private String kingdom;
@@ -44,32 +48,35 @@ public class Organism {
 	
 	// Créé l'arborescence avec les organismes traités (kingom, group et subgroup)
 	
-	public void updateTree(Tree mainT){
-		Tree kingdomT;
-		Tree groupT;
-		Tree subgroupT;
-		if(mainT.contains(this.kingdom)){
-			kingdomT = (Tree)mainT.get(this.kingdom);
+	public void updateTree(JCheckBoxTree mainT){
+		DefaultMutableTreeNode kingdomT;
+		DefaultMutableTreeNode groupT;
+		DefaultMutableTreeNode subgroupT;
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)mainT.getModel().getRoot();
+		
+		if(mainT.contains(root, this.kingdom)!= null){
+			kingdomT = mainT.contains(root, this.kingdom);
 		} else {
-			kingdomT = new Tree<Tree>();
-			mainT.add(this.kingdom, kingdomT);
+			kingdomT = new DefaultMutableTreeNode(this.kingdom);
+			root.add(kingdomT);
 		}
 		
-		if(kingdomT.contains(this.group)){
-			groupT = (Tree)kingdomT.get(this.group);
+		if(mainT.contains(kingdomT, this.group)!= null){
+			groupT = mainT.contains(kingdomT, this.group);
 		} else {
-			groupT = new Tree<Tree>();
-			kingdomT.add(this.group, groupT);
+			groupT = new DefaultMutableTreeNode(this.group);
+			kingdomT.add(groupT);
 		}
 		
-		if(groupT.contains(this.subgroup)){
-			subgroupT = (Tree)groupT.get(this.subgroup);
+		if(mainT.contains(groupT, this.subgroup) != null){
+			subgroupT = mainT.contains(groupT, this.subgroup);
 		} else {
-			subgroupT = new Tree<Organism>();
-			groupT.add(this.subgroup, subgroupT);
+			subgroupT = new DefaultMutableTreeNode(this.subgroup);
+			groupT.add(subgroupT);
 		}
 		
-		subgroupT.add(this.name, this);
+		DefaultMutableTreeNode nameOrg = new DefaultMutableTreeNode(this.name);
+		subgroupT.add(nameOrg);
 	}
 
 	@Override
