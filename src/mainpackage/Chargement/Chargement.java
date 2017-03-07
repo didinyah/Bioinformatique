@@ -6,6 +6,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import mainpackage.Organism;
+
 
 /* 
  * Classe Chargement
@@ -56,6 +58,10 @@ public class Chargement extends Frame{
 	}
 	
 	//Fonction qui récupère les catégories du chargement
+	public void send(Organism s){
+		panel.setElement(s);
+	}
+	
 	public void send(String s){
 		panel.setElement(s);
 	}
