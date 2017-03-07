@@ -6,9 +6,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Stack;
 
 import javax.swing.JPanel;
+
+import mainpackage.Organism;
 
 public class GlobalJPanel extends JPanel{
 	/**
@@ -21,6 +24,8 @@ public class GlobalJPanel extends JPanel{
 	private CenterCircle cc;
 	private ArrayList<ChargingCircle> circles;
 	private ArrayList<ChargingStick> lines;
+	
+	private Hashtable<String, ChargingCircleThread> threads = new Hashtable<String, ChargingCircleThread>();
 	
 	public static int stickSpeed = 100;
 	public static int stickWait = 5;
@@ -182,10 +187,26 @@ public class GlobalJPanel extends JPanel{
         repaint();
 	}
 	
-	//Fonction qui selon l'élément en train d'être chargé change le texte des cercles
+	//Fonctions qui selon l'élément en train d'être chargé changent le texte des cercles
 	public void setElement(String s){
 		if(s.equals("Virus")){
-			circles.get(2).label = s;
+			//circles.get(2).label = s;
+			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
+			a.add(lines.get(0));
+			a.add(lines.get(1));
+			
+			//ChargingCircleThread c = new ChargingCircleThread(this, circles.get(2), a, new Stack<String>(), s.getKingdom());
+			//threads.put(s, c);
+			//c.start();
+			
+			repaint();
+		}
+	}
+	
+	public void setElement(Organism s){
+		if(s.equals("Virus")){
+			//circles.get(2).label = s.getKingdom();
+			//threads.get(s).addStack(s.getKingdom());
 			repaint();
 		}
 	}
@@ -235,5 +256,18 @@ public class GlobalJPanel extends JPanel{
 				}
 			}
 		}).start();
+	}
+	
+	public void startCharging2(){
+		new Thread(new Runnable(){
+			public void run(){
+				//Compteur du cercle central
+				int centerCounter = 0;
+				while(centerCounter < 100){
+					
+					cc.updateProgress(centerCounter);
+				}
+			}
+		});
 	}
 }

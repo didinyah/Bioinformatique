@@ -68,7 +68,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 	public void readAllPages(){
 		this.currentPage = 1;
 		boolean cont = true;
-		while(cont) {
+		while(cont && currentPage < 5) {
 			try{
 				List<Organism> result = retryer.call(this.pageCallable);
 				if(result == null){
@@ -80,6 +80,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 				e.printStackTrace();
 				System.exit(1);
 			}
+			//TODO : Envoyer ici la page qu'on lit en ce moment au chargement
 			System.out.println(this.type.toString()+ " page : "+ this.currentPage);
 			currentPage ++;
 		}
@@ -144,6 +145,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 					String[] repliconIDs = replicon.select("a").text().split(" ");
 					String repliconID = "";
 					boolean validRepliconFound = false;
+					// TODO : Check si on garde MT, CL et CH
 					for(String rID : repliconIDs) {
 						if(rID.startsWith("NC") ||
 						   rID.startsWith("MT") ||
