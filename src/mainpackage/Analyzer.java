@@ -1,7 +1,5 @@
 package mainpackage;
 
-import jdk.nashorn.internal.runtime.ECMAException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -13,26 +11,31 @@ import java.util.regex.Pattern;
  */
 public class Analyzer {
 
+    public static String extractContentLine(String contentLine) throws Exception {
+        // Extrait d'une ligne de content les infos utiles
+        Pattern p1 = Pattern.compile("^ *([0-9]+) (.*)$");
+        Matcher m1 = p1.matcher(contentLine);
+        if(m1.find()){
+            int position = Integer.parseInt(m1.group(1));
+            String tmpgene = m1.group(2);
+            Pattern p2 = Pattern.compile(" ");
+            String[] items = p2.split(tmpgene);
+            if(items.length >0){
+                String res = ""; // le cas générique
+                for ( String item : items){
+                    res += item;
+                }
+                return res;
+            }else if(items.length ==0 && tmpgene.length() > 0 ){
+                return tmpgene; // le cas ou il y a juste un morceau de moin de 10 char de gene
+            }else{
+                throw new Exception();
+            }
 
-
-    // On définit la liste de Borne (c'est un couple private classe définit en bas)
-    private List<Borne> listBorne = new ArrayList<Borne>();
-
-    public List<Borne> getListBorne() {
-        return listBorne;
+        }else{
+            throw new Exception();
+        }
     }
-
-    public void addListBorne(Borne b){
-        listBorne.add(b);
-    }
-
-    public void addListBorne(int inf, int sup){
-        Borne b = new Borne();
-        b.setBorninf(inf);
-        b.setBornsup(sup);
-        listBorne.add(b);
-    }
-
     // TODO (à voir) FONCTION VERIFIANT QUE LA LIST TRIE et QUI LA TRIE OU ADDLISTBORN DOIT AJOUTER DE MANIERE TRIE
 
     public static boolean checkString (String string1, String string2){
@@ -50,41 +53,11 @@ public class Analyzer {
     }
 
     public static boolean checkCodonInit (String line){
-        ArrayList<String> list = new ArrayList<String>();
-        boolean b = true;
-        for (int i=0; i<list.size();i++){
-            for (int j=0; j<list.get(i).length();j++){
-                if (line.charAt(j)!= list.get(i).charAt(j)){
-                    b = false;
-                }
-                if (b==true){
-                    return true;
-                }
-                else{
-                    b = true;
-                }
-            }
-        }
-        return false;
+        return Utils.getListOfCodonInit().contains(line);
     }
 
     public static boolean checkCodonStop (String line){
-        ArrayList<String> list = new ArrayList<String>();
-        boolean b = true;
-        for (int i=0; i<list.size();i++){
-            for (int j=0; j<list.get(i).length();j++){
-                if (line.charAt(j)!= list.get(i).charAt(j)){
-                    b = false;
-                }
-                if (b){
-                    return true;
-                }
-                else{
-                    b = true;
-                }
-            }
-        }
-        return false;
+        return Utils.getListOfCodonStop().contains(line);
     }
 
     public static boolean checkCorrectChar (char c){
@@ -121,7 +94,58 @@ public class Analyzer {
         }
         return true;
     }
+    // Voir si il faut bien checker les codons init et stop
+    public static void countTrinFromString(String content, Trinucleotide current, int phase) throws Exception{
+    	if(content.length()%3==0){
+	    	Pattern p = Pattern.compile("([a|t|c|g][a|t|c|g][a|t|c|g])"); //permet de savoir si il y a autre chose que a c g t
+	        Matcher m = p.matcher(content);
+            int countMatches = 0;
+            Trinucleotide tmpTri = new Trinucleotide();
+            String first = "";
+            String last = "";
+            while (m.find()) {
+                // On affecte le premier
+                if(countMatches==0){
+                    first = m.group();
+                }
+                //On affecte le dernier
+                last = m.group();
 
+                countMatches++;
+                tmpTri.addTriN(m.group(),1,phase);
+            }
+
+            if((checkCodonInit(first) && checkCodonStop(last) && phase == 0) || (phase == 1 || phase == 2) ){ // on ne vérife pas pour les phases 1 et 2
+                if(countMatches*3==content.length()){
+                    current.fusion(tmpTri,phase);
+                }else{
+                    throw new Exception("Group size is not multiple of 3 (found error in symbol)");
+                }
+            }else{
+                throw new Exception("Codont init or codont stop is not present");
+            }
+
+    	}else{
+    		throw new Exception("Length not multiple of 3");
+    	}
+    }
+    // Fonction importante permertant de calculer les 3 phases d'un trinucléotide
+    public static void countTrinIn3PhasesFromString(String str,Trinucleotide current) throws Exception {
+        // Todo vérifier comment on phases un str
+        // Ne verifie rien car la fonction qu'on utilisera throw des exceptions
+
+        Pattern p1 = Pattern.compile("^(.)(.*)$");
+        Matcher m1 = p1.matcher(str);
+        Pattern p2 = Pattern.compile("^(..)(.*)$");
+        Matcher m2 = p2.matcher(str);
+        if(m1.find() && m2.find()){
+            countTrinFromString(str,current,0);
+            countTrinFromString(m1.group(2)+m1.group(1),current,1);
+            countTrinFromString(m2.group(2)+m2.group(1),current,2);
+        }else{
+            throw new Exception();
+        }
+    }
 
      /*
      * Calcule le nombre de caractères à récupérer pour utiliser la méthode substring
@@ -130,7 +154,7 @@ public class Analyzer {
     	return (sup-inf);
     }
 
-    /* TODO
+    /*
      * Fonction qui permet de join plusieurs chaines de caractères
      * join([string1,string2,string3,...], string_global)
      * chaque string doit être de la forme d'un intervalle : int..int
@@ -140,7 +164,7 @@ public class Analyzer {
      * utiliser substring
      *
      */
-    public static List<Borne> join (String global_string) throws Exception {
+    public static List<Borne> join (String global_string) throws Exceptions.ExceptionCds {
         List<Borne> listTmp = new ArrayList<Borne>();
         Pattern p = Pattern.compile("join\\((.*)\\)");
         Matcher m = p.matcher(global_string);
@@ -162,7 +186,7 @@ public class Analyzer {
             }
 
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionCds();
         }
         return listTmp;
     }
@@ -180,7 +204,7 @@ public class Analyzer {
     *    Rien d'autres
     *    TODO vérifier les expections génèré sont-elles les bonnes ?
     */
-    public static Borne stringToBorne(String it) throws Exception {
+    public static Borne stringToBorne(String it) throws Exceptions.ExceptionCds {
     // Prend un string de type int..int et renvoie une Borne en vérifiant si tout est bon
         Pattern p = Pattern.compile("^([0-9]+)\\.\\.([0-9]+)$");
         Matcher m = p.matcher(it);
@@ -195,18 +219,18 @@ public class Analyzer {
                     b.setBornsup(suptmp);
                     return b;
                 }else{
-                    throw new Exception();
+                    throw new Exceptions.ExceptionCds();
                 }
             }else{
-                throw new Exception();
+                throw new Exceptions.ExceptionCds();
             }
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionCds();
         }
 
     }
 
-    public static List<Borne> cdsToBornes(String cdsLine) throws Exception {
+    public static List<Borne> cdsToBornes(String cdsLine) throws Exceptions.ExceptionCds {
         Pattern p = Pattern.compile(" *CDS +(.*)");
         Matcher m = p.matcher(cdsLine);
         if(m.find()){
@@ -231,7 +255,7 @@ public class Analyzer {
                             }
                             return joinList;
                         }else{
-                            throw new Exception();
+                            throw new Exceptions.ExceptionCds();
                         }
                     }else{
                         Borne b = stringToBorne(strToExtract);
@@ -255,7 +279,7 @@ public class Analyzer {
                             }
                             return joinList;
                         }else{
-                            throw new Exception();
+                            throw new Exceptions.ExceptionCds();
                         }
                     }else{
                         Borne b = stringToBorne(strToExtract);
@@ -265,10 +289,10 @@ public class Analyzer {
                     }
                 }
             }else{
-                throw new Exception();
+                throw new Exceptions.ExceptionCds();
             }
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionCds();
         }
     }
 
@@ -328,7 +352,7 @@ public class Analyzer {
         return fullLine;
     }
 
-    private static class Borne {
+    public static class Borne {
 
         private Integer borninf;
         private Integer bornsup;

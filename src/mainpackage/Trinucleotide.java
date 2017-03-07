@@ -11,21 +11,37 @@ public class Trinucleotide extends Nucleotide{
 	
 	public Trinucleotide(){
 		
-		HashMap<String, Integer> HMAP = this.getHMAP();
+		HashMap<String, Integer> HMAP0 = this.getHMAP0();
+		HashMap<String, Integer> HMAP1 = this.getHMAP1();
+		HashMap<String, Integer> HMAP2 = this.getHMAP2();
 		
 		
 		for (String temp : Utils.getListOfTriNucleotide()) {
-			HMAP.put(temp, 0);
+			HMAP0.put(temp, 0);
+			HMAP1.put(temp, 0);
+			HMAP2.put(temp, 0);
 		}
 		
 	}
 	
 	
 
-	public void addTriN(String triN,int i){
-		HashMap<String, Integer> HMAP = this.getHMAP();
-		HMAP.put(triN,1+HMAP.get(triN));
-		
+	public void addTriN(String triN,int i, int phase){
+		HashMap<String, Integer> HMAP = null;
+		switch(phase){
+		case 0:
+			HMAP = getHMAP0();
+			break;
+		case 1:
+			HMAP = getHMAP1();
+			break;
+		case 2:
+			HMAP = getHMAP2();
+			break;
+		default:
+			HMAP = getHMAP0();
+		}
+		HMAP.put(triN,i+HMAP.get(triN));	
 	}
 	
 	// Remove ? 
