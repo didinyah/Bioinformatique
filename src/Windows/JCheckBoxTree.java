@@ -75,19 +75,6 @@ public class JCheckBoxTree extends JTree {
             }
         }
     }
-    
-    public DefaultMutableTreeNode contains(DefaultMutableTreeNode level, String nodeString) {
-    	DefaultMutableTreeNode res = null;
-    	
-        for (Enumeration e = level.breadthFirstEnumeration(); e.hasMoreElements() && res == null;) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            if (node.toString() == nodeString) {
-                res = node;
-            }
-        }
-        return res;
-    }
-    
 
     // Override
     public void setModel(TreeModel newModel) {

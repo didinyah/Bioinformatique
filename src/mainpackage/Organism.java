@@ -85,39 +85,21 @@ public class Organism {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)mainT.getRoot();
 		
 		//Récupération ou création du royaume
-		DefaultMutableTreeNode kingdomT = null;
-		for (Enumeration e = root.breadthFirstEnumeration(); e.hasMoreElements() && kingdomT == null;) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            if (node.toString() == this.kingdom) {
-            	kingdomT = node;
-            }
-        }
+		DefaultMutableTreeNode kingdomT = Organism.containsNode(root, this.kingdom);
 		if(kingdomT == null){
 			kingdomT = new DefaultMutableTreeNode(this.kingdom);
 			root.add(kingdomT);
 		}
 
 		//Récupération ou création du groupe
-		DefaultMutableTreeNode groupT = null;
-		for (Enumeration e = kingdomT.breadthFirstEnumeration(); e.hasMoreElements() && groupT == null;) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            if (node.toString() == this.group) {
-            	groupT = node;
-            }
-        }
+		DefaultMutableTreeNode groupT = Organism.containsNode(kingdomT, this.group);
 		if(groupT == null){
 			groupT = new DefaultMutableTreeNode(this.group);
 			kingdomT.add(groupT);
 		}
 		
 		//Récupération ou création du sous-groupe
-		DefaultMutableTreeNode subgroupT = null;
-		for (Enumeration e = groupT.breadthFirstEnumeration(); e.hasMoreElements() && subgroupT == null;) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            if (node.toString() == this.subgroup) {
-            	subgroupT = node;
-            }
-        }
+		DefaultMutableTreeNode subgroupT = Organism.containsNode(groupT, this.subgroup);
 		if(subgroupT == null){
 			subgroupT = new DefaultMutableTreeNode(this.subgroup);
 			groupT.add(subgroupT);
@@ -126,6 +108,18 @@ public class Organism {
 		DefaultMutableTreeNode nameOrg = new DefaultMutableTreeNode(this.name);
 		subgroupT.add(nameOrg);
 	}
+	
+	public static DefaultMutableTreeNode containsNode(DefaultMutableTreeNode level, String nodeString) {
+    	DefaultMutableTreeNode res = null;
+    	
+        for (Enumeration e = level.breadthFirstEnumeration(); e.hasMoreElements() && res == null;) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            if (node.toString().equals(nodeString)) {
+                res = node;
+            }
+        }
+        return res;
+    }
 
 	@Override
 	public String toString(){
