@@ -201,8 +201,12 @@ public class GlobalJPanel extends JPanel{
 	}
 	
 	public void setElement(Organism s){
-		if(s.equals("Virus")){
-			threads.get(s).addStack(s.getName());
+		if(s.getKingdom().equals("Virus")){
+			if(threads.containsKey(s.getKingdom())){
+				threads.get(s.getKingdom()).addStack(s.getName());
+			}else{
+				System.out.println("Le royaume " + s.getKingdom() + " n'existe pas.");
+			}
 		}
 	}
 	

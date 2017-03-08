@@ -22,8 +22,12 @@ public class Chargement extends Frame{
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args){
-		@SuppressWarnings("unused")
-		Chargement  c = new Chargement();
+		Chargement c = new Chargement();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		c.send("Virus");
 		Organism o = new Organism();
 		o.setKingdom("Virus");
@@ -31,8 +35,22 @@ public class Chargement extends Frame{
 		Organism o2 = new Organism();
 		o2.setKingdom("Virus");
 		o2.setName("Virus2");
+		Organism o3 = new Organism();
+		o3.setKingdom("Virus");
+		o3.setName("Virus3");
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		c.send(o);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		c.send(o2);
+		c.send(o3);
 	}
 	
 	private Frame mainFrame;
