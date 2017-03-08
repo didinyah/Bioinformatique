@@ -1,6 +1,7 @@
 package mainpackage.Chargement;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,6 +11,8 @@ import java.util.Hashtable;
 import java.util.Stack;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import mainpackage.Organism;
 
@@ -18,6 +21,7 @@ public class GlobalJPanel extends JPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	protected JTextArea logFrame;
 	private int fW;
 	private int fH;
 	
@@ -31,13 +35,12 @@ public class GlobalJPanel extends JPanel{
 	public static int stickWait = 5;
 	public static int circleWait = 10;
 	
-	private int dataCountCircle3 = 0;
-	private int dataCountCircle6 = 0;
-	private int dataCountCenterCircle = 0;
+	private int dataCount;
+	private int dataDone = 0;
 	
 	private GlobalJPanel jpanel;
 	
-	public GlobalJPanel(int lo, int la){
+	public GlobalJPanel(int lo, int la, int data, JTextArea log){
 		fW = lo;
 		fH = la;
 		setSize(lo, la);
@@ -46,6 +49,8 @@ public class GlobalJPanel extends JPanel{
 		cc = new CenterCircle(lo,la);
 		createCirclesAndLines();
 		jpanel = this;
+		dataCount = data;
+		logFrame = log;
 	}
 	
 	public void paintComponent(Graphics g){
@@ -188,15 +193,18 @@ public class GlobalJPanel extends JPanel{
 	}
 	
 	//Fonctions qui selon l'élément en train d'être chargé changent le texte des cercles
-	public void setElement(String s){
+	public void setElement(String s, int dataCount){
 		if(s.equals("Virus")){
 			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
 			a.add(lines.get(0));
 			a.add(lines.get(1));
 			
-			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(2), a, new Stack<String>(), s);
+			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(2), lines.get(4), a, new Stack<String>(), s, dataCount);
 			threads.put(s, c);
 			c.start();
+			
+			//logFrame.setFont(new Font("Verdana", Font.BOLD, 15));
+			log("Chargement du royaume \"Virus\"");
 		}
 	}
 	
@@ -210,64 +218,15 @@ public class GlobalJPanel extends JPanel{
 		}
 	}
 	
-	//Le début de l'animation se fait là
-	public void startCharging2(){
-		new Thread(new Runnable(){
-			public void run(){
-				int centerCounter = 0;
-				while(centerCounter < 100){
-					int midCounter = 0;
-					while(midCounter < 100){
-						for (int i = 0; i <= stickSpeed; i++){
-							lines.get(0).out.updateProgress(i);
-							lines.get(1).out.updateProgress(i);
-							repaint();
-							try{
-								Thread.sleep(circleWait);
-							} catch (InterruptedException e){
-							e.printStackTrace();
-							}
-						}
-						for (int i = 0; i <= stickSpeed; i++){
-							lines.get(0).updateProgress(i);
-							lines.get(1).updateProgress(i);
-							repaint();
-							try{
-								Thread.sleep(stickWait);
-							} catch (InterruptedException e){
-								e.printStackTrace();
-							}
-						}
-						midCounter+=25;
-						lines.get(0).in.updateProgress(midCounter);
-					}
-					for (int i = 0; i <= stickSpeed; i++){
-						lines.get(4).updateProgress(i);
-						repaint();
-						try{
-							Thread.sleep(stickWait);
-						} catch (InterruptedException e){
-							e.printStackTrace();
-						}
-					}
-					centerCounter+=50;
-					cc.updateProgress(centerCounter);
-				}
-			}
-		}).start();
+	public void enterData(){
+		dataDone++;
+		cc.updateProgress(dataDone*(100/dataCount));
+		if(dataDone >= dataCount)
+			log("Chargement terminé.");
+		jpanel.repaint();
 	}
 	
-	public void startCharging(){
-		new Thread(new Runnable(){
-			public void run(){
-				//Compteur du cercle central
-				
-				int centerCounter = 0;
-				while(centerCounter < 100){
-					
-					cc.updateProgress(centerCounter);
-				}
-			}
-		});
+	public void log(String s){
+		logFrame.append(s+"\n");
 	}
 }

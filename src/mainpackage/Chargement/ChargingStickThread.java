@@ -12,6 +12,12 @@ public class ChargingStickThread extends Thread {
 		parent = p;
 	}
 	
+	public ChargingStickThread(GlobalJPanel j, ChargingStick c){
+		jp = j;
+		cs = c;
+		parent = null;
+	}
+	
 	public void run(){
 		for (int i = 0; i <= 100; i++){
 			cs.updateProgress(i);
@@ -22,6 +28,9 @@ public class ChargingStickThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		parent.enterData();
+		if(parent != null)
+			parent.enterData();
+		else
+			jp.enterData();
 	}
 }

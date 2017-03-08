@@ -1,5 +1,6 @@
 package mainpackage.Chargement;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -10,18 +11,18 @@ public class ChargingCircleThread extends Thread {
 	private int currentProgress = 0;
 	private String name = null;
 	private int dataDone = 0;
+	private ChargingStick sT;
 	
 	//Attributs pour MiddleCircle
 	private Stack<String> data;
 	private ArrayList<ChargingStick> delegate;
 	
 	//Attributs pour OuterCircle
-	private ChargingStick sT;
 	protected boolean ready = true;
 	private ChargingCircleThread parentThread;
 	
 	//Attributs pour rien pour l'instant
-	private int dataCount = 3;
+	private int dataCount = 0;
 	
 	
 	//Constructor OuterCircle
@@ -34,12 +35,14 @@ public class ChargingCircleThread extends Thread {
 	}
 	
 	//Constructor MiddleCircle
-	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ArrayList<ChargingStick> d, Stack<String> s, String da){
+	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ChargingStick inStick, ArrayList<ChargingStick> d, Stack<String> s, String da, int dC){
 		name = da;
 		jp = j;
 		cc = c;
 		delegate = d;
 		data = s;
+		sT = inStick;
+		dataCount = dC;
 	}
 	
 	public void run(){
@@ -65,8 +68,7 @@ public class ChargingCircleThread extends Thread {
 				c.start();
 			}
 			
-			int i=0;
-			while(i < dataCount){
+			while(dataDone < dataCount){
 				if(!data.empty()){
 					boolean m = true;
 					while (m) {
@@ -77,16 +79,24 @@ public class ChargingCircleThread extends Thread {
 								e.printStackTrace();
 							}
 							if (a.ready) {
-								System.out.println("j");
 								m=false;
+								//jp.logFrame.setFont(new Font("Verdana", Font.PLAIN, 10));
+								jp.log("Chargement du Groupe [Virus]" + data.peek()+".");
 								a.name = data.pop();
 								break;
 							}
 						}
 					}
-					i++;
 				}
 			}
+			
+			//On lance le stick
+			(new ChargingStickThread(jp, sT)).start();
+			
+			jp.log("Royaume \""+cc.label+"\" chargé.");
+			cc.updateProgress(0);
+			cc.label = "";
+			jp.repaint();
 		}
 		//Si c'est un OuterCircle
 		else {
@@ -108,12 +118,16 @@ public class ChargingCircleThread extends Thread {
 							e.printStackTrace();
 						}
 					}
-					
-					//Test
+				
+					//On lance le stick
 					(new ChargingStickThread(jp, sT, parentThread)).start();
 				
 					name = null;
 					ready = true;
+					
+					cc.updateProgress(0);
+					cc.label = "";
+					jp.repaint();
 				}
 			}
 		}
