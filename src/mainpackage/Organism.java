@@ -1,7 +1,12 @@
 package mainpackage;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import Windows.JCheckBoxTree;
 
 
 public class Organism {
@@ -42,35 +47,79 @@ public class Organism {
 		}
 	}
 	
-	// Cr�� l'arborescence avec les organismes trait�s (kingom, group et subgroup)
+	/* Cr�� l'arborescence avec les organismes trait�s (kingom, group et subgroup)
 	
-	public void updateTree(Tree mainT){
-		Tree kingdomT;
-		Tree groupT;
-		Tree subgroupT;
-		if(mainT.contains(this.kingdom)){
-			kingdomT = (Tree)mainT.get(this.kingdom);
+	public void updateTree(JCheckBoxTree mainT){
+		DefaultMutableTreeNode kingdomT;
+		DefaultMutableTreeNode groupT;
+		DefaultMutableTreeNode subgroupT;
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)mainT.getModel().getRoot();
+		
+		if(mainT.contains(root, this.kingdom)!= null){
+			kingdomT = mainT.contains(root, this.kingdom);
 		} else {
-			kingdomT = new Tree<Tree>();
-			mainT.add(this.kingdom, kingdomT);
+			kingdomT = new DefaultMutableTreeNode(this.kingdom);
+			root.add(kingdomT);
 		}
 		
-		if(kingdomT.contains(this.group)){
-			groupT = (Tree)kingdomT.get(this.group);
+		if(mainT.contains(kingdomT, this.group)!= null){
+			groupT = mainT.contains(kingdomT, this.group);
 		} else {
-			groupT = new Tree<Tree>();
-			kingdomT.add(this.group, groupT);
+			groupT = new DefaultMutableTreeNode(this.group);
+			kingdomT.add(groupT);
 		}
 		
-		if(groupT.contains(this.subgroup)){
-			subgroupT = (Tree)groupT.get(this.subgroup);
+		if(mainT.contains(groupT, this.subgroup) != null){
+			subgroupT = mainT.contains(groupT, this.subgroup);
 		} else {
-			subgroupT = new Tree<Organism>();
-			groupT.add(this.subgroup, subgroupT);
+			subgroupT = new DefaultMutableTreeNode(this.subgroup);
+			groupT.add(subgroupT);
 		}
 		
-		subgroupT.add(this.name, this);
+		DefaultMutableTreeNode nameOrg = new DefaultMutableTreeNode(this.name);
+		subgroupT.add(nameOrg);
 	}
+	*/
+	
+	public void updateTree(DefaultMutableTreeNode mainT){
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)mainT.getRoot();
+		
+		//Récupération ou création du royaume
+		DefaultMutableTreeNode kingdomT = Organism.containsNode(root, this.kingdom);
+		if(kingdomT == null){
+			kingdomT = new DefaultMutableTreeNode(this.kingdom);
+			root.add(kingdomT);
+		}
+
+		//Récupération ou création du groupe
+		DefaultMutableTreeNode groupT = Organism.containsNode(kingdomT, this.group);
+		if(groupT == null){
+			groupT = new DefaultMutableTreeNode(this.group);
+			kingdomT.add(groupT);
+		}
+		
+		//Récupération ou création du sous-groupe
+		DefaultMutableTreeNode subgroupT = Organism.containsNode(groupT, this.subgroup);
+		if(subgroupT == null){
+			subgroupT = new DefaultMutableTreeNode(this.subgroup);
+			groupT.add(subgroupT);
+		}
+		
+		DefaultMutableTreeNode nameOrg = new DefaultMutableTreeNode(this.name);
+		subgroupT.add(nameOrg);
+	}
+	
+	public static DefaultMutableTreeNode containsNode(DefaultMutableTreeNode level, String nodeString) {
+    	DefaultMutableTreeNode res = null;
+    	
+        for (Enumeration e = level.breadthFirstEnumeration(); e.hasMoreElements() && res == null;) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            if (node.toString().equals(nodeString)) {
+                res = node;
+            }
+        }
+        return res;
+    }
 
 	@Override
 	public String toString(){

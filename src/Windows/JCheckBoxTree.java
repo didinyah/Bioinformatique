@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -145,6 +146,9 @@ public class JCheckBoxTree extends JTree {
 
     public JCheckBoxTree() {
         super();
+        // On remove le treeModel par défaut en supprimant tous les éléments de la racine
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode)this.getModel().getRoot();
+        root.removeAllChildren();
         // Disabling toggling by double-click
         this.setToggleClickCount(0);
         // Overriding cell renderer by new one defined above

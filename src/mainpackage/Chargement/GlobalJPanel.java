@@ -1,15 +1,27 @@
 package mainpackage.Chargement;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Stack;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import mainpackage.Organism;
 
 public class GlobalJPanel extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected JTextArea logFrame;
 	private int fW;
 	private int fH;
 	
@@ -17,9 +29,18 @@ public class GlobalJPanel extends JPanel{
 	private ArrayList<ChargingCircle> circles;
 	private ArrayList<ChargingStick> lines;
 	
-	public static int stickSpeed = 100;
+	private Hashtable<String, ChargingCircleThread> threads = new Hashtable<String, ChargingCircleThread>();
 	
-	public GlobalJPanel(int lo, int la){
+	public static int stickSpeed = 100;
+	public static int stickWait = 5;
+	public static int circleWait = 10;
+	
+	private int dataCount;
+	private int dataDone = 0;
+	
+	private GlobalJPanel jpanel;
+	
+	public GlobalJPanel(int lo, int la, int data, JTextArea log){
 		fW = lo;
 		fH = la;
 		setSize(lo, la);
@@ -27,6 +48,9 @@ public class GlobalJPanel extends JPanel{
 		lines = new ArrayList<ChargingStick>();
 		cc = new CenterCircle(lo,la);
 		createCirclesAndLines();
+		jpanel = this;
+		dataCount = data;
+		logFrame = log;
 	}
 	
 	public void paintComponent(Graphics g){
@@ -168,26 +192,41 @@ public class GlobalJPanel extends JPanel{
         repaint();
 	}
 	
-	//Le début de l'animation se fait là
-	public void startCharging(){
-		new Thread(new Runnable(){
-			public void run(){
-				for(int i = 1; i <= 100; i++){
-					try {
-						cc.updateProgress(i);
-						for(ChargingCircle c : circles){
-							c.updateProgress(i);
-						}
-						for(ChargingStick s : lines){
-							s.updateProgress(i);
-						}
-						repaint();
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+	//Fonctions qui selon l'élément en train d'être chargé changent le texte des cercles
+	public void setElement(String s, int dataCount){
+		if(s.equals("Virus")){
+			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
+			a.add(lines.get(0));
+			a.add(lines.get(1));
+			
+			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(2), lines.get(4), a, new Stack<String>(), s, dataCount);
+			threads.put(s, c);
+			c.start();
+			
+			//logFrame.setFont(new Font("Verdana", Font.BOLD, 15));
+			log("Chargement du royaume \"Virus\"");
+		}
+	}
+	
+	public void setElement(Organism s){
+		if(s.getKingdom().equals("Virus")){
+			if(threads.containsKey(s.getKingdom())){
+				threads.get(s.getKingdom()).addStack(s.getName());
+			}else{
+				System.out.println("Le royaume " + s.getKingdom() + " n'existe pas.");
 			}
-		}).start();
+		}
+	}
+	
+	public void enterData(){
+		dataDone++;
+		cc.updateProgress(dataDone*(100/dataCount));
+		if(dataDone >= dataCount)
+			log("Chargement terminé.");
+		jpanel.repaint();
+	}
+	
+	public void log(String s){
+		logFrame.append(s+"\n");
 	}
 }
