@@ -143,6 +143,7 @@ public class GestionFichier {
 		boolean CDS_MULTI_LINE = false;
 
 
+
 		BufferedReader br = null;
 		FileReader fr = null;
 
@@ -156,6 +157,20 @@ public class GestionFichier {
 			String reconstructLine = "";
 			List<String> multiLine = new ArrayList<String>();
 
+			// CDS
+			List<Analyzer.Borne> cdsInHeader= new ArrayList<Analyzer.Borne>();
+			boolean multiLineOnCds = false;
+			String cdsStr = "";
+
+			//Trinucléotide var
+			Trinucleotide tttGeneral = new Trinucleotide();
+
+			// important var
+			int contentCount = 1; // Nombre de lettre (init à 1 car on considère qu'on a lu la première)
+			int lastIndexListBorne = 0;
+			int firstContentCount = 0;
+			int lastContentCount= 0;
+
 			// compte TODO delete count in prod ou le sortir en bilan
 			int content_line = 0;
 			int header_line = 0;
@@ -163,7 +178,9 @@ public class GestionFichier {
 			int cds_count = 0;
 			int cds_multi_line_count = 0;
 			int max_cds_size = 0;
-
+			int fail_cds = 0;
+			int fail_content_line =0;
+			int fail_codon = 0;
 			br = new BufferedReader(new FileReader(fileName));
 
 			int r;
@@ -178,16 +195,18 @@ public class GestionFichier {
 					//System.out.println(reconstructLine);
 
 					if(Analyzer.checkInit(reconstructLine) && HEADER){ // TODO checkInit -> isInit
-						// PHASE CONTENT
+						// PHASE DE TRANSITION (en gros juste la LIGNE ORIGIN)
 						HEADER = false;
-						CONTENT = true;
+						CONTENT = false;
 
 					}else if(Analyzer.checkEnd((reconstructLine)) && CONTENT){ // Todo checkEnd -> isEnd
 						// PHASE HEADER
 						HEADER = true;
 						CONTENT = false;
 						block_transition += 1;
-
+						// On vide les cds
+						cdsInHeader.clear();
+						contentCount = 1; // On reset le compteur
 					}
 
 
@@ -202,7 +221,14 @@ public class GestionFichier {
 								cds_multi_line_count += 1;
 								CDS_MULTI_LINE = true;
 							}else{
-								// Todo push cds data
+
+								try {
+									cdsInHeader.addAll(Analyzer.cdsToBornes(reconstructLine));
+								} catch (Exceptions.ExceptionCds exceptionCds) {
+									//exceptionCds.printStackTrace(); // TODO check erreur
+									//System.out.println(reconstructLine);
+									fail_cds += 1;
+								}
 							}
 						}
 
@@ -220,13 +246,16 @@ public class GestionFichier {
 							CDS_MULTI_LINE = false;
 							try {
 								String tmpcds = Analyzer.cdsMultiLineToString(multiLine);
-								System.out.println(tmpcds);
+								cdsInHeader.addAll(Analyzer.cdsToBornes(tmpcds));
+
+							} catch (Exceptions.ExceptionCds exceptionCds) {
+								//exceptionCds.printStackTrace(); // TODO check erreur
+								fail_cds += 1;
 							} catch (Exception e) {
 								// TODO gestion de l'erreur
 								e.printStackTrace();
 							}
 							multiLine.clear();
-							// Todo push cds data
 						}
 
 
@@ -239,9 +268,58 @@ public class GestionFichier {
 						// TODO on calcul les pref  (ANALYZER)
 						// Si on stock tout les HMAP on peut faire post processing
 						// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
+
+						if(cdsInHeader.size()  > lastIndexListBorne) {
+							Analyzer.Borne lastBorne = cdsInHeader.get(lastIndexListBorne);
+
+							System.out.println(lastBorne + "               :  "+ contentCount);
+							if(lastBorne.getBorninf() >= contentCount && lastBorne.getBorninf() <=contentCount+60){
+								multiLineOnCds = true; // on a trouvé le premier cds on va extraire les lignes
+								System.out.println("found");
+								firstContentCount = contentCount;
+							}
+
+							if(multiLineOnCds){
+								try {
+									cdsStr+= Analyzer.extractContentLine(reconstructLine);
+								} catch (Exceptions.ExceptionPatternLine e) {
+									fail_content_line+=1;
+
+								}
+							}
+							if(lastBorne.getBornsup() >= contentCount && lastBorne.getBornsup() <= contentCount+60){
+								multiLineOnCds = false;  // on termine on a tout extrait
+								lastIndexListBorne += 1; // On regarde la borne suivante
+								System.out.println(cdsStr);
+								lastContentCount = contentCount + 60;
+								try {
+									System.out.println(lastBorne.getBorninf() + "   :    "+lastBorne.getBornsup() + "     :    "+lastContentCount + "     :    "+firstContentCount);
+									// Todo substring
+									Analyzer.countTrinIn3PhasesFromString(cdsStr,tttGeneral);
+								} catch (Exceptions.ExceptionCodonNotFound e) {
+
+									fail_codon += 1;
+									//e.printStackTrace();
+								} catch (Exceptions.ExceptionPatternLine exceptionPatternLine) {
+									fail_content_line++;
+									//exceptionPatternLine.printStackTrace();
+								}
+
+								cdsStr = "";
+							}
+						}
+						contentCount += 60;
 						content_line += 1;
 					}
+					else if(!CONTENT && !HEADER){
+						// reconstruLine vaut ORIGIN (ici)
+						CONTENT = true; // On  passe en mode Content à la prochain ligne;
+
+						// TODO Trié cdsInHeader
+
+					}
 					reconstructLine = "";
+
 				}
 
 			}
@@ -254,6 +332,11 @@ public class GestionFichier {
 			System.out.println("cds count:" + cds_count);
 			System.out.println("\tcds multi line count :"+cds_multi_line_count);
 			System.out.println("\tmax multi cds size :"+max_cds_size);
+			System.out.println("\tcds fail :"+fail_cds);
+			System.out.println("Content cds fail :"+fail_content_line);
+			System.out.println("Codon cds fail :"+fail_codon);
+			System.out.println(tttGeneral.getHMAP0());
+
 
 		} catch (IOException e) {
 

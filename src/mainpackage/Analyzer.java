@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class Analyzer {
 
-    public static String extractContentLine(String contentLine) throws Exception {
+    public static String extractContentLine(String contentLine) throws Exceptions.ExceptionPatternLine {
         // Extrait d'une ligne de content les infos utiles
         Pattern p1 = Pattern.compile("^ *([0-9]+) (.*)$");
         Matcher m1 = p1.matcher(contentLine);
@@ -29,13 +29,14 @@ public class Analyzer {
             }else if(items.length ==0 && tmpgene.length() > 0 ){
                 return tmpgene; // le cas ou il y a juste un morceau de moin de 10 char de gene
             }else{
-                throw new Exception();
+                throw new Exceptions.ExceptionPatternLine();
             }
 
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionPatternLine();
         }
     }
+
     // TODO (à voir) FONCTION VERIFIANT QUE LA LIST TRIE et QUI LA TRIE OU ADDLISTBORN DOIT AJOUTER DE MANIERE TRIE
 
     public static boolean checkString (String string1, String string2){
@@ -95,7 +96,7 @@ public class Analyzer {
         return true;
     }
     // Voir si il faut bien checker les codons init et stop
-    public static void countTrinFromString(String content, Trinucleotide current, int phase) throws Exception{
+    public static void countTrinFromString(String content, Trinucleotide current, int phase) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
     	if(content.length()%3==0){
 	    	Pattern p = Pattern.compile("([a|t|c|g][a|t|c|g][a|t|c|g])"); //permet de savoir si il y a autre chose que a c g t
 	        Matcher m = p.matcher(content);
@@ -115,35 +116,39 @@ public class Analyzer {
                 tmpTri.addTriN(m.group(),1,phase);
             }
 
+            // On a compté en trop le codon stop  TODO voir si on peut pas faire autrement
+            tmpTri.addTriN(last,-1,0);
+
+
             if((checkCodonInit(first) && checkCodonStop(last) && phase == 0) || (phase == 1 || phase == 2) ){ // on ne vérife pas pour les phases 1 et 2
                 if(countMatches*3==content.length()){
                     current.fusion(tmpTri,phase);
                 }else{
-                    throw new Exception("Group size is not multiple of 3 (found error in symbol)");
+                    throw new Exceptions.ExceptionPatternLine("Group size is not multiple of 3 (found error in symbol)");
                 }
             }else{
-                throw new Exception("Codont init or codont stop is not present");
+                throw new Exceptions.ExceptionCodonNotFound("Codont init or codont stop is not present");
             }
 
     	}else{
-    		throw new Exception("Length not multiple of 3");
+    		throw new Exceptions.ExceptionPatternLine("Length not multiple of 3");
     	}
     }
     // Fonction importante permertant de calculer les 3 phases d'un trinucléotide
-    public static void countTrinIn3PhasesFromString(String str,Trinucleotide current) throws Exception {
+    public static void countTrinIn3PhasesFromString(String str,Trinucleotide current) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
         // Todo vérifier comment on phases un str
         // Ne verifie rien car la fonction qu'on utilisera throw des exceptions
 
-        Pattern p1 = Pattern.compile("^(.)(.*)$");
+        Pattern p1 = Pattern.compile("^.(.*)[a|t|c|g][a|t|c|g]$");
         Matcher m1 = p1.matcher(str);
-        Pattern p2 = Pattern.compile("^(..)(.*)$");
+        Pattern p2 = Pattern.compile("^..(.*)[a|t|c|g]$");
         Matcher m2 = p2.matcher(str);
         if(m1.find() && m2.find()){
             countTrinFromString(str,current,0);
-            countTrinFromString(m1.group(2)+m1.group(1),current,1);
-            countTrinFromString(m2.group(2)+m2.group(1),current,2);
+            countTrinFromString(m1.group(1),current,1);
+            countTrinFromString(m2.group(1),current,2);
         }else{
-            throw new Exception();
+            throw new Exceptions.ExceptionPatternLine();
         }
     }
 
@@ -354,7 +359,12 @@ public class Analyzer {
 
     public static class Borne {
 
+
+
         private Integer borninf;
+
+
+
         private Integer bornsup;
         private boolean complement; // savoir si la borne est complement
         private boolean multipleBorne; // savoir si c'est une borne d'une jointure
@@ -379,7 +389,12 @@ public class Analyzer {
             this.bornsup = bornsup;
         }
 
-
+        public Integer getBornsup() {
+            return bornsup;
+        }
+        public Integer getBorninf() {
+            return borninf;
+        }
         @Override
         // i = inf s =sup C = complement M = multiline
         public String toString() {

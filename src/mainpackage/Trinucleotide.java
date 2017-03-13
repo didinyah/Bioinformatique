@@ -1,10 +1,10 @@
 package mainpackage;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
-
-public class Trinucleotide extends Nucleotide{	
+public class Trinucleotide extends Nucleotide{
 	// Un tableau de trinucléotide
 	// (On le définit en dur car c'est plus optimal que de les générer) 
 	
@@ -52,6 +52,32 @@ public class Trinucleotide extends Nucleotide{
 	//public void addHashMap() 
 	
 	// Todo fusion avec un autre trinucl
+
+
+	public int countNumberOfTrinucleotide(int phase){
+		HashMap<String, Integer> HMAP = null;
+		switch(phase){
+			case 0:
+				HMAP = getHMAP0();
+				break;
+			case 1:
+				HMAP = getHMAP1();
+				break;
+			case 2:
+				HMAP = getHMAP2();
+				break;
+			default:
+				HMAP = getHMAP0();
+		}
+		int tmp = 0;
+		for(Map.Entry<String, Integer> entry : HMAP.entrySet()) {
+			String key = entry.getKey();
+			Integer value = entry.getValue();
+			tmp += value;
+		}
+
+		return tmp;
+	}
 	
 	
 }

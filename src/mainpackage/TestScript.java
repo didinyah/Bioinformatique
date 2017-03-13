@@ -2,6 +2,7 @@ package mainpackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Ce fichier n'est pas un fichier de test unitaire ou autre c'est un fichier pour tester des scripts ou du code
@@ -35,9 +36,9 @@ public class TestScript {
 
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
-
+        GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff");
         //GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff");
-        GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff");
+        //GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff");
         // test
         /*
         if (Analyzer.checkCds("CDS")){
@@ -57,7 +58,17 @@ public class TestScript {
         String line2 = "atgrrrtta";
 
         Trinucleotide ttt = new Trinucleotide();
+        ArrayList<String> rTri = Utils.getListOfTriNucleotide();
+        String strAllTri = "";
+        for(String tmp : rTri){
+            strAllTri += tmp;
+        }
+        strAllTri = Utils.getListOfCodonInit().get(0) + strAllTri + Utils.getListOfCodonStop().get(0);
+
+        System.out.println(strAllTri);
         try {
+            Analyzer.countTrinIn3PhasesFromString(strAllTri,ttt);
+
             Analyzer.countTrinIn3PhasesFromString(lineContent,ttt);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,24 +80,31 @@ public class TestScript {
 
         System.out.println(ttt.getHMAP2());
 
+        System.out.println(" [0:]    " +ttt.countNumberOfTrinucleotide(0) + "  [1:]   "+ttt.countNumberOfTrinucleotide(1) + "   [2:]    "+ttt.countNumberOfTrinucleotide(2) );
+
     }
 
 
     public static void testTrinucleotideOriginExtractor(){
 
         List<String> listLineContent = new ArrayList<String>();
-        listLineContent.add("ORIGIN      " );
         listLineContent.add("        1 actgcaggcg tcgagttcat tgaagagaaa ggtggtgggg ctggagttag gttgaggaaa");
         listLineContent.add("       61 tgaattgtgt aaaagtcgat cccaataaaa gtttcactgc ccctaccggc tttccggtat");
         listLineContent.add("      121 gcccatcacc cgcgcacgga gggcctcaaa ccgtgcaatc tgggcagggc ttggcttgcg");
         listLineContent.add("      181 ggggatgcat cttttcgatg tgttctgaaa acacttggct gattttattg gtctttttgg");
         listLineContent.add("      241 acgtgacccc gaaaaccgcg ccacgtcaga atctcaaaac atgggaaatc cccatgttat");
-        listLineContent.add("      301 agattcccct gttatgggga tttactcccg gcatcccggt agtttctgaa actgtgcagt");
+        listLineContent.add("      301 agattcccct gttatgggga tttactcccg gcatc");
 
 
-        //TODO ORIGIN check ?? (à ignorer peut être car c'est pas forcèment le but du test)
-        //TODO phase 0 1 2 et resort un HMAP :)
-        // TODO Freq
+
+        for(String str : listLineContent){
+
+            try {
+                System.out.println(Analyzer.extractContentLine(str));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -182,8 +200,9 @@ public class TestScript {
         System.out.println("***************************************");
 
         //testCdsExtractor();
-        //testFile();
+        testFile();
         // testNucleotide();
-        testTrinucleotideExtractor();
+        //testTrinucleotideExtractor();
+        //testTrinucleotideOriginExtractor();
     }
 }
