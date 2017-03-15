@@ -2,6 +2,7 @@ package mainpackage;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.opencsv.CSVReader;
@@ -158,9 +159,9 @@ public class GestionFichier {
 			List<String> multiLine = new ArrayList<String>();
 
 			// CDS
-			List<Analyzer.Borne> cdsInHeader= new ArrayList<Analyzer.Borne>();
-			boolean multiLineOnCds = false;
-			String cdsStr = "";
+			Bornes cdsInHeader= new Bornes();
+			HashMap<Bornes.Borne,Boolean> multiLineOnCds = null;
+			HashMap<Bornes.Borne,String> multipleCdsStr = null;
 
 			//Trinucléotide var
 			Trinucleotide tttGeneral = new Trinucleotide();
@@ -172,6 +173,10 @@ public class GestionFichier {
 			int lastContentCount= 0;
 
 			// compte TODO delete count in prod ou le sortir en bilan
+
+			//****************************************
+			//**    COMPTEUR  						**
+			//****************************************
 			int content_line = 0;
 			int header_line = 0;
 			int block_transition = 0;
@@ -195,12 +200,18 @@ public class GestionFichier {
 					//System.out.println(reconstructLine);
 
 					if(Analyzer.checkInit(reconstructLine) && HEADER){ // TODO checkInit -> isInit
-						// PHASE DE TRANSITION (en gros juste la LIGNE ORIGIN)
+
+						//****************************************
+						//**    PHASE  DE TRANSITION CONTENT	**
+						//****************************************
 						HEADER = false;
 						CONTENT = false;
 
 					}else if(Analyzer.checkEnd((reconstructLine)) && CONTENT){ // Todo checkEnd -> isEnd
-						// PHASE HEADER
+
+						//****************************************
+						//**    PHASE  DE TRANSITION HEADER		**
+						//****************************************
 						HEADER = true;
 						CONTENT = false;
 						block_transition += 1;
@@ -209,7 +220,9 @@ public class GestionFichier {
 						contentCount = 1; // On reset le compteur
 					}
 
-
+					//********************************
+					//**    HEADER ANALYSER  		**
+					//********************************
 					if(HEADER && !CONTENT){
 						// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
 						// TODO cds list (ANALYZER)
@@ -223,10 +236,13 @@ public class GestionFichier {
 							}else{
 
 								try {
-									cdsInHeader.addAll(Analyzer.cdsToBornes(reconstructLine));
+									cdsInHeader.fusion(Analyzer.cdsToBornes(reconstructLine));
 								} catch (Exceptions.ExceptionCds exceptionCds) {
 									//exceptionCds.printStackTrace(); // TODO check erreur
 									//System.out.println(reconstructLine);
+									fail_cds += 1;
+								} catch (Exceptions.ExceptionBorne exceptionBorne) {
+									//exceptionBorne.printStackTrace();
 									fail_cds += 1;
 								}
 							}
@@ -246,13 +262,14 @@ public class GestionFichier {
 							CDS_MULTI_LINE = false;
 							try {
 								String tmpcds = Analyzer.cdsMultiLineToString(multiLine);
-								cdsInHeader.addAll(Analyzer.cdsToBornes(tmpcds));
+								cdsInHeader.fusion(Analyzer.cdsToBornes(tmpcds));
 
 							} catch (Exceptions.ExceptionCds exceptionCds) {
 								//exceptionCds.printStackTrace(); // TODO check erreur
 								fail_cds += 1;
+							} catch (Exceptions.ExceptionBorne exceptionBorne) {
+								exceptionBorne.printStackTrace();
 							} catch (Exception e) {
-								// TODO gestion de l'erreur
 								e.printStackTrace();
 							}
 							multiLine.clear();
@@ -261,21 +278,58 @@ public class GestionFichier {
 
 
 					}
+
+					//****************************************
+					//**    CONTENT ANALYSE					**
+					//****************************************
 					else if(CONTENT && !HEADER)
 					{
-						// TODO on calcul avec les phases 0 1 2  (ANALYZER)
+						//  on calcul avec les phases 0 1 2  (ANALYZER)
 						// on ressort 3 HMAP (ou on additione à un HMAP global)
 						// TODO on calcul les pref  (ANALYZER)
 						// Si on stock tout les HMAP on peut faire post processing
 						// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
 
-						if(cdsInHeader.size()  > lastIndexListBorne) {
-							Analyzer.Borne lastBorne = cdsInHeader.get(lastIndexListBorne);
 
-							System.out.println(lastBorne + "               :  "+ contentCount);
+						// Recupère toutes les bornes qui commencent et terminent sur cette ligne (la ligne courrante)
+
+						List<Bornes.Borne> sousStartBornes = cdsInHeader.extractStartBornesFromLine(contentCount,contentCount+60);
+						List<Bornes.Borne> sousEndBornes = cdsInHeader.extractEndBornesFromLine(contentCount,contentCount+60);
+
+						//****************************
+						//**    Début du CDS		**
+						//****************************
+						for(Bornes.Borne bStart : sousStartBornes){
+
+							multiLineOnCds.put(bStart,true);
+
+						}
+						//********************************
+						//**    Pendant un du CDS		**
+						//********************************
+
+
+
+
+						//****************************
+						//**    Fin du CDS		    **
+						//****************************
+						for(Bornes.Borne bStart : sousEndBornes){
+
+							multiLineOnCds.put(bStart,false);
+
+						}
+
+
+
+						/*
+						if(cdsInHeader.size()  > lastIndexListBorne) {
+							Bornes.Borne lastBorne = cdsInHeader.getList().get(lastIndexListBorne);
+
+							//System.out.println(lastBorne + "               :  "+ contentCount);
 							if(lastBorne.getBorninf() >= contentCount && lastBorne.getBorninf() <=contentCount+60){
 								multiLineOnCds = true; // on a trouvé le premier cds on va extraire les lignes
-								System.out.println("found");
+								//System.out.println("found");
 								firstContentCount = contentCount;
 							}
 
@@ -290,10 +344,10 @@ public class GestionFichier {
 							if(lastBorne.getBornsup() >= contentCount && lastBorne.getBornsup() <= contentCount+60){
 								multiLineOnCds = false;  // on termine on a tout extrait
 								lastIndexListBorne += 1; // On regarde la borne suivante
-								System.out.println(cdsStr);
+								//System.out.println(cdsStr);
 								lastContentCount = contentCount + 60;
 								try {
-									System.out.println(lastBorne.getBorninf() + "   :    "+lastBorne.getBornsup() + "     :    "+lastContentCount + "     :    "+firstContentCount);
+									//System.out.println(lastBorne.getBorninf() + "   :    "+lastBorne.getBornsup() + "     :    "+lastContentCount + "     :    "+firstContentCount);
 									// Todo substring
 									Analyzer.countTrinIn3PhasesFromString(cdsStr,tttGeneral);
 								} catch (Exceptions.ExceptionCodonNotFound e) {
@@ -307,15 +361,23 @@ public class GestionFichier {
 
 								cdsStr = "";
 							}
-						}
+						}*/
 						contentCount += 60;
 						content_line += 1;
 					}
 					else if(!CONTENT && !HEADER){
+
+						//****************************************
+						//**    PHASE  DE TRANSITION (ORIGIN)   **
+						//****************************************
 						// reconstruLine vaut ORIGIN (ici)
 						CONTENT = true; // On  passe en mode Content à la prochain ligne;
 
-						// TODO Trié cdsInHeader
+						// Fonction permettant d'init le tableau des disjoncteur de false puis quand un startBorne a été trouvé il le rend true
+						multiLineOnCds = cdsInHeader.initMultiLineOnCdsDisjoncteur();
+						System.out.println(cdsInHeader);
+						// Permettra de reconstruire les cds pour faire les calculs
+						multipleCdsStr = cdsInHeader.initMultipleCdsStr();
 
 					}
 					reconstructLine = "";

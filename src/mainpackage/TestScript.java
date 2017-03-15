@@ -170,7 +170,7 @@ public class TestScript {
                 count_isnotcds++;
             }
             try {
-                List<Analyzer.Borne> tt = Analyzer.cdsToBornes(cdsLine);
+                Bornes tt = Analyzer.cdsToBornes(cdsLine);
                 succes_count++;
 
             } catch (Exception e) {

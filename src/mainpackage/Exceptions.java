@@ -25,4 +25,8 @@ public class Exceptions{
             message_error = s;
         }
     }
+
+    public static class ExceptionBorne extends Exception{
+
+    }
 }
