@@ -154,7 +154,7 @@ public class GestionFichier {
 
 		// CDS
 		Bornes cdsInHeader= new Bornes();
-		HashMap<Bornes.Borne,Boolean> multiLineOnCds = new HashMap<Bornes.Borne,Boolean>();;
+		HashMap<Bornes.Borne,Boolean> multiLineOnCds = new HashMap<Bornes.Borne,Boolean>();
 		HashMap<Bornes.Borne,String> multipleCdsStr = null;
 
 		//Trinucléotide var
