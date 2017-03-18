@@ -1,5 +1,6 @@
 package mainpackage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -29,16 +30,18 @@ public class TestScript {
     }
 
 
-    public static void testFile(){
+    public static void testFile() throws IOException {
 
 
         // file test
 
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
-        GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff");
-        //GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff");
-        //GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff");
+        //GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
+        //GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff"); // MOYEN
+        //GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff"); // GROS
+        GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
+
         // test
         /*
         if (Analyzer.checkCds("CDS")){
@@ -200,7 +203,11 @@ public class TestScript {
         System.out.println("***************************************");
 
         //testCdsExtractor();
-        testFile();
+        try {
+            testFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // testNucleotide();
         //testTrinucleotideExtractor();
         //testTrinucleotideOriginExtractor();

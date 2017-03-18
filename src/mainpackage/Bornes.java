@@ -37,7 +37,7 @@ public class Bornes {
     }
 
 
-    public boolean isCorrectListBorne() {
+    public static boolean isCorrectListBorne(List<Borne> list) {
         if(!list.isEmpty()){
             Borne lastBorne = null;
             for(Borne b: list){
@@ -89,7 +89,7 @@ public class Bornes {
         List<Bornes.Borne> tmp = new ArrayList<>();
 
         for(Borne b : list){
-            if(b.getBorninf() >= i && b.getBorninf() <= j){
+            if(b.getBorninf() >= i && b.getBorninf() < j){
                 tmp.add(b);
             }
         }
@@ -100,7 +100,7 @@ public class Bornes {
         List<Bornes.Borne> tmp = new ArrayList<>();
 
         for(Borne b : list){
-            if(b.getBornsup() >= i && b.getBornsup() <= j){
+            if(b.getBornsup() >= i && b.getBornsup() < j){
                 tmp.add(b);
             }
         }
@@ -127,18 +127,25 @@ public class Bornes {
     public static class Borne  implements Comparable<Borne> {
 
 
-
         private Integer borninf;
         private Integer bornsup;
         private boolean complement; // savoir si la borne est complement
         private boolean multipleBorne; // savoir si c'est une borne d'une jointure
         private String  linkId; // l'id de lien avec les autres borne de la même jointure (todo créer un id plus complexe uniqid)
 
+        // Des information temporaires permettant de savoir l'indice devant la ligne (utile pour le découpage pendant la lecture)
+        private Integer temporyLineBornInf;
+        private Integer temporyLineBornSup;
+
+        //Information pour les multipleBorne si cette borne est la dernière
+        private boolean lastMultipleBorne;
+
         public Borne() {
             // Variable par défaut
             complement = false;
             multipleBorne = false;
             linkId = "error"; // -1 signifie qu'il n'y a pas de lien
+            lastMultipleBorne = false;
         }
         public boolean isInBorne(int a){
             return borninf <= a && a <= bornsup;
@@ -224,6 +231,30 @@ public class Bornes {
         @Override
         public int compareTo(Borne o) {
             return isGreaterThan(o) ? 1 : isLessThan(o) ? -1 : 0;
+        }
+
+        public Integer getTemporyLineBornInf() {
+            return temporyLineBornInf;
+        }
+
+        public void setTemporyLineBornInf(Integer temporyLineBornInf) {
+            this.temporyLineBornInf = temporyLineBornInf;
+        }
+
+        public Integer getTemporyLineBornSup() {
+            return temporyLineBornSup;
+        }
+
+        public void setTemporyLineBornSup(Integer temporyLineBornSup) {
+            this.temporyLineBornSup = temporyLineBornSup;
+        }
+
+        public boolean isLastMultipleBorne() {
+            return lastMultipleBorne;
+        }
+
+        public void setLastMultipleBorne(boolean lastMultipleBorne) {
+            this.lastMultipleBorne = lastMultipleBorne;
         }
     }
 }

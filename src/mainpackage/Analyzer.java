@@ -11,6 +11,28 @@ import java.util.regex.Pattern;
  */
 public class Analyzer {
 
+    public static String complement (String string1){
+        String res = new String();
+        for (int i = 0; i < string1.length(); i++) {
+            switch (string1.charAt(i)) {
+                case 'a' :
+                    res += 't';
+                    break;
+                case 't' :
+                    res += 'a';
+                    break;
+                case 'c' :
+                    res += 'g';
+                    break;
+                default :
+                    res += 'c';
+            }
+        }
+        StringBuffer buffer = new StringBuffer(res);
+        return (buffer.reverse().toString());
+    }
+
+
     public static String extractContentLine(String contentLine) throws Exceptions.ExceptionPatternLine {
         // Extrait d'une ligne de content les infos utiles
         Pattern p1 = Pattern.compile("^ *([0-9]+) (.*)$");
@@ -169,8 +191,8 @@ public class Analyzer {
      * utiliser substring
      *
      */
-    public static Bornes join (String global_string) throws Exceptions.ExceptionCds, Exceptions.ExceptionBorne {
-        Bornes bornesTmp = new Bornes();
+    public static List<Bornes.Borne> join (String global_string) throws Exceptions.ExceptionCds, Exceptions.ExceptionBorne {
+        List<Bornes.Borne> lstTmp = new ArrayList<Bornes.Borne>();
         Pattern p = Pattern.compile("join\\((.*)\\)");
         Matcher m = p.matcher(global_string);
         if(m.find()){
@@ -182,18 +204,18 @@ public class Analyzer {
                 String[] items = p2.split(tmp);
                 for ( String it : items){
                     Bornes.Borne b = stringToBorne(it);
-                    bornesTmp.addBorne(b);
+                    lstTmp.add(b);
                 }
             }else{
                 // cas ou il n'y en pas (todo cas inutile ???)
                 Bornes.Borne b = stringToBorne(tmp);
-                bornesTmp.addBorne(b);
+                lstTmp.add(b);
             }
 
         }else{
             throw new Exceptions.ExceptionCds();
         }
-        return bornesTmp;
+        return lstTmp;
     }
 
     public static boolean isJoin(String line){
@@ -248,17 +270,22 @@ public class Analyzer {
                     if(isJoin(strToExtract)){
                         // on crée l'unique id identifiant la même jointure
                         String uniqueID = UUID.randomUUID().toString();
-                        Bornes bornes =  join(strToExtract);
+                        List<Bornes.Borne> bornes =  join(strToExtract);
+                        Bornes newBornes = new Bornes();
 
-                        if(bornes.isCorrectListBorne()){
+                        if(Bornes.isCorrectListBorne(bornes)){
                             // On ajoute des informations sur les bornes
-                            for(Bornes.Borne b : bornes.getList())
+                            Bornes.Borne lastB = null;
+                            for(Bornes.Borne b : bornes)
                             {
                                 b.setComplement(true);
                                 b.setMultipleBorne(true);
                                 b.setLinkId(uniqueID);
+                                newBornes.addBorne(b);
+                                lastB = b;
                             }
-                            return bornes;
+                            lastB.setLastMultipleBorne(true);
+                            return newBornes;
                         }else{
                             throw new Exceptions.ExceptionCds();
                         }
@@ -273,16 +300,21 @@ public class Analyzer {
                     if(isJoin(strToExtract)){
                         // on crée l'unique id identifiant la même jointure
                         String uniqueID = UUID.randomUUID().toString();
-                        Bornes bornes =  join(strToExtract);
+                        List<Bornes.Borne> bornes =  join(strToExtract);
+                        Bornes newBornes = new Bornes();
 
-                        if(bornes.isCorrectListBorne()){
+                        if(Bornes.isCorrectListBorne(bornes)){
                         // On ajoute des informations sur les bornes
-                            for(Bornes.Borne b :bornes.getList())
+                            Bornes.Borne lastB = null;
+                            for(Bornes.Borne b :bornes)
                             {
                                 b.setMultipleBorne(true);
                                 b.setLinkId(uniqueID);
+                                newBornes.addBorne(b);
+                                lastB = b;
                             }
-                            return bornes;
+                            lastB.setLastMultipleBorne(true);
+                            return newBornes;
                         }else{
                             throw new Exceptions.ExceptionCds();
                         }

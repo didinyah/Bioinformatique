@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.opencsv.CSVReader;
 
@@ -63,7 +64,7 @@ public class GestionFichier {
 			br = new BufferedReader(fr);
 
 			// on reconstruit la ligne ?
-			String reconstructLine = "";
+			String sCurrentLine = "";
 
 			br = new BufferedReader(new FileReader(fileName));
 
@@ -72,13 +73,13 @@ public class GestionFichier {
 				char ch = (char) r;
 				if(ch != '\n'){
 
-					reconstructLine += ch;
+					sCurrentLine += ch;
 				}
 				else
 				{
 					// Attention n'affiche pas la dernière ligne si il n'y a pas de \n (mais bon c'est juste un test)
-					System.out.println(reconstructLine);
-					reconstructLine = "";
+					System.out.println(sCurrentLine);
+					sCurrentLine = "";
 				}
 
 			}
@@ -109,18 +110,18 @@ public class GestionFichier {
 
 
 
-	public static void read(String fileName){
+	public static void read(String fileName) throws IOException {
 
 		// Logique du code
 		// On lit un fichier on sait au début, --> on est dans l'entête (on crée un dijoncteur HEADER = 1)
 		// (optionel) on vérife avec des mots clè qu'on est dans l'entête au cas ou
 		// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
-		// TODO cds list (ANALYZER)
+		//  on obtient cds list (ANALYZER)
 		// ... (à vérifier avec l'enonce) (ANALYZER)
 		// On trouve ORIGIN implique (HEADER = 0) (CONTENT = 1)
 		// pendant la phase de lecture (CONTENT=1) on check si on est dans un cds ou pas
 		// une fois trouvé ! (et verifier)
-		// TODO on calcul avec les phases 0 1 2  (ANALYZER)
+		// on calcul avec les phases 0 1 2  (ANALYZER)
 		// on ressort 3 HMAP (ou on additione à un HMAP global)
 		// TODO on calcul les pref  (ANALYZER)
 		// Si on stock tout les HMAP on peut faire post processing
@@ -132,7 +133,7 @@ public class GestionFichier {
 		// résultat on aura 3 HMAP pour phase 0 1 2 et 3 HMAP de pref 0 1 2
 
 
-		// DE MÊME AVEC LES DINUCLEOTIDE !!!!
+		// TODO DE MÊME AVEC LES DINUCLEOTIDE !!!!
 
 
 		// ***************************************
@@ -148,280 +149,308 @@ public class GestionFichier {
 		BufferedReader br = null;
 		FileReader fr = null;
 
-		try {
-			// On lit un fichier on sait au début, --> on est dans l'entête (on crée un dijoncteur HEADER = 1)
-			// (optionel) on vérife avec des mots clè qu'on est dans l'entête au cas ou
-			fr = new FileReader(fileName);
-			br = new BufferedReader(fr);
+		//Tableau de ligne pour la reconstruction
+		List<String> multiLine = new ArrayList<String>();
 
-			// on reconstruit la ligne ?
-			String reconstructLine = "";
-			List<String> multiLine = new ArrayList<String>();
+		// CDS
+		Bornes cdsInHeader= new Bornes();
+		HashMap<Bornes.Borne,Boolean> multiLineOnCds = null;
+		HashMap<Bornes.Borne,String> multipleCdsStr = null;
 
-			// CDS
-			Bornes cdsInHeader= new Bornes();
-			HashMap<Bornes.Borne,Boolean> multiLineOnCds = null;
-			HashMap<Bornes.Borne,String> multipleCdsStr = null;
+		//Trinucléotide var
+		Trinucleotide tttGeneral = new Trinucleotide();
 
-			//Trinucléotide var
-			Trinucleotide tttGeneral = new Trinucleotide();
+		// important var
+		int contentCount = 1; // Nombre de lettre (init à 1 car on considère qu'on a lu la première)
 
-			// important var
-			int contentCount = 1; // Nombre de lettre (init à 1 car on considère qu'on a lu la première)
-			int lastIndexListBorne = 0;
-			int firstContentCount = 0;
-			int lastContentCount= 0;
 
-			// compte TODO delete count in prod ou le sortir en bilan
+		// compte TODO delete count in prod ou le sortir en bilan
 
-			//****************************************
-			//**    COMPTEUR  						**
-			//****************************************
-			int content_line = 0;
-			int header_line = 0;
-			int block_transition = 0;
-			int cds_count = 0;
-			int cds_multi_line_count = 0;
-			int max_cds_size = 0;
-			int fail_cds = 0;
-			int fail_content_line =0;
-			int fail_codon = 0;
-			br = new BufferedReader(new FileReader(fileName));
+		//****************************************
+		//**    COMPTEUR  						**
+		//****************************************
+		int content_line = 0;
+		int header_line = 0;
+		int block_transition = 0;
+		int cds_count = 0;
+		int cds_multi_line_count = 0;
+		int max_cds_size = 0;
+		int fail_cds = 0;
+		int fail_content_line =0;
+		int fail_codon = 0;
+		int cds_complement = 0;
+		int cds_complement_fail = 0;
+		int boucle_count = 0;
+		int line_count = 0;
 
-			int r;
-			while ((r = br.read()) != -1) {
-				char ch = (char) r;
-				if(ch != '\n'){
-					reconstructLine += ch;
+		br = new BufferedReader(new FileReader(fileName));
+		String sCurrentLine;
+
+		//****************************************
+		//**    BOUCLE DE LECTURE DU FICHIER    **
+		//****************************************
+		while ((sCurrentLine = br.readLine()) != null) {
+			boucle_count++;
+			line_count++;
+			if(Analyzer.checkInit(sCurrentLine) && HEADER){ // TODO checkInit -> isInit
+
+				//****************************************
+				//**    PHASE  DE TRANSITION CONTENT	**
+				//****************************************
+				HEADER = false;
+				CONTENT = false;
+
+			}else if(Analyzer.checkEnd((sCurrentLine)) && CONTENT){ // Todo checkEnd -> isEnd
+
+				//****************************************
+				//**    PHASE  DE TRANSITION HEADER		**
+				//****************************************
+				HEADER = true;
+				CONTENT = false;
+				block_transition += 1;
+				// On vide les cds
+				cdsInHeader.clear();
+				multiLineOnCds.clear();
+				multipleCdsStr.clear();
+				contentCount = 1; // On reset le compteur
+			}
+
+			//********************************
+			//**    HEADER ANALYSER  		**
+			//********************************
+			if(HEADER && !CONTENT){
+				// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
+				// TODO cds list (ANALYZER)
+				// ... (à vérifier avec l'enonce) (ANALYZER)
+				header_line += 1;
+				if(Analyzer.checkCds(sCurrentLine)){
+					cds_count += 1;
+					if(Analyzer.isCdsMultiLine(sCurrentLine)){
+						cds_multi_line_count += 1;
+						CDS_MULTI_LINE = true;
+					}else{
+
+						try {
+							cdsInHeader.fusion(Analyzer.cdsToBornes(sCurrentLine));
+						} catch (Exceptions.ExceptionCds | Exceptions.ExceptionBorne exceptionCds) {
+							//exceptionCds.printStackTrace(); // TODO check erreur
+							//System.out.println(sCurrentLine);
+							fail_cds += 1;
+						}
+					}
 				}
-				else
+
+				//*************************************
+				//**    GESTION DES CDS MULTI LINE   **
+				//*************************************
+				if(CDS_MULTI_LINE && !Analyzer.isEndCdsMultiLine(sCurrentLine)){
+					multiLine.add(sCurrentLine); // cela ajoute le premier jusqu'à l'avant dernier
+				}else if(CDS_MULTI_LINE)
 				{
-					// Attention n'affiche pas la dernière ligne si il n'y a pas de \n (mais bon c'est juste un test)
-					//System.out.println(reconstructLine);
+					// on ajoute le dernier (important)
+					multiLine.add(sCurrentLine);
 
-					if(Analyzer.checkInit(reconstructLine) && HEADER){ // TODO checkInit -> isInit
+					max_cds_size = Math.max(max_cds_size,multiLine.size());
 
-						//****************************************
-						//**    PHASE  DE TRANSITION CONTENT	**
-						//****************************************
-						HEADER = false;
-						CONTENT = false;
+					CDS_MULTI_LINE = false;
+					try {
+						String tmpcds = Analyzer.cdsMultiLineToString(multiLine);
+						cdsInHeader.fusion(Analyzer.cdsToBornes(tmpcds));
 
-					}else if(Analyzer.checkEnd((reconstructLine)) && CONTENT){ // Todo checkEnd -> isEnd
-
-						//****************************************
-						//**    PHASE  DE TRANSITION HEADER		**
-						//****************************************
-						HEADER = true;
-						CONTENT = false;
-						block_transition += 1;
-						// On vide les cds
-						cdsInHeader.clear();
-						contentCount = 1; // On reset le compteur
+					} catch (Exceptions.ExceptionCds exceptionCds) {
+						//exceptionCds.printStackTrace(); // TODO check erreur
+						fail_cds += 1;
+					} catch (Exceptions.ExceptionBorne exceptionBorne) {
+						exceptionBorne.printStackTrace(); // todo ? (je crois que c'est un cas assez rare)
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-
-					//********************************
-					//**    HEADER ANALYSER  		**
-					//********************************
-					if(HEADER && !CONTENT){
-						// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
-						// TODO cds list (ANALYZER)
-						// ... (à vérifier avec l'enonce) (ANALYZER)
-						header_line += 1;
-						if(Analyzer.checkCds(reconstructLine)){
-							cds_count += 1;
-							if(Analyzer.isCdsMultiLine(reconstructLine)){
-								cds_multi_line_count += 1;
-								CDS_MULTI_LINE = true;
-							}else{
-
-								try {
-									cdsInHeader.fusion(Analyzer.cdsToBornes(reconstructLine));
-								} catch (Exceptions.ExceptionCds exceptionCds) {
-									//exceptionCds.printStackTrace(); // TODO check erreur
-									//System.out.println(reconstructLine);
-									fail_cds += 1;
-								} catch (Exceptions.ExceptionBorne exceptionBorne) {
-									//exceptionBorne.printStackTrace();
-									fail_cds += 1;
-								}
-							}
-						}
-
-						//cette partie gère les cds multi line
-						if(CDS_MULTI_LINE && !Analyzer.isEndCdsMultiLine(reconstructLine)){
-							multiLine.add(reconstructLine); // cela ajoute le premier jusqu'à l'avant dernier
-						}else if(CDS_MULTI_LINE)
-						{
-							// on ajoute le dernier (important)
-							multiLine.add(reconstructLine);
-							//System.out.println("* cds multi line size:"+multiLine.size());
-							//System.out.println(multiLine);
-							max_cds_size = Math.max(max_cds_size,multiLine.size());
-
-							CDS_MULTI_LINE = false;
-							try {
-								String tmpcds = Analyzer.cdsMultiLineToString(multiLine);
-								cdsInHeader.fusion(Analyzer.cdsToBornes(tmpcds));
-
-							} catch (Exceptions.ExceptionCds exceptionCds) {
-								//exceptionCds.printStackTrace(); // TODO check erreur
-								fail_cds += 1;
-							} catch (Exceptions.ExceptionBorne exceptionBorne) {
-								exceptionBorne.printStackTrace();
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							multiLine.clear();
-						}
-
-
-
-					}
-
-					//****************************************
-					//**    CONTENT ANALYSE					**
-					//****************************************
-					else if(CONTENT && !HEADER)
-					{
-						//  on calcul avec les phases 0 1 2  (ANALYZER)
-						// on ressort 3 HMAP (ou on additione à un HMAP global)
-						// TODO on calcul les pref  (ANALYZER)
-						// Si on stock tout les HMAP on peut faire post processing
-						// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
-
-
-						// Recupère toutes les bornes qui commencent et terminent sur cette ligne (la ligne courrante)
-
-						List<Bornes.Borne> sousStartBornes = cdsInHeader.extractStartBornesFromLine(contentCount,contentCount+60);
-						List<Bornes.Borne> sousEndBornes = cdsInHeader.extractEndBornesFromLine(contentCount,contentCount+60);
-
-						//****************************
-						//**    Début du CDS		**
-						//****************************
-						for(Bornes.Borne bStart : sousStartBornes){
-
-							multiLineOnCds.put(bStart,true);
-
-						}
-						//********************************
-						//**    Pendant un du CDS		**
-						//********************************
-
-
-
-
-						//****************************
-						//**    Fin du CDS		    **
-						//****************************
-						for(Bornes.Borne bStart : sousEndBornes){
-
-							multiLineOnCds.put(bStart,false);
-
-						}
-
-
-
-						/*
-						if(cdsInHeader.size()  > lastIndexListBorne) {
-							Bornes.Borne lastBorne = cdsInHeader.getList().get(lastIndexListBorne);
-
-							//System.out.println(lastBorne + "               :  "+ contentCount);
-							if(lastBorne.getBorninf() >= contentCount && lastBorne.getBorninf() <=contentCount+60){
-								multiLineOnCds = true; // on a trouvé le premier cds on va extraire les lignes
-								//System.out.println("found");
-								firstContentCount = contentCount;
-							}
-
-							if(multiLineOnCds){
-								try {
-									cdsStr+= Analyzer.extractContentLine(reconstructLine);
-								} catch (Exceptions.ExceptionPatternLine e) {
-									fail_content_line+=1;
-
-								}
-							}
-							if(lastBorne.getBornsup() >= contentCount && lastBorne.getBornsup() <= contentCount+60){
-								multiLineOnCds = false;  // on termine on a tout extrait
-								lastIndexListBorne += 1; // On regarde la borne suivante
-								//System.out.println(cdsStr);
-								lastContentCount = contentCount + 60;
-								try {
-									//System.out.println(lastBorne.getBorninf() + "   :    "+lastBorne.getBornsup() + "     :    "+lastContentCount + "     :    "+firstContentCount);
-									// Todo substring
-									Analyzer.countTrinIn3PhasesFromString(cdsStr,tttGeneral);
-								} catch (Exceptions.ExceptionCodonNotFound e) {
-
-									fail_codon += 1;
-									//e.printStackTrace();
-								} catch (Exceptions.ExceptionPatternLine exceptionPatternLine) {
-									fail_content_line++;
-									//exceptionPatternLine.printStackTrace();
-								}
-
-								cdsStr = "";
-							}
-						}*/
-						contentCount += 60;
-						content_line += 1;
-					}
-					else if(!CONTENT && !HEADER){
-
-						//****************************************
-						//**    PHASE  DE TRANSITION (ORIGIN)   **
-						//****************************************
-						// reconstruLine vaut ORIGIN (ici)
-						CONTENT = true; // On  passe en mode Content à la prochain ligne;
-
-						// Fonction permettant d'init le tableau des disjoncteur de false puis quand un startBorne a été trouvé il le rend true
-						multiLineOnCds = cdsInHeader.initMultiLineOnCdsDisjoncteur();
-						System.out.println(cdsInHeader);
-						// Permettra de reconstruire les cds pour faire les calculs
-						multipleCdsStr = cdsInHeader.initMultipleCdsStr();
-
-					}
-					reconstructLine = "";
-
+					multiLine.clear();
 				}
+
+
 
 			}
 
-			// après la fin de la boucle
-
-			System.out.println("BlockTransition detected:" + block_transition);
-			System.out.println("Header line:" + header_line);
-			System.out.println("Content line:" + content_line);
-			System.out.println("cds count:" + cds_count);
-			System.out.println("\tcds multi line count :"+cds_multi_line_count);
-			System.out.println("\tmax multi cds size :"+max_cds_size);
-			System.out.println("\tcds fail :"+fail_cds);
-			System.out.println("Content cds fail :"+fail_content_line);
-			System.out.println("Codon cds fail :"+fail_codon);
-			System.out.println(tttGeneral.getHMAP0());
+			//****************************************
+			//**    CONTENT ANALYSE					**
+			//****************************************
+			else if(CONTENT && !HEADER)
+			{
+				//  on calcul avec les phases 0 1 2  (ANALYZER)
+				// on ressort 3 HMAP (ou on additione à un HMAP global)
+				// TODO on calcul les pref  (ANALYZER)
+				// Si on stock tout les HMAP on peut faire post processing
+				// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
 
 
-		} catch (IOException e) {
+				// Recupère toutes les bornes qui commencent et terminent sur cette ligne (la ligne courrante)
 
-			e.printStackTrace();
+				List<Bornes.Borne> sousStartBornes = cdsInHeader.extractStartBornesFromLine(contentCount,contentCount+60);
+				List<Bornes.Borne> sousEndBornes = cdsInHeader.extractEndBornesFromLine(contentCount,contentCount+60);
 
-		} finally {
+				//****************************
+				//**    Début du CDS		**
+				//****************************
+				for(Bornes.Borne bStart : sousStartBornes){
+					boucle_count++;
+					bStart.setTemporyLineBornInf(contentCount); // on stock l'info pour le découpage
+					multiLineOnCds.put(bStart,true);
 
-			try {
-
-				if (br != null)
-					br.close();
-
-				if (fr != null)
-					fr.close();
+				}
+				//********************************
+				//**    Pendant les CDS			**
+				//********************************
 
 
-			} catch (IOException ex) {
+				// TODO PAS OPTIMALE RAJOUTE ENORMEMENT DE COMPLEXITE (minime peut être mais en comptage de boucle enorme 75 fois plus par exemple)
+				for(Map.Entry<Bornes.Borne, Boolean> entry : multiLineOnCds.entrySet()) {
+					boucle_count++;
+					Bornes.Borne b = entry.getKey();
+					Boolean disj = entry.getValue();
+					if(disj){
+						// La ligne fait parti d'un cds (de la borne key)
+						try {
+							// on rajoute les lignes
+							multipleCdsStr.put(b,multipleCdsStr.get(b) + Analyzer.extractContentLine(sCurrentLine) );
+						} catch (Exceptions.ExceptionPatternLine exceptionPatternLine) {
+							fail_content_line+=1;
+						}
+					}
+				}
 
-				ex.printStackTrace();
+
+
+				//****************************
+				//**    Fin du CDS		    **
+				//****************************
+				for(Bornes.Borne bEnd : sousEndBornes){
+					boucle_count++;
+					//********************************
+					//**    RECONSTRUCTION DE LIGNE **
+					//********************************
+					bEnd.setTemporyLineBornSup(contentCount); // on stock l'info pour le découpage (peut être inutile)
+					Integer decoupeInf = bEnd.getBorninf() -  bEnd.getTemporyLineBornInf(); // TODO VERIF borne
+					Integer decoupeSuf = bEnd.getBornsup() + decoupeInf - bEnd.getBorninf()+1; // TODO VERIF borne
+
+
+					String str = multipleCdsStr.get(bEnd).substring(decoupeInf,decoupeSuf); // on découpe
+					String strToCount = "";
+
+
+					//*********************************
+					//**    Jointure et complement	 **
+					//*********************************
+					if(bEnd.isMultipleBorne() && bEnd.isLastMultipleBorne() ){
+
+						String tmp = "";
+						for(Map.Entry<Bornes.Borne, String> entry : multipleCdsStr.entrySet()) {
+							boucle_count++;
+							Bornes.Borne b = entry.getKey();
+							String st = entry.getValue();
+							if(bEnd.getLinkId().equals(b.getLinkId()) ){ // On regarde si ils ont le même id => jointure
+								tmp += st;
+							}
+						}
+
+						if(bEnd.isComplement()){
+							strToCount = Analyzer.complement(tmp);
+							cds_complement++;
+						}else{
+							strToCount = tmp;
+						}
+
+
+					}else{
+						if(bEnd.isComplement()){
+							strToCount = Analyzer.complement(str);
+							cds_complement++;
+						}else{
+							strToCount = str;
+						}
+					}
+
+					//****************************
+					//**    COMPTAGE		    **
+					//****************************
+					if(!strToCount.equals("")){
+						try {
+
+							Analyzer.countTrinIn3PhasesFromString(strToCount,tttGeneral);
+						} catch (Exceptions.ExceptionCodonNotFound e) {
+
+							fail_codon += 1;
+							if(bEnd.isComplement()){
+								cds_complement_fail++;
+							}
+						} catch (Exceptions.ExceptionPatternLine exceptionPatternLine) {
+							fail_content_line++;
+							//exceptionPatternLine.printStackTrace();
+						}
+					}
+
+
+					multiLineOnCds.put(bEnd,false);
+
+					// On delete le texte pour soulager la ram
+					if(!bEnd.isMultipleBorne()) {
+						multipleCdsStr.remove(bEnd);
+					}
+				}
+
+				contentCount += 60;
+				content_line += 1;
+			}
+			else if(!CONTENT && !HEADER){
+
+				//****************************************
+				//**    PHASE  DE TRANSITION (ORIGIN)   **
+				//****************************************
+				// reconstruLine vaut ORIGIN (ici)
+				CONTENT = true; // On  passe en mode Content à la prochain ligne;
+
+				// Fonction permettant d'init le tableau des disjoncteur de false puis quand un startBorne a été trouvé il le rend true
+				multiLineOnCds = cdsInHeader.initMultiLineOnCdsDisjoncteur();
+				// Permettra de reconstruire les cds pour faire les calculs
+				multipleCdsStr = cdsInHeader.initMultipleCdsStr();
+
 
 			}
 
 		}
+
+		//***************************
+		//**    FIN DE BOUCLE	   **
+		//***************************
+		System.out.println("Line count:"+line_count);
+		System.out.println("Boucle count :"+boucle_count);
+		System.out.println("\t ratio :"+boucle_count/(line_count));
+		System.out.println("BlockTransition detected:" + block_transition);
+		System.out.println("Header line:" + header_line);
+		System.out.println("Content line:" + content_line);
+		System.out.println("cds count:" + cds_count);
+		System.out.println("\tcds complement count :"+cds_complement);
+		System.out.println("\tcds multi line count :"+cds_multi_line_count);
+		System.out.println("\tmax multi cds size :"+max_cds_size);
+		System.out.println("\tcds extractor fail :"+fail_cds);
+		System.out.println("\tcds complement fail :"+cds_complement_fail);
+		System.out.println("Content (pattern or letter bug) cds fail :"+fail_content_line);
+		System.out.println("Codon init or end from cds fail :"+fail_codon);
+		System.out.println(tttGeneral.getHMAP0());
+		System.out.println(tttGeneral.getHMAP1());
+		System.out.println(tttGeneral.getHMAP2());
+
+
+		//****************************************
+		//**    FERMETURE DU FICHIER		    **
+		//****************************************
+
+
+		if (br != null)
+			br.close();
+
+		if (fr != null)
+			fr.close();
 
 	}
 	
