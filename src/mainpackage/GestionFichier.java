@@ -154,7 +154,7 @@ public class GestionFichier {
 
 		// CDS
 		Bornes cdsInHeader= new Bornes();
-		HashMap<Bornes.Borne,Boolean> multiLineOnCds = null;
+		HashMap<Bornes.Borne,Boolean> multiLineOnCds = new HashMap<Bornes.Borne,Boolean>();;
 		HashMap<Bornes.Borne,String> multipleCdsStr = null;
 
 		//Trinucléotide var
@@ -390,7 +390,7 @@ public class GestionFichier {
 					}
 
 
-					multiLineOnCds.put(bEnd,false);
+					multiLineOnCds.remove(bEnd);
 
 					// On delete le texte pour soulager la ram
 					if(!bEnd.isMultipleBorne()) {
@@ -409,8 +409,7 @@ public class GestionFichier {
 				// reconstruLine vaut ORIGIN (ici)
 				CONTENT = true; // On  passe en mode Content à la prochain ligne;
 
-				// Fonction permettant d'init le tableau des disjoncteur de false puis quand un startBorne a été trouvé il le rend true
-				multiLineOnCds = cdsInHeader.initMultiLineOnCdsDisjoncteur();
+
 				// Permettra de reconstruire les cds pour faire les calculs
 				multipleCdsStr = cdsInHeader.initMultipleCdsStr();
 

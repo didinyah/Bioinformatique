@@ -107,14 +107,6 @@ public class Bornes {
         return tmp;
     }
 
-    public HashMap<Borne,Boolean> initMultiLineOnCdsDisjoncteur() {
-        HashMap<Borne,Boolean> tmp = new HashMap<Borne,Boolean>();
-
-        for(Borne b : list){
-            tmp.put(b,false);
-        }
-        return tmp;
-    }
 
     public HashMap<Borne,String> initMultipleCdsStr() {
         HashMap<Borne,String> tmp = new HashMap<Bornes.Borne,String>();
