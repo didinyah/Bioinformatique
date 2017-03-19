@@ -159,6 +159,10 @@ public class GestionFichier {
 
 		//Trinucléotide var
 		Trinucleotide tttGeneral = new Trinucleotide();
+		Trinucleotide tttCurrentCds = new Trinucleotide();
+		// Initialisation des pref
+        tttGeneral.initPref();
+        tttGeneral.initFreq(); // (peut être mit autre part)
 
 		// important var
 		int contentCount = 1; // Nombre de lettre (init à 1 car on considère qu'on a lu la première)
@@ -207,6 +211,16 @@ public class GestionFichier {
 				//****************************************
 				HEADER = true;
 				CONTENT = false;
+				// On additione les Trinucleotide
+
+                // TODO Pref function
+                /*
+                try {
+                    tttGeneral.calculPref(tttCurrent);
+                } catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
+                    exceptionCodonNotFound.printStackTrace();
+                }
+                tttGeneral.fusion(tttCurrent);*/
 				block_transition += 1;
 				// On vide les cds
 				cdsInHeader.clear();
@@ -375,8 +389,8 @@ public class GestionFichier {
 					//****************************
 					if(!strToCount.equals("")){
 						try {
-
-							Analyzer.countTrinIn3PhasesFromString(strToCount,tttGeneral);
+							Analyzer.countTrinIn3PhasesFromString(strToCount,tttGeneral,tttCurrentCds);
+							tttGeneral.calculPref(tttCurrentCds);
 						} catch (Exceptions.ExceptionCodonNotFound e) {
 
 							fail_codon += 1;
@@ -391,7 +405,7 @@ public class GestionFichier {
 
 
 					multiLineOnCds.remove(bEnd);
-
+                    tttCurrentCds.clear();
 					// On delete le texte pour soulager la ram
 					if(!bEnd.isMultipleBorne()) {
 						multipleCdsStr.remove(bEnd);
@@ -438,9 +452,23 @@ public class GestionFichier {
 		System.out.println(tttGeneral.getHMAP0());
 		System.out.println(tttGeneral.getHMAP1());
 		System.out.println(tttGeneral.getHMAP2());
+        System.out.println("Pref :");
+        System.out.println(tttGeneral.getPrefHMAP0());
+        System.out.println(tttGeneral.getPrefHMAP1());
+        System.out.println(tttGeneral.getPrefHMAP2());
 
+        // Calcul des frequences :
+        try {
+            System.out.println("Freq:");
+            tttGeneral.calculFreq();
+            System.out.println(tttGeneral.getFreqHMAP0());
+            System.out.println(tttGeneral.getFreqHMAP1());
+            System.out.println(tttGeneral.getFreqHMAP2());
+        } catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
+            exceptionCodonNotFound.printStackTrace();
+        }
 
-		//****************************************
+        //****************************************
 		//**    FERMETURE DU FICHIER		    **
 		//****************************************
 

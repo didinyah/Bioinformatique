@@ -118,7 +118,7 @@ public class Analyzer {
         return true;
     }
     // Voir si il faut bien checker les codons init et stop
-    public static void countTrinFromString(String content, Trinucleotide current, int phase) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
+    public static void countTrinFromString(String content, Trinucleotide current,Trinucleotide cdsCurrent, int phase) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
     	if(content.length()%3==0){
 	    	Pattern p = Pattern.compile("([a|t|c|g][a|t|c|g][a|t|c|g])"); //permet de savoir si il y a autre chose que a c g t
 	        Matcher m = p.matcher(content);
@@ -145,6 +145,7 @@ public class Analyzer {
             if((checkCodonInit(first) && checkCodonStop(last) && phase == 0) || (phase == 1 || phase == 2) ){ // on ne vérife pas pour les phases 1 et 2
                 if(countMatches*3==content.length()){
                     current.fusion(tmpTri,phase);
+                    cdsCurrent.fusion(tmpTri,phase);
                 }else{
                     throw new Exceptions.ExceptionPatternLine("Group size is not multiple of 3 (found error in symbol)");
                 }
@@ -157,7 +158,7 @@ public class Analyzer {
     	}
     }
     // Fonction importante permertant de calculer les 3 phases d'un trinucléotide
-    public static void countTrinIn3PhasesFromString(String str,Trinucleotide current) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
+    public static void countTrinIn3PhasesFromString(String str,Trinucleotide general,Trinucleotide cdsCurrent) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
         // Todo vérifier comment on phases un str
         // Ne verifie rien car la fonction qu'on utilisera throw des exceptions
 
@@ -166,9 +167,9 @@ public class Analyzer {
         Pattern p2 = Pattern.compile("^..(.*)[a|t|c|g]$");
         Matcher m2 = p2.matcher(str);
         if(m1.find() && m2.find()){
-            countTrinFromString(str,current,0);
-            countTrinFromString(m1.group(1),current,1);
-            countTrinFromString(m2.group(1),current,2);
+            countTrinFromString(str,general,cdsCurrent,0);
+            countTrinFromString(m1.group(1),general,cdsCurrent,1);
+            countTrinFromString(m2.group(1),general,cdsCurrent,2);
         }else{
             throw new Exceptions.ExceptionPatternLine();
         }

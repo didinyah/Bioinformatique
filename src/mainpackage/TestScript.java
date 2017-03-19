@@ -61,6 +61,8 @@ public class TestScript {
         String line2 = "atgrrrtta";
 
         Trinucleotide ttt = new Trinucleotide();
+
+        Trinucleotide tttCds = new Trinucleotide();
         ArrayList<String> rTri = Utils.getListOfTriNucleotide();
         String strAllTri = "";
         for(String tmp : rTri){
@@ -70,9 +72,9 @@ public class TestScript {
 
         System.out.println(strAllTri);
         try {
-            Analyzer.countTrinIn3PhasesFromString(strAllTri,ttt);
+            Analyzer.countTrinIn3PhasesFromString(strAllTri,ttt,tttCds);
 
-            Analyzer.countTrinIn3PhasesFromString(lineContent,ttt);
+            Analyzer.countTrinIn3PhasesFromString(lineContent,ttt,tttCds);
         } catch (Exception e) {
             e.printStackTrace();
         }
