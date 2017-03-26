@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
  */
 public class Analyzer {
 
+
     public static String complement (String string1){
         String res = new String();
         for (int i = 0; i < string1.length(); i++) {
@@ -59,8 +60,6 @@ public class Analyzer {
         }
     }
 
-    // TODO (à voir) FONCTION VERIFIANT QUE LA LIST TRIE et QUI LA TRIE OU ADDLISTBORN DOIT AJOUTER DE MANIERE TRIE
-
     public static boolean checkString (String string1, String string2){
         if (string1.length()!=string2.length()){
             return false;
@@ -83,13 +82,6 @@ public class Analyzer {
         return Utils.getListOfCodonStop().contains(line);
     }
 
-    public static boolean checkCorrectChar (char c){
-        if (c=='a' || c=='c' || c=='t' || c=='g'){
-            return true;
-        }
-        return false;
-    }
-
 
     public static boolean checkCds (String line) {
         Pattern p = Pattern.compile(" *CDS +.*");
@@ -99,24 +91,15 @@ public class Analyzer {
 
 
     public static boolean checkInit (String line) {
-        String origin = "ORIGIN";
-        for (int i = 0; i < origin.length(); i++) {
-            if (origin.charAt(i) != line.charAt(i)) {
-                return false;
-            }
-        }
-        return true;
+        Pattern p = Pattern.compile("ORIGIN");
+        return p.matcher(line).find();
     }
 
     public static boolean checkEnd (String line) {
-        String end = "//";
-        for (int i = 0; i < end.length(); i++) {
-            if (end.charAt(i) != line.charAt(i)) {
-                return false;
-            }
-        }
-        return true;
+        Pattern p = Pattern.compile("//");
+        return p.matcher(line).find();
     }
+
     // Voir si il faut bien checker les codons init et stop
     public static void countTrinFromString(String content, Trinucleotide current,Trinucleotide cdsCurrent, int phase) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
     	if(content.length()%3==0){
@@ -138,8 +121,10 @@ public class Analyzer {
                 tmpTri.addTriN(m.group(),1,phase);
             }
 
-            // On a compté en trop le codon stop  TODO voir si on peut pas faire autrement
-            tmpTri.addTriN(last,-1,0);
+            // On a compté en trop le codon stop
+            if(phase == 0){ // la condition permet de soustraire qu'une fois car cette fonction marche pour les 3 phases TODO verif !
+                tmpTri.addTriN(last,-1,0);
+            }
 
 
             if((checkCodonInit(first) && checkCodonStop(last) && phase == 0) || (phase == 1 || phase == 2) ){ // on ne vérife pas pour les phases 1 et 2
@@ -157,9 +142,43 @@ public class Analyzer {
     		throw new Exceptions.ExceptionPatternLine("Length not multiple of 3");
     	}
     }
+
+    public static void countDinFromString(String content, Dinucleotide current,Dinucleotide cdsCurrent, int phase) throws Exceptions.ExceptionPatternLine {
+        if(content.length()%2==0){
+            Pattern p = Pattern.compile("([a|t|c|g][a|t|c|g])"); //permet de savoir si il y a autre chose que a c g t
+            Matcher m = p.matcher(content);
+            int countMatches = 0;
+            Dinucleotide tmpDi = new Dinucleotide();
+            String last = "";
+            while (m.find()) {
+
+                //On affecte le dernier
+                last = m.group();
+
+                countMatches++;
+                tmpDi.addDiN(m.group(),1,phase);
+            }
+
+            // On a compté en trop le codon stop
+            if(phase==0){// la condition permet de soustraire qu'une fois car cette fonction marche pour les 3 phases TODO verif !
+                tmpDi.addDiN(last,-1,0);
+            }
+
+            if(countMatches*2==content.length()){
+                current.fusion(tmpDi,phase);
+                cdsCurrent.fusion(tmpDi,phase);
+            }else{
+                throw new Exceptions.ExceptionPatternLine("Group size is not multiple of 2 (found error in symbol)");
+            }
+
+
+        }else{
+            throw new Exceptions.ExceptionPatternLine("Length not multiple of 2");
+        }
+    }
+
     // Fonction importante permertant de calculer les 3 phases d'un trinucléotide
     public static void countTrinIn3PhasesFromString(String str,Trinucleotide general,Trinucleotide cdsCurrent) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
-        // Todo vérifier comment on phases un str
         // Ne verifie rien car la fonction qu'on utilisera throw des exceptions
 
         Pattern p1 = Pattern.compile("^.(.*)[a|t|c|g][a|t|c|g]$");
@@ -170,6 +189,20 @@ public class Analyzer {
             countTrinFromString(str,general,cdsCurrent,0);
             countTrinFromString(m1.group(1),general,cdsCurrent,1);
             countTrinFromString(m2.group(1),general,cdsCurrent,2);
+        }else{
+            throw new Exceptions.ExceptionPatternLine();
+        }
+    }
+
+    public static void countDinIn2PhasesFromString(String str,Dinucleotide general,Dinucleotide cdsCurrent) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
+
+
+        Pattern p1 = Pattern.compile("^.(.*)[a|t|c|g]$"); // TODO est-ce bon ? pour les DI il y a que 2 phases ? (jai po le sujet lol)
+        Matcher m1 = p1.matcher(str);
+        if(m1.find() ){
+            countDinFromString(str,general,cdsCurrent,0);
+            countDinFromString(m1.group(1),general,cdsCurrent,1);
+            //countDinFromString(m2.group(1),general,cdsCurrent,2);
         }else{
             throw new Exceptions.ExceptionPatternLine();
         }
@@ -345,7 +378,7 @@ public class Analyzer {
         return p.matcher(reconstructLine).find();
     }
 
-    public static String cdsMultiLineToString(List<String> multiLine) throws Exception {
+    public static String cdsMultiLineToString(List<String> multiLine) throws Exceptions.ExceptionPatternLine {
         String fullLine = "";
         boolean firstLine = true;
         for ( String line : multiLine){
@@ -358,7 +391,7 @@ public class Analyzer {
                 if(m.find()){
                     fullLine += m.group(1);
                 }else{
-                    throw new Exception();
+                    throw new Exceptions.ExceptionPatternLine();
                 }
             }
         }

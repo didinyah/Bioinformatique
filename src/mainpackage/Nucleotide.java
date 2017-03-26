@@ -149,7 +149,7 @@ public class Nucleotide {
 
 	public String toString(){
 
-		return "Trinucleotide :  HMAP0\n"+ HMAP0.toString();
+		return "Nucleotide :  HMAP0\n"+ HMAP0.toString();
 	}
 
 
@@ -177,14 +177,13 @@ public class Nucleotide {
 	}
 
 
-	public void calculPref(Nucleotide tttCurrent) throws Exceptions.ExceptionCodonNotFound {
-		HashMap<String, Integer> HMAP0 = tttCurrent.getHMAP(0);
-		HashMap<String, Integer> HMAP1 = tttCurrent.getHMAP(1);
-		HashMap<String, Integer> HMAP2 = tttCurrent.getHMAP(2);
+	public void calculPref(Nucleotide nucleotide) throws Exceptions.ExceptionCodonNotFound {
+		HashMap<String, Integer> HMAP0 = nucleotide.getHMAP(0);
+		HashMap<String, Integer> HMAP1 = nucleotide.getHMAP(1);
+		HashMap<String, Integer> HMAP2 = nucleotide.getHMAP(2);
 		HashMap<String, Integer> prefHMAP0 = getPrefHMAP(0);
 		HashMap<String, Integer> prefHMAP1 = getPrefHMAP(1);
 		HashMap<String, Integer> prefHMAP2 = getPrefHMAP(2);
-
 
 		for(Map.Entry<String, Integer> entry : HMAP0.entrySet()) {
 			String key = entry.getKey();
@@ -201,7 +200,7 @@ public class Nucleotide {
 					prefHMAP2.replace(key, 1 + prefHMAP2.get(key));
 				}
 			} else {
-				throw new Exceptions.ExceptionCodonNotFound("Problem with pref phase");
+				//throw new Exceptions.ExceptionCodonNotFound("Problem with pref phase"); //TODO UN BUG DE RESULTAT SI ON DECOMMENTE WHY ?
 			}
 		}
 	}

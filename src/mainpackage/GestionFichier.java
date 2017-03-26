@@ -112,30 +112,6 @@ public class GestionFichier {
 
 	public static void read(String fileName) throws IOException {
 
-		// Logique du code
-		// On lit un fichier on sait au début, --> on est dans l'entête (on crée un dijoncteur HEADER = 1)
-		// (optionel) on vérife avec des mots clè qu'on est dans l'entête au cas ou
-		// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
-		//  on obtient cds list (ANALYZER)
-		// ... (à vérifier avec l'enonce) (ANALYZER)
-		// On trouve ORIGIN implique (HEADER = 0) (CONTENT = 1)
-		// pendant la phase de lecture (CONTENT=1) on check si on est dans un cds ou pas
-		// une fois trouvé ! (et verifier)
-		// on calcul avec les phases 0 1 2  (ANALYZER)
-		// on ressort 3 HMAP (ou on additione à un HMAP global)
-		// TODO on calcul les pref  (ANALYZER)
-		// Si on stock tout les HMAP on peut faire post processing
-		// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
-		// on resort du cds
-		// on continue et on refait la même chose si on retrouve un cds  sinon :
-		// On sort de la lecture (CONTENT = 0) et on reva dans un en tête (HEADER = 1) (il faut trouver un connecteur de fin)
-		// puis on recommence jusqu'à la fin de la lecture du fichier
-		// résultat on aura 3 HMAP pour phase 0 1 2 et 3 HMAP de pref 0 1 2
-
-
-		// TODO DE MÊME AVEC LES DINUCLEOTIDE !!!!
-
-
 		// ***************************************
 
 		// List disjoncteur
@@ -164,11 +140,17 @@ public class GestionFichier {
         tttGeneral.initPref();
         tttGeneral.initFreq(); // (peut être mit autre part)
 
+		//Dinucléotide var
+		Dinucleotide ddGeneral = new Dinucleotide();
+		Dinucleotide ddCurrentCds = new Dinucleotide();
+		//Initialisation des pref
+		ddGeneral.initPref();
+		ddGeneral.initFreq();
+
 		// important var
 		int contentCount = 1; // Nombre de lettre (init à 1 car on considère qu'on a lu la première)
 
 
-		// compte TODO delete count in prod ou le sortir en bilan
 
 		//****************************************
 		//**    COMPTEUR  						**
@@ -196,7 +178,7 @@ public class GestionFichier {
 		while ((sCurrentLine = br.readLine()) != null) {
 			boucle_count++;
 			line_count++;
-			if(Analyzer.checkInit(sCurrentLine) && HEADER){ // TODO checkInit -> isInit
+			if(Analyzer.checkInit(sCurrentLine) && HEADER){
 
 				//****************************************
 				//**    PHASE  DE TRANSITION CONTENT	**
@@ -204,7 +186,7 @@ public class GestionFichier {
 				HEADER = false;
 				CONTENT = false;
 
-			}else if(Analyzer.checkEnd((sCurrentLine)) && CONTENT){ // Todo checkEnd -> isEnd
+			}else if(Analyzer.checkEnd((sCurrentLine)) && CONTENT){
 
 				//****************************************
 				//**    PHASE  DE TRANSITION HEADER		**
@@ -213,14 +195,6 @@ public class GestionFichier {
 				CONTENT = false;
 				// On additione les Trinucleotide
 
-                // TODO Pref function
-                /*
-                try {
-                    tttGeneral.calculPref(tttCurrent);
-                } catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
-                    exceptionCodonNotFound.printStackTrace();
-                }
-                tttGeneral.fusion(tttCurrent);*/
 				block_transition += 1;
 				// On vide les cds
 				cdsInHeader.clear();
@@ -234,7 +208,6 @@ public class GestionFichier {
 			//********************************
 			if(HEADER && !CONTENT){
 				// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
-				// TODO cds list (ANALYZER)
 				// ... (à vérifier avec l'enonce) (ANALYZER)
 				header_line += 1;
 				if(Analyzer.checkCds(sCurrentLine)){
@@ -247,9 +220,7 @@ public class GestionFichier {
 						try {
 							cdsInHeader.fusion(Analyzer.cdsToBornes(sCurrentLine));
 						} catch (Exceptions.ExceptionCds | Exceptions.ExceptionBorne exceptionCds) {
-							//exceptionCds.printStackTrace(); // TODO check erreur
-							//System.out.println(sCurrentLine);
-							fail_cds += 1;
+								fail_cds += 1;
 						}
 					}
 				}
@@ -271,13 +242,8 @@ public class GestionFichier {
 						String tmpcds = Analyzer.cdsMultiLineToString(multiLine);
 						cdsInHeader.fusion(Analyzer.cdsToBornes(tmpcds));
 
-					} catch (Exceptions.ExceptionCds exceptionCds) {
-						//exceptionCds.printStackTrace(); // TODO check erreur
-						fail_cds += 1;
-					} catch (Exceptions.ExceptionBorne exceptionBorne) {
-						exceptionBorne.printStackTrace(); // todo ? (je crois que c'est un cas assez rare)
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Exceptions.ExceptionCds | Exceptions.ExceptionPatternLine | Exceptions.ExceptionBorne exceptionCds) {
+						fail_cds++;
 					}
 					multiLine.clear();
 				}
@@ -293,7 +259,6 @@ public class GestionFichier {
 			{
 				//  on calcul avec les phases 0 1 2  (ANALYZER)
 				// on ressort 3 HMAP (ou on additione à un HMAP global)
-				// TODO on calcul les pref  (ANALYZER)
 				// Si on stock tout les HMAP on peut faire post processing
 				// Sinon on ajoute dans un HMAP des pref +1 si la condition est verifié (voir énoncé)
 
@@ -317,7 +282,6 @@ public class GestionFichier {
 				//********************************
 
 
-				// TODO PAS OPTIMALE RAJOUTE ENORMEMENT DE COMPLEXITE (minime peut être mais en comptage de boucle enorme 75 fois plus par exemple)
 				for(Map.Entry<Bornes.Borne, Boolean> entry : multiLineOnCds.entrySet()) {
 					boucle_count++;
 					Bornes.Borne b = entry.getKey();
@@ -344,8 +308,8 @@ public class GestionFichier {
 					//**    RECONSTRUCTION DE LIGNE **
 					//********************************
 					bEnd.setTemporyLineBornSup(contentCount); // on stock l'info pour le découpage (peut être inutile)
-					Integer decoupeInf = bEnd.getBorninf() -  bEnd.getTemporyLineBornInf(); // TODO VERIF borne
-					Integer decoupeSuf = bEnd.getBornsup() + decoupeInf - bEnd.getBorninf()+1; // TODO VERIF borne
+					Integer decoupeInf = bEnd.getBorninf() -  bEnd.getTemporyLineBornInf(); // borne semble correcte
+					Integer decoupeSuf = bEnd.getBornsup() + decoupeInf - bEnd.getBorninf()+1; // aussi
 
 
 					String str = multipleCdsStr.get(bEnd).substring(decoupeInf,decoupeSuf); // on découpe
@@ -391,6 +355,8 @@ public class GestionFichier {
 						try {
 							Analyzer.countTrinIn3PhasesFromString(strToCount,tttGeneral,tttCurrentCds);
 							tttGeneral.calculPref(tttCurrentCds);
+							Analyzer.countDinIn2PhasesFromString(strToCount,ddGeneral,ddCurrentCds);
+							ddGeneral.calculPref(ddCurrentCds);
 						} catch (Exceptions.ExceptionCodonNotFound e) {
 
 							fail_codon += 1;
@@ -406,6 +372,7 @@ public class GestionFichier {
 
 					multiLineOnCds.remove(bEnd);
                     tttCurrentCds.clear();
+                    ddCurrentCds.clear();
 					// On delete le texte pour soulager la ram
 					if(!bEnd.isMultipleBorne()) {
 						multipleCdsStr.remove(bEnd);
@@ -435,6 +402,7 @@ public class GestionFichier {
 		//***************************
 		//**    FIN DE BOUCLE	   **
 		//***************************
+		// TODO voir comment utiliser toute l'information suivante // Peut être pour l'interface !!
 		System.out.println("Line count:"+line_count);
 		System.out.println("Boucle count :"+boucle_count);
 		System.out.println("\t ratio :"+boucle_count/(line_count));
@@ -449,6 +417,8 @@ public class GestionFichier {
 		System.out.println("\tcds complement fail :"+cds_complement_fail);
 		System.out.println("Content (pattern or letter bug) cds fail :"+fail_content_line);
 		System.out.println("Codon init or end from cds fail :"+fail_codon);
+
+		System.out.println("Trinucleotide");
 		System.out.println(tttGeneral.getHMAP0());
 		System.out.println(tttGeneral.getHMAP1());
 		System.out.println(tttGeneral.getHMAP2());
@@ -467,6 +437,25 @@ public class GestionFichier {
         } catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
             exceptionCodonNotFound.printStackTrace();
         }
+        System.out.println("Dinucleotide");
+		System.out.println(ddGeneral.getHMAP0());
+		System.out.println(ddGeneral.getHMAP1());
+		//System.out.println(ddGeneral.getHMAP2());
+		System.out.println("Pref :");
+		System.out.println(ddGeneral.getPrefHMAP0());
+		System.out.println(ddGeneral.getPrefHMAP1());
+		//System.out.println(ddGeneral.getPrefHMAP2());
+
+		// Calcul des frequences :
+		try {
+			System.out.println("Freq:");
+			ddGeneral.calculFreq();
+			System.out.println(ddGeneral.getFreqHMAP0());
+			System.out.println(ddGeneral.getFreqHMAP1());
+			//System.out.println(ddGeneral.getFreqHMAP2());
+		} catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
+			exceptionCodonNotFound.printStackTrace();
+		}
 
         //****************************************
 		//**    FERMETURE DU FICHIER		    **
