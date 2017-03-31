@@ -10,7 +10,7 @@ import com.opencsv.CSVReader;
 
 public class GestionFichier {
 
-	public static final String FILENAME_SIMPLE = "files/test/simple.txt";
+	public static final String FILENAME_SIMPLE = "files/test/test.txt";
 
 	public static void readFileByLine(String fileName){
 
