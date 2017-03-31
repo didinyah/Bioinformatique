@@ -1,0 +1,18 @@
+CDS       complement(4..13)
+
+CDS       join(13..22,25..37)
+
+CDS       43..660
+
+ORIGIN      
+        1 aatatgcaat aactgcaatg aacagtgttc acataataaa aaattaagcc agaatcacac
+       61 aacaaaaaaa ctaaaactaa catcacgcac atcatcacac acaaacacaa cagcataaac
+      121 acaaacaact atctcacaca acacacatca tcactcaccc ataacctaaa cacacaacaa
+      181 acacacacaa aacaaaaaaa acaccacaca gcaccacgca tcacacacaa cacaccctct
+      241 cacacacaaa aacacaaaat gcacagcctc aaaatgtcgg aatactcctc cattcgtaca
+      301 gcttgcatcc acaacggtcg tcttccgcta atcataatac agcgcagtca gtcttcaggc
+      361 ttagaggcct tcagccatta tactcccgac gtagctccgc aacagccagc aggcacgccg
+      421 ctccaccaga ggtcgcaatc aagagttcct tctcgtacta tcaagattta ctgcacagtc
+      481 aatcacagta gggtaaaact aacctgtctc acgacggtct aaacccagct cacgttccct
+      541 gttggtgggt gaacaatcca acacttcgca atttctgctt cacgatgata ggaagagccg
+      601 acatcgaaga atcaaaaagc agcgtcgcta tgatcgctcg gctgctacaa gccagttta
