@@ -37,10 +37,10 @@ public class TestScript {
 
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
-        //GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
+        GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
         //GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff"); // MOYEN
         //GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff"); // GROS
-        GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
+        //GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
 
         // test
         /*
@@ -85,7 +85,7 @@ public class TestScript {
 
         System.out.println(ttt.getHMAP2());
 
-        System.out.println(" [0:]    " +ttt.countNumberOfTrinucleotide(0) + "  [1:]   "+ttt.countNumberOfTrinucleotide(1) + "   [2:]    "+ttt.countNumberOfTrinucleotide(2) );
+        System.out.println(" [0:]    " +ttt.sumNumberOfNucleotide(0) + "  [1:]   "+ttt.sumNumberOfNucleotide(1) + "   [2:]    "+ttt.sumNumberOfNucleotide(2) );
 
     }
 

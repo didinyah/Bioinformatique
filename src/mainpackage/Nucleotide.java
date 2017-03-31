@@ -229,6 +229,31 @@ public class Nucleotide {
 		calculFreqPhase(1);
 		calculFreqPhase(2);
 	}
+
+
+	public int sumNumberOfNucleotide(int phase){
+		HashMap<String, Integer> HMAP = getHMAP(phase);
+		int tmp = 0;
+		for(Map.Entry<String, Integer> entry : HMAP.entrySet()) {
+			String key = entry.getKey();
+			Integer value = entry.getValue();
+			tmp += value;
+		}
+
+		return tmp;
+	}
+
+	public Double sumFreqOfNucleotide(int phase){
+		HashMap<String, Double> HMAP = getFreqHMAP(phase);
+		Double tmp = 0.;
+		for(Map.Entry<String, Double> entry : HMAP.entrySet()) {
+			String key = entry.getKey();
+			Double value = entry.getValue();
+			tmp += value;
+		}
+
+		return tmp;
+	}
 }
 
 

@@ -467,6 +467,12 @@ public class GestionFichier {
 			exceptionCodonNotFound.printStackTrace();
 		}
 
+		System.out.println(" Sum : ");
+		System.out.println(" [0:]    " +tttGeneral.sumNumberOfNucleotide(0) + "  [1:]   "+tttGeneral.sumNumberOfNucleotide(1) + "   [2:]    "+tttGeneral.sumNumberOfNucleotide(2) );
+		System.out.println(" [0:]    " +ddGeneral.sumNumberOfNucleotide(0) + "  [1:]   "+ddGeneral.sumNumberOfNucleotide(1)  );
+
+		System.out.println(" [0:]    " +tttGeneral.sumFreqOfNucleotide(0) + "  [1:]   "+tttGeneral.sumFreqOfNucleotide(1) + "   [2:]    "+tttGeneral.sumFreqOfNucleotide(2) );
+		System.out.println(" [0:]    " +ddGeneral.sumFreqOfNucleotide(0) + "  [1:]   "+ddGeneral.sumFreqOfNucleotide(1)  );
         //****************************************
 		//**    FERMETURE DU FICHIER		    **
 		//****************************************

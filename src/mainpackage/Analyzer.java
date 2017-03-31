@@ -149,19 +149,11 @@ public class Analyzer {
             Matcher m = p.matcher(content);
             int countMatches = 0;
             Dinucleotide tmpDi = new Dinucleotide();
-            String last = "";
-            while (m.find()) {
 
-                //On affecte le dernier
-                last = m.group();
+            while (m.find()) {
 
                 countMatches++;
                 tmpDi.addDiN(m.group(),1,phase);
-            }
-
-            // On a compté en trop le codon stop
-            if(phase==0){// la condition permet de soustraire qu'une fois car cette fonction marche pour les 3 phases TODO verif !
-                tmpDi.addDiN(last,-1,0);
             }
 
             if(countMatches*2==content.length()){
@@ -196,12 +188,28 @@ public class Analyzer {
 
     public static void countDinIn2PhasesFromString(String str,Dinucleotide general,Dinucleotide cdsCurrent) throws Exceptions.ExceptionPatternLine, Exceptions.ExceptionCodonNotFound {
 
+        Pattern p0,p1;
+        Matcher m0,m1;
 
-        Pattern p1 = Pattern.compile("^.(.*)[a|t|c|g]$"); // TODO est-ce bon ? pour les DI il y a que 2 phases ? (jai po le sujet lol)
-        Matcher m1 = p1.matcher(str);
-        if(m1.find() ){
-            countDinFromString(str,general,cdsCurrent,0);
-            countDinFromString(m1.group(1),general,cdsCurrent,1);
+        if( str.length()%3 ==0 && str.length()%2 ==0){
+            p0 = Pattern.compile("^(.*)[a|t|c|g]([a|t|c|g][a|t|c|g][a|t|c|g])$");
+            m0 = p0.matcher(str);
+            p1 = Pattern.compile("^.(.*)[a|t|c|g][a|t|c|g][a|t|c|g]$"); // TODO est-ce bon ? pour les DI il y a que 2 phases ? (jai po le sujet lol)
+            m1 = p1.matcher(str);
+        }else{
+            p0 = Pattern.compile("^(.*)([a|t|c|g][a|t|c|g][a|t|c|g])$");
+            m0 = p0.matcher(str);
+            p1 = Pattern.compile("^.(.*)[a|t|c|g][a|t|c|g]$"); // TODO est-ce bon ? pour les DI il y a que 2 phases ? (jai po le sujet lol)
+            m1 = p1.matcher(str);
+        }
+
+        if(m0.find() && m1.find()){
+            if(checkCodonStop(m0.group(2))) {
+                countDinFromString(m0.group(1), general, cdsCurrent, 0);
+                countDinFromString(m1.group(1), general, cdsCurrent, 1);
+            }else{
+                throw new Exceptions.ExceptionCodonNotFound("Codon end not found");
+            }
             //countDinFromString(m2.group(1),general,cdsCurrent,2);
         }else{
             throw new Exceptions.ExceptionPatternLine();

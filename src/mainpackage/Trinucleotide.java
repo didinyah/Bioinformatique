@@ -60,20 +60,7 @@ public class Trinucleotide extends Nucleotide{
 		HashMap<String, Integer> HMAP = getHMAP(phase);
 		HMAP.replace(triN,i+HMAP.get(triN));
 	}
-	
 
-
-	public int countNumberOfTrinucleotide(int phase){
-		HashMap<String, Integer> HMAP = getHMAP(phase);
-		int tmp = 0;
-		for(Map.Entry<String, Integer> entry : HMAP.entrySet()) {
-			String key = entry.getKey();
-			Integer value = entry.getValue();
-			tmp += value;
-		}
-
-		return tmp;
-	}
 	
 	
 }
