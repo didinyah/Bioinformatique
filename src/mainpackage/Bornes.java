@@ -15,7 +15,7 @@ public class Bornes {
 
 
 
-    private List<Borne> list = new ArrayList<>();
+    private List<Borne> list = new ArrayList<Borne>();
 
     public void addBorne(Borne b) throws Exceptions.ExceptionBorne {
         // TODO Vérification si on peut ajouter la borne
@@ -86,7 +86,7 @@ public class Bornes {
     }
 
     public List<Bornes.Borne> extractStartBornesFromLine(int i, int j)  {
-        List<Bornes.Borne> tmp = new ArrayList<>();
+        List<Bornes.Borne> tmp = new ArrayList<Borne>();
 
         for(Borne b : list){
             if(b.getBorninf() >= i && b.getBorninf() < j){
@@ -97,7 +97,7 @@ public class Bornes {
     }
 
     public List<Bornes.Borne> extractEndBornesFromLine(int i, int j)  {
-        List<Bornes.Borne> tmp = new ArrayList<>();
+        List<Bornes.Borne> tmp = new ArrayList<Borne>();
 
         for(Borne b : list){
             if(b.getBornsup() >= i && b.getBornsup() < j){
@@ -220,7 +220,6 @@ public class Bornes {
             return isLessThan(b) || isGreaterThan(b);
         }
 
-        @Override
         public int compareTo(Borne o) {
             return isGreaterThan(o) ? 1 : isLessThan(o) ? -1 : 0;
         }
