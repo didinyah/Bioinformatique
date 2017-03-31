@@ -219,7 +219,9 @@ public class GestionFichier {
 
 						try {
 							cdsInHeader.fusion(Analyzer.cdsToBornes(sCurrentLine));
-						} catch (Exceptions.ExceptionCds | Exceptions.ExceptionBorne exceptionCds) {
+						} catch (Exceptions.ExceptionCds e){
+							fail_cds += 1;
+						} catch (Exceptions.ExceptionBorne exceptionCds){
 								fail_cds += 1;
 						}
 					}
@@ -242,7 +244,15 @@ public class GestionFichier {
 						String tmpcds = Analyzer.cdsMultiLineToString(multiLine);
 						cdsInHeader.fusion(Analyzer.cdsToBornes(tmpcds));
 
-					} catch (Exceptions.ExceptionCds | Exceptions.ExceptionPatternLine | Exceptions.ExceptionBorne exceptionCds) {
+					} catch (Exceptions.ExceptionCds ex)
+					{
+						fail_cds++;
+					}
+					catch (Exceptions.ExceptionPatternLine ex)
+					{
+						fail_cds++;
+					}
+					catch(Exceptions.ExceptionBorne exceptionCds) {
 						fail_cds++;
 					}
 					multiLine.clear();
