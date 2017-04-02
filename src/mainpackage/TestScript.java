@@ -37,11 +37,12 @@ public class TestScript {
 
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
-        GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
+        //GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
         //GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff"); // MOYEN
         //GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff"); // GROS
         //GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
-
+        GestionFichier.read("files/tests/chromosome_VI_NC_028455.1.txt");
+        //GestionFichier.read("files/tests/test.txt");
         // test
         /*
         if (Analyzer.checkCds("CDS")){
@@ -191,7 +192,29 @@ public class TestScript {
         System.out.println("Test is true cds : "+succes_count);
         System.out.println("\t is fake cds : "+crash_count);
 
+        System.out.println("********TEST2***********");
+        List<String> test2 = new ArrayList<String>();
+        test2.add("     CDS             join(<33903271..33903338,33903565..33903632,");
+        test2.add("                     33904400..33904472,33904649..33904758,33904828..33904929,");
+        test2.add("                     33905235..33905334,33905482..33905658)");
+        try {
+            String tmpcds = Analyzer.cdsMultiLineToString(test2);
+            System.out.println(tmpcds);
+            System.out.println(Analyzer.cdsToBornes(tmpcds));
 
+        } catch (Exceptions.ExceptionCds ex)
+        {
+           System.out.println("error");
+        }
+        catch (Exceptions.ExceptionPatternLine ex)
+        {
+            System.out.println("error");
+
+        }
+        catch(Exceptions.ExceptionBorne exceptionCds) {
+
+            System.out.println("error");
+        }
 
 
     }
@@ -210,6 +233,7 @@ public class TestScript {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         // testNucleotide();
         //testTrinucleotideExtractor();
         //testTrinucleotideOriginExtractor();

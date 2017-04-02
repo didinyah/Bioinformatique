@@ -108,6 +108,11 @@ public class Bornes {
     }
 
 
+    public void removeBorn(Borne b){
+        list.remove(b);
+
+    }
+
     public HashMap<Borne,String> initMultipleCdsStr() {
         HashMap<Borne,String> tmp = new HashMap<Bornes.Borne,String>();
         for(Borne b : list){

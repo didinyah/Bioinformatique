@@ -131,7 +131,7 @@ public class GestionFichier {
 		// CDS
 		Bornes cdsInHeader= new Bornes();
 		HashMap<Bornes.Borne,Boolean> multiLineOnCds = new HashMap<Bornes.Borne,Boolean>();
-		HashMap<Bornes.Borne,String> multipleCdsStr = null;
+		HashMap<Bornes.Borne,String> multipleCdsStr =  new HashMap<Bornes.Borne,String>();
 
 		//Trinucléotide var
 		Trinucleotide tttGeneral = new Trinucleotide();
@@ -220,9 +220,9 @@ public class GestionFichier {
 						try {
 							cdsInHeader.fusion(Analyzer.cdsToBornes(sCurrentLine));
 						} catch (Exceptions.ExceptionCds e){
-							fail_cds += 1;
+							fail_cds++;
 						} catch (Exceptions.ExceptionBorne exceptionCds){
-								fail_cds += 1;
+							fail_cds++;
 						}
 					}
 				}
@@ -299,8 +299,8 @@ public class GestionFichier {
 					if(disj){
 						// La ligne fait parti d'un cds (de la borne key)
 						try {
-							// on rajoute les lignes
-							multipleCdsStr.put(b,multipleCdsStr.get(b) + Analyzer.extractContentLine(sCurrentLine) );
+
+							multipleCdsStr.put(b, multipleCdsStr.getOrDefault(b,"") + Analyzer.extractContentLine(sCurrentLine) );
 						} catch (Exceptions.ExceptionPatternLine exceptionPatternLine) {
 							fail_content_line+=1;
 						}
@@ -379,13 +379,35 @@ public class GestionFichier {
 						}
 					}
 
-
+					System.out.println(cdsInHeader.size());
 					multiLineOnCds.remove(bEnd);
                     tttCurrentCds.clear();
                     ddCurrentCds.clear();
 					// On delete le texte pour soulager la ram
 					if(!bEnd.isMultipleBorne()) {
 						multipleCdsStr.remove(bEnd);
+						cdsInHeader.removeBorn(bEnd);
+					}else if (bEnd.isMultipleBorne() && bEnd.isLastMultipleBorne()){
+
+						// Todo voir si la suppression peut être fait autrement
+						List<Bornes.Borne> tmplist = new ArrayList<Bornes.Borne>();
+						for(Map.Entry<Bornes.Borne, String> entry : multipleCdsStr.entrySet()) {
+							boucle_count++;
+							Bornes.Borne b = entry.getKey();
+							String st = entry.getValue();
+							if(bEnd.getLinkId().equals(b.getLinkId()) ){ // On regarde si ils ont le même id => jointure
+								tmplist.add(b);
+							}
+						}
+
+						for(Bornes.Borne b : tmplist){
+							boucle_count++;
+							multipleCdsStr.remove(b);
+							cdsInHeader.removeBorn(b);
+						}
+
+						tmplist.clear();
+
 					}
 				}
 
@@ -402,7 +424,7 @@ public class GestionFichier {
 
 
 				// Permettra de reconstruire les cds pour faire les calculs
-				multipleCdsStr = cdsInHeader.initMultipleCdsStr();
+				//multipleCdsStr = cdsInHeader.initMultipleCdsStr();
 
 
 			}
@@ -419,11 +441,12 @@ public class GestionFichier {
 		System.out.println("BlockTransition detected:" + block_transition);
 		System.out.println("Header line:" + header_line);
 		System.out.println("Content line:" + content_line);
-		System.out.println("cds count:" + cds_count);
+		System.out.println("cds match:" + cds_count);
+		System.out.println("\tcds match fail :"+fail_cds);
+
 		System.out.println("\tcds complement count :"+cds_complement);
 		System.out.println("\tcds multi line count :"+cds_multi_line_count);
 		System.out.println("\tmax multi cds size :"+max_cds_size);
-		System.out.println("\tcds extractor fail :"+fail_cds);
 		System.out.println("\tcds complement fail :"+cds_complement_fail);
 		System.out.println("Content (pattern or letter bug) cds fail :"+fail_content_line);
 		System.out.println("Codon init or end from cds fail :"+fail_codon);

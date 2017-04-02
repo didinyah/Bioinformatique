@@ -1,9 +1,6 @@
 CDS       complement(4..13)
-
 CDS       join(13..22,25..37)
-
-CDS       43..660
-
+CDS       43..500
 ORIGIN      
         1 aatatgcaat aactgcaatg aacagtgttc acataataaa aaattaagcc agaatcacac
        61 aacaaaaaaa ctaaaactaa catcacgcac atcatcacac acaaacacaa cagcataaac
@@ -16,3 +13,4 @@ ORIGIN
       481 aatcacagta gggtaaaact aacctgtctc acgacggtct aaacccagct cacgttccct
       541 gttggtgggt gaacaatcca acacttcgca atttctgctt cacgatgata ggaagagccg
       601 acatcgaaga atcaaaaagc agcgtcgcta tgatcgctcg gctgctacaa gccagttta
+//
