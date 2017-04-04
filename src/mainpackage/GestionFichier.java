@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.opencsv.CSVReader;
+import com.sun.org.apache.regexp.internal.RE;
 
 public class GestionFichier {
 
@@ -110,7 +111,7 @@ public class GestionFichier {
 
 
 
-	public static void read(String fileName) throws IOException {
+	public static ResultData read(String fileName) throws IOException {
 
 		// ***************************************
 
@@ -160,7 +161,6 @@ public class GestionFichier {
 		int block_transition = 0;
 		int cds_count = 0;
 		int cds_multi_line_count = 0;
-		int max_cds_size = 0;
 		int fail_cds = 0;
 		int fail_content_line =0;
 		int fail_codon = 0;
@@ -237,7 +237,6 @@ public class GestionFichier {
 					// on ajoute le dernier (important)
 					multiLine.add(sCurrentLine);
 
-					max_cds_size = Math.max(max_cds_size,multiLine.size());
 
 					CDS_MULTI_LINE = false;
 					try {
@@ -379,7 +378,7 @@ public class GestionFichier {
 						}
 					}
 
-					System.out.println(cdsInHeader.size());
+					//System.out.println(cdsInHeader.size()); TODO VOIR ICI POUR OPTIMISATION PROBLEM
 					multiLineOnCds.remove(bEnd);
                     tttCurrentCds.clear();
                     ddCurrentCds.clear();
@@ -434,68 +433,33 @@ public class GestionFichier {
 		//***************************
 		//**    FIN DE BOUCLE	   **
 		//***************************
-		// TODO voir comment utiliser toute l'information suivante // Peut être pour l'interface !!
-		System.out.println("Line count:"+line_count);
-		System.out.println("Boucle count :"+boucle_count);
-		System.out.println("\t ratio :"+boucle_count/(line_count));
-		System.out.println("BlockTransition detected:" + block_transition);
-		System.out.println("Header line:" + header_line);
-		System.out.println("Content line:" + content_line);
-		System.out.println("cds match:" + cds_count);
-		System.out.println("\tcds match fail :"+fail_cds);
+		ResultData result = new ResultData();
+		result.lineCount = line_count;
+		result.headerLine = header_line;
+		result.contentLine = content_line;
+		result.numberCdsSeq = cds_count;
+		result.numberCdsSeqInvalid = fail_cds; // TODO VERIF ! il semble avoir un bug
+		result.cdsMultiLine = cds_multi_line_count;
+		result.cdsBorneComplement = cds_complement;
 
-		System.out.println("\tcds complement count :"+cds_complement);
-		System.out.println("\tcds multi line count :"+cds_multi_line_count);
-		System.out.println("\tmax multi cds size :"+max_cds_size);
-		System.out.println("\tcds complement fail :"+cds_complement_fail);
-		System.out.println("Content (pattern or letter bug) cds fail :"+fail_content_line);
-		System.out.println("Codon init or end from cds fail :"+fail_codon);
-
-		System.out.println("Trinucleotide");
-		System.out.println(tttGeneral.getHMAP0());
-		System.out.println(tttGeneral.getHMAP1());
-		System.out.println(tttGeneral.getHMAP2());
-        System.out.println("Pref :");
-        System.out.println(tttGeneral.getPrefHMAP0());
-        System.out.println(tttGeneral.getPrefHMAP1());
-        System.out.println(tttGeneral.getPrefHMAP2());
-
-        // Calcul des frequences :
-        try {
-            System.out.println("Freq:");
-            tttGeneral.calculFreq();
-            System.out.println(tttGeneral.getFreqHMAP0());
-            System.out.println(tttGeneral.getFreqHMAP1());
-            System.out.println(tttGeneral.getFreqHMAP2());
-        } catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
-            exceptionCodonNotFound.printStackTrace();
-        }
-        System.out.println("Dinucleotide");
-		System.out.println(ddGeneral.getHMAP0());
-		System.out.println(ddGeneral.getHMAP1());
-		//System.out.println(ddGeneral.getHMAP2());
-		System.out.println("Pref :");
-		System.out.println(ddGeneral.getPrefHMAP0());
-		System.out.println(ddGeneral.getPrefHMAP1());
-		//System.out.println(ddGeneral.getPrefHMAP2());
-
-		// Calcul des frequences :
+		result.blockTransition = block_transition;
+		result.borneComplementFail = cds_complement_fail;
+		result.inBorneContentFail = fail_content_line;
+		result.codonOfBornFail = fail_codon;
 		try {
-			System.out.println("Freq:");
+			tttGeneral.calculFreq();
 			ddGeneral.calculFreq();
-			System.out.println(ddGeneral.getFreqHMAP0());
-			System.out.println(ddGeneral.getFreqHMAP1());
-			//System.out.println(ddGeneral.getFreqHMAP2());
 		} catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
 			exceptionCodonNotFound.printStackTrace();
 		}
 
-		System.out.println(" Sum : ");
-		System.out.println(" [0:]    " +tttGeneral.sumNumberOfNucleotide(0) + "  [1:]   "+tttGeneral.sumNumberOfNucleotide(1) + "   [2:]    "+tttGeneral.sumNumberOfNucleotide(2) );
-		System.out.println(" [0:]    " +ddGeneral.sumNumberOfNucleotide(0) + "  [1:]   "+ddGeneral.sumNumberOfNucleotide(1)  );
 
-		System.out.println(" [0:]    " +tttGeneral.sumFreqOfNucleotide(0) + "  [1:]   "+tttGeneral.sumFreqOfNucleotide(1) + "   [2:]    "+tttGeneral.sumFreqOfNucleotide(2) );
-		System.out.println(" [0:]    " +ddGeneral.sumFreqOfNucleotide(0) + "  [1:]   "+ddGeneral.sumFreqOfNucleotide(1)  );
+		result.ttt = tttGeneral;
+		result.dd = ddGeneral;
+
+		System.out.println("Boucle count :"+boucle_count);
+		System.out.println("\t ratio :"+boucle_count/(line_count));
+
         //****************************************
 		//**    FERMETURE DU FICHIER		    **
 		//****************************************
@@ -506,6 +470,8 @@ public class GestionFichier {
 
 		if (fr != null)
 			fr.close();
+
+		return result;
 
 	}
 	

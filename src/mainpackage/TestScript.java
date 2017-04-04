@@ -30,24 +30,26 @@ public class TestScript {
     }
 
 
-    public static void testFile() throws IOException {
+    public static ResultData testFile() throws IOException {
 
 
         // file test
 
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
-        //GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
-        //GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff"); // MOYEN
-        //GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff"); // GROS
-        //GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
-        GestionFichier.read("files/tests/chromosome_VI_NC_028455.1.txt");
+        //ResultData r = GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
+        //ResultData r = GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff"); // MOYEN
+        ResultData r = GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff"); // GROS
+        //ResultData r = GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
+        //ResultData r = GestionFichier.read("files/tests/chromosome_VI_NC_028455.1.txt");
         //GestionFichier.read("files/tests/test.txt");
         // test
         /*
         if (Analyzer.checkCds("CDS")){
             System.out.println("CDS hihi");
         }*/
+
+        return r;
     }
 
     public static void testTrinucleotideExtractor(){
@@ -229,7 +231,8 @@ public class TestScript {
 
         //testCdsExtractor();
         try {
-            testFile();
+            ResultData r = testFile();
+            System.out.println(r);
         } catch (IOException e) {
             e.printStackTrace();
         }
