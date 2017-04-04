@@ -110,8 +110,8 @@ public class ResultData {
         str += dd.getHMAP0()+"\n";
         str += dd.getHMAP1()+"\n";
         str += "Pref :"+"\n";
-        str += dd.getPrefHMAP0()+"\n";
-        str += dd.getPrefHMAP1()+"\n";
+        //str += dd.getPrefHMAP0()+"\n";
+        //str += dd.getPrefHMAP1()+"\n";
 
         // Calcul des frequences :
 
@@ -124,8 +124,14 @@ public class ResultData {
         str += " [0:]    " +getTotalTri(0) + "  [1:]   "+getTotalTri(1) + "   [2:]    "+getTotalTri(2) +"\n";
         str += " [0:]    " +getTotalDi(0) + "  [1:]   "+getTotalDi(1)  +"\n";
 
+        str += " Sum freq : "+"\n";
         str += " [0:]    " +getTotalTriFreq(0) + "  [1:]   "+getTotalTriFreq(1) + "   [2:]    "+getTotalTriFreq(2) +"\n";
         str += " [0:]    " +getTotalDiFreq(0) + "  [1:]   "+getTotalDiFreq(1)  +"\n";
+
+        str += " Sum Pref : "+"\n";
+        str += " [0:]    " +ttt.sumPrefOfNucleotide(0) + "  [1:]   "+ttt.sumPrefOfNucleotide(1) + "   [2:]    "+ttt.sumPrefOfNucleotide(2) +"\n";
+        str += " [0:]    " +dd.sumPrefOfNucleotide(0) + "  [1:]   "+dd.sumPrefOfNucleotide(1)  +"\n";
+
 
         return str;
     }

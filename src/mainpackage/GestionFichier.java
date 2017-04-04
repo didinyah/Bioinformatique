@@ -365,7 +365,7 @@ public class GestionFichier {
 							Analyzer.countTrinIn3PhasesFromString(strToCount,tttGeneral,tttCurrentCds);
 							tttGeneral.calculPref(tttCurrentCds);
 							Analyzer.countDinIn2PhasesFromString(strToCount,ddGeneral,ddCurrentCds);
-							ddGeneral.calculPref(ddCurrentCds);
+							//ddGeneral.calculPref(ddCurrentCds); TODO il parait qu'il ne faut pas le faire
 						} catch (Exceptions.ExceptionCodonNotFound e) {
 
 							fail_codon += 1;

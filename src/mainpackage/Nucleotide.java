@@ -185,19 +185,24 @@ public class Nucleotide {
 		HashMap<String, Integer> prefHMAP1 = getPrefHMAP(1);
 		HashMap<String, Integer> prefHMAP2 = getPrefHMAP(2);
 
+
 		for(Map.Entry<String, Integer> entry : HMAP0.entrySet()) {
 			String key = entry.getKey();
 			Integer vHMAP0 = entry.getValue();
 			if (HMAP1.getOrDefault(key, -1) != -1 && prefHMAP0.getOrDefault(key, -1) != -1) { // test useless mais au cas ou
-				if (vHMAP0 >= HMAP1.get(key) && vHMAP0 >= HMAP2.get(key)) {
-					// Pref0
-					prefHMAP0.replace(key, 1 + prefHMAP0.get(key));
-				} else if (HMAP1.get(key) >= vHMAP0 && HMAP1.get(key) >= HMAP2.get(key)) {
-					// Pref1
-					prefHMAP1.replace(key, 1 + prefHMAP1.get(key));
-				} else {
-					// Pref2
-					prefHMAP2.replace(key, 1 + prefHMAP2.get(key));
+				if(vHMAP0 != 0 && HMAP1.get(key) != 0 && HMAP2.get(key) !=0) {
+					if (vHMAP0 >= HMAP1.get(key) && vHMAP0 >= HMAP2.get(key)) {
+						// Pref0
+						prefHMAP0.replace(key, 1 + prefHMAP0.get(key));
+					}
+					if (HMAP1.get(key) >= vHMAP0 && HMAP1.get(key) >= HMAP2.get(key)) {
+						// Pref1
+						prefHMAP1.replace(key, 1 + prefHMAP1.get(key));
+					}
+					if (HMAP2.get(key) >= vHMAP0 && HMAP2.get(key) >= HMAP2.get(key)) {
+						// Pref2
+						prefHMAP2.replace(key, 1 + prefHMAP2.get(key));
+					}
 				}
 			} else {
 				//throw new Exceptions.ExceptionCodonNotFound("Problem with pref phase"); //TODO UN BUG DE RESULTAT SI ON DECOMMENTE WHY ?
@@ -252,6 +257,17 @@ public class Nucleotide {
 			tmp += value;
 		}
 
+		return tmp;
+	}
+
+	public Integer sumPrefOfNucleotide(int phase){
+		HashMap<String, Integer> HMAP = getPrefHMAP(phase);
+		Integer tmp = 0;
+		for(Map.Entry<String, Integer> entry : HMAP.entrySet()) {
+			String key = entry.getKey();
+			Integer value = entry.getValue();
+			tmp += value;
+		}
 		return tmp;
 	}
 }
