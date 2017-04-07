@@ -1,5 +1,7 @@
 package mainpackage;
 
+import java.util.List;
+
 /**
  * Created by SandrosLaptop on 31/03/2017.
  */
@@ -7,9 +9,6 @@ public class ResultData {
 
     // Ce fichier consiste à rassembler toutes les informations de l'extractions d'un fichier ou de plusieurs fichiers
 
-    // Todo la fusion d'un ResultData avec un autre
-    // Todo la fusion d'une liste de ResultData
-    // Ces prochaines fonctions permetrons pour générer les excels
 
 
     // Important var
@@ -67,12 +66,55 @@ public class ResultData {
     //Nombre de CDS qui sont sur plusieurs ligne (peu d'information à part que c'est une grosse jointure)
     Integer cdsMultiLine = 0;
 
-    Integer blockTransition; // TODO voir si cela correspond à autre choes
+    Integer blockTransition= 0;
 
     Integer borneComplementFail = 0;
     Integer inBorneContentFail = 0;
     Integer codonOfBornFail = 0;
 
+    public ResultData(){
+        ttt = new Trinucleotide();
+        ttt.initPref();
+        ttt.initFreq();
+        dd = new Dinucleotide();
+        dd.initPref();
+        dd.initFreq();
+    }
+
+    // fusion function
+    public void fusion(ResultData resultData){
+        // fusion current resultData with the resultdata in param
+        ttt.fusion(resultData.ttt);
+        dd.fusion(resultData.dd);
+
+        ttt.fusionPref(resultData.ttt);
+        dd.fusionPref(resultData.dd);
+        try {
+            ttt.calculFreq();
+            dd.calculFreq();
+        } catch (Exceptions.ExceptionCodonNotFound exceptionCodonNotFound) {
+
+        }
+        numberCdsSeq += resultData.numberCdsSeq;
+        numberCdsSeqInvalid += resultData.numberCdsSeqInvalid;
+
+        //optional
+        lineCount += resultData.lineCount;
+        headerLine += resultData.headerLine;
+        contentLine += resultData.contentLine;
+        cdsBorneComplement += resultData.cdsBorneComplement;
+        cdsMultiLine += resultData.cdsMultiLine;
+        blockTransition += resultData.blockTransition;
+        inBorneContentFail += resultData.inBorneContentFail;
+        codonOfBornFail += resultData.codonOfBornFail;
+    }
+
+
+    public void fusions(List<ResultData> listResult){
+        for(ResultData r: listResult){
+            fusion(r);
+        }
+    }
 
     public String toString(){
         String str = "";

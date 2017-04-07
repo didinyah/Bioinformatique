@@ -39,8 +39,8 @@ public class TestScript {
                 System.getProperty("user.dir"));
         //ResultData r = GestionFichier.read("files/tests/GCF_000847225.1_ViralMultiSegProj14603_genomic.gbff"); // PETIT
         //ResultData r = GestionFichier.read("files/tests/GCF_000010865.1_ASM1086v1_genomic.gbff"); // MOYEN
-        //ResultData r = GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff"); // GROS
-        ResultData r = GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
+        ResultData r1 = GestionFichier.read("files/tests/GCA_001572075.1_ASM157207v1_genomic.gbff"); // GROS
+        ResultData r2 = GestionFichier.read("files/tests/GCF_000277815.2_ASM27781v3_genomic.gbff");
         //ResultData r = GestionFichier.read("files/tests/chromosome_VI_NC_028455.1.txt");
         //GestionFichier.read("files/tests/test.txt");
         // test
@@ -48,8 +48,12 @@ public class TestScript {
         if (Analyzer.checkCds("CDS")){
             System.out.println("CDS hihi");
         }*/
-
-        return r;
+        ResultData rrr = new ResultData();
+        System.out.println(r1);
+        System.out.println(r2);
+        rrr.fusion(r1);
+        rrr.fusion(r2);
+        return rrr;
     }
 
     public static void testTrinucleotideExtractor(){
