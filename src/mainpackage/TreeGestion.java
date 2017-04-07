@@ -22,14 +22,19 @@ public class TreeGestion {
 	
 	private static ArrayList<Organism> listeOrga = new ArrayList<Organism>();
 	
-	public static JCheckBoxTree construct(){
+	public static JCheckBoxTree construct(Chargement charg){
 		List<TreeBuilder> services = new ArrayList<TreeBuilder>();
-		TreeBuilder eukaryotes = new TreeBuilder(OrganismType.EUKARYOTES);
-		TreeBuilder prokaryotes = new TreeBuilder(OrganismType.PROKARYOTES);
-		TreeBuilder viruses = new TreeBuilder(OrganismType.VIRUSES);
+		charg.send("EUKARYOTES", 25);
+		charg.send("PROKARYOTES", 70);
+		charg.send("VIRUSES", 200);
+		TreeBuilder eukaryotes = new TreeBuilder(OrganismType.EUKARYOTES, charg);
+		TreeBuilder prokaryotes = new TreeBuilder(OrganismType.PROKARYOTES, charg);
+		TreeBuilder viruses = new TreeBuilder(OrganismType.VIRUSES, charg);
 		services.add(eukaryotes);
 		services.add(prokaryotes);
 		services.add(viruses);
+		
+		
 		
 		ServiceManager sm = new ServiceManager(services);
 		sm.startAsync();
@@ -110,7 +115,7 @@ public class TreeGestion {
 			for (String key: organism.getReplicons().keySet()) {
 			    //System.out.println("key : " + key);
 				String valueID = organism.getReplicons().get(key);
-			    System.out.println(name + " " + valueID.toString());
+			    //System.out.println(name + " " + valueID.toString());
 			    
 			    // FAIRE LES DL ICI
 			    String url = "";
@@ -134,7 +139,9 @@ public class TreeGestion {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		JCheckBoxTree test = TreeGestion.construct();
+		int nbOrgaEnTout = 295;
+		Chargement charg = new Chargement(3);
+		JCheckBoxTree test = TreeGestion.construct(charg);
 		
 		TreeModel model = test.getModel();
 		

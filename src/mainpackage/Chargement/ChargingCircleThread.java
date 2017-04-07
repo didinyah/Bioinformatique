@@ -113,7 +113,7 @@ public class ChargingCircleThread extends Thread {
 						cc.updateProgress(i);
 						jp.repaint();
 						try{
-							Thread.sleep(40);
+							Thread.sleep(2);
 						} catch (InterruptedException e){
 							e.printStackTrace();
 						}

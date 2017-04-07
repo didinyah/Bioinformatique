@@ -22,6 +22,8 @@ import com.google.common.io.Resources;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.google.common.util.concurrent.AbstractService;
 
+import mainpackage.Chargement.Chargement;
+
 public class TreeBuilder extends AbstractExecutionThreadService {
 	
 	public static enum OrganismType {
@@ -34,6 +36,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 	private String baseURL;
 	private int currentPage;
 	private List<Organism> organismList;
+	private Chargement charg;
 	
 	private Retryer<List<Organism>> retryer;
 	
@@ -43,7 +46,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 		}
 	};
 	
-	public TreeBuilder(OrganismType type){
+	public TreeBuilder(OrganismType type, Chargement charg){
 		this.retryer = RetryerBuilder.<List<Organism>>newBuilder()
 				.retryIfExceptionOfType(IOException.class)
 				.retryIfRuntimeException()
@@ -62,16 +65,17 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 			this.baseURL = Utils.TREE_VIRUSES_URL;
 		}
 		// 1293 éléments pour pages entre 1 et 10
+		this.charg = charg;
 		int nombreOrganismes = 1293;
 		this.type = type;
 		this.organismList = new ArrayList<Organism>();
 	}
 	
-	public void readAllPages(){
+	public void readAllPages(Chargement charg){
 		this.currentPage = 1;
 		boolean cont = true;
 		
-		//charg.log("Début du téléchargement des organismes");
+		charg.log("Début du téléchargement des organismes");
 		while(cont && currentPage < 3) {
 			try{
 				List<Organism> result = retryer.call(this.pageCallable);
@@ -88,7 +92,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 			System.out.println(this.type.toString()+ " page : "+ this.currentPage);
 			currentPage ++;
 		}
-		//charg.log("Fin du téléchargement des organismes");
+		charg.log("Fin du téléchargement des organismes");
 	}
 	
 	public List<Organism> parseCurrentPage() throws MalformedURLException, IOException{
@@ -171,7 +175,9 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 				}
 				if(validOrganism){
 					organismsList.add(currentOrganism);
-					//charg.send(currentOrganism);
+					//System.out.println(currentOrganism.getKingdom());
+					//charg.log(currentOrganism.getName());
+					charg.send(currentOrganism);
 				}
 			}
 		}
@@ -185,6 +191,6 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 	
 	@Override
 	protected void run() throws Exception {
-		this.readAllPages();
+		this.readAllPages(this.charg);
 	}
 }
