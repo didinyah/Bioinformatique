@@ -5,6 +5,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -119,6 +121,7 @@ public class Chargement extends Frame{
 	}
 	
 	public void log(String s){
-		logFrame.append(s);
+		panel.log(s);
+		System.out.println("Un message a été log");
 	}
 }

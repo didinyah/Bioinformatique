@@ -6,7 +6,9 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Stack;
 
@@ -227,6 +229,8 @@ public class GlobalJPanel extends JPanel{
 	}
 	
 	public void log(String s){
-		logFrame.append(s+"\n");
+		Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		logFrame.append("["+sdf.format(cal.getTime())+"]"+s+"\n");
 	}
 }
