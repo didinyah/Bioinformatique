@@ -143,9 +143,25 @@ public class Nucleotide {
 		fusion(tmp.getHMAP1(),1);
 		fusion(tmp.getHMAP2(),2);
 	}
-	// Todo fonction de frequence
-	// à reflechir de les mettres
+	public void fusionPref(HashMap<String, Integer> hm, int phase){
+		HashMap<String, Integer> HMAP = getPrefHMAP(phase);
 
+		for(HashMap.Entry<String, Integer> entry : hm.entrySet()) {
+			String key = entry.getKey();
+			Integer value = entry.getValue();
+
+			HMAP.replace(key,HMAP.get(key) + value);
+		}
+
+	}
+
+
+	public void fusionPref(Nucleotide tmp){
+
+		fusionPref(tmp.getPrefHMAP(0),0);
+		fusionPref(tmp.getPrefHMAP(1),1);
+		fusionPref(tmp.getPrefHMAP(2),2);
+	}
 
 	public String toString(){
 
