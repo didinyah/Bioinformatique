@@ -2,6 +2,7 @@ package Windows;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Enumeration;
@@ -125,6 +126,7 @@ public class JCheckBoxTree extends JTree {
             checkBox = new JCheckBox();
             add(checkBox, BorderLayout.CENTER);
             setOpaque(false);
+            checkBox.setPreferredSize(new Dimension(500,20));
         }
 
         public Component getTreeCellRendererComponent(JTree tree, Object value,
@@ -146,7 +148,7 @@ public class JCheckBoxTree extends JTree {
 
     public JCheckBoxTree() {
         super();
-        // On remove le treeModel par défaut en supprimant tous les éléments de la racine
+        // On remove le treeModel par dï¿½faut en supprimant tous les ï¿½lï¿½ments de la racine
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)this.getModel().getRoot();
         root.removeAllChildren();
         // Disabling toggling by double-click
