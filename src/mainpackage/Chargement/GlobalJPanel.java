@@ -196,7 +196,7 @@ public class GlobalJPanel extends JPanel{
 	
 	//Fonctions qui selon l'élément en train d'être chargé changent le texte des cercles
 	public void setElement(String s, int dataCount){
-		if(s.equals("Virus")){
+		if(s.equals("VIRUSES")){
 			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
 			a.add(lines.get(0));
 			a.add(lines.get(1));
@@ -211,7 +211,7 @@ public class GlobalJPanel extends JPanel{
 	}
 	
 	public void setElement(Organism s){
-		if(s.getKingdom().equals("Virus")){
+		if(s.getKingdom().equals("VIRUSES")){
 			if(threads.containsKey(s.getKingdom())){
 				threads.get(s.getKingdom()).addStack(s.getName());
 			}else{
