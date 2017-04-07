@@ -11,107 +11,16 @@ import com.sun.org.apache.regexp.internal.RE;
 
 public class GestionFichier {
 
-	public static final String FILENAME_SIMPLE = "files/test/test.txt";
-
-	public static void readFileByLine(String fileName){
-
-		BufferedReader br = null;
-		FileReader fr = null;
-
-		try {
-
-			fr = new FileReader(fileName);
-			br = new BufferedReader(fr);
-
-			String sCurrentLine;
-
-			br = new BufferedReader(new FileReader(fileName));
-
-			while ((sCurrentLine = br.readLine()) != null) {
-				System.out.println(sCurrentLine);
-			}
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			try {
-
-				if (br != null)
-					br.close();
-
-				if (fr != null)
-					fr.close();
-
-			} catch (IOException ex) {
-
-				ex.printStackTrace();
-
-			}
-
-		}
-	}
-
-	public static void readFileByChar(String fileName){
-
-		BufferedReader br = null;
-		FileReader fr = null;
-
-		try {
-
-			fr = new FileReader(fileName);
-			br = new BufferedReader(fr);
-
-			// on reconstruit la ligne ?
-			String sCurrentLine = "";
-
-			br = new BufferedReader(new FileReader(fileName));
-
-			int r;
-			while ((r = br.read()) != -1) {
-				char ch = (char) r;
-				if(ch != '\n'){
-
-					sCurrentLine += ch;
-				}
-				else
-				{
-					// Attention n'affiche pas la dernière ligne si il n'y a pas de \n (mais bon c'est juste un test)
-					System.out.println(sCurrentLine);
-					sCurrentLine = "";
-				}
-
-			}
 
 
-		} catch (IOException e) {
+	public static ResultData readWithFileName(String fileName) throws IOException {
 
-			e.printStackTrace();
-
-		} finally {
-
-			try {
-
-				if (br != null)
-					br.close();
-
-				if (fr != null)
-					fr.close();
-
-			} catch (IOException ex) {
-
-				ex.printStackTrace();
-
-			}
-
-		}
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		return read(br);
 	}
 
 
-
-	public static ResultData read(String fileName) throws IOException {
+	public static ResultData read(BufferedReader br) throws IOException {
 
 		// ***************************************
 
@@ -120,11 +29,6 @@ public class GestionFichier {
 		boolean HEADER = true;
 		boolean CONTENT = false;
 		boolean CDS_MULTI_LINE = false;
-
-
-
-		BufferedReader br = null;
-		FileReader fr = null;
 
 		//Tableau de ligne pour la reconstruction
 		List<String> multiLine = new ArrayList<String>();
@@ -169,7 +73,6 @@ public class GestionFichier {
 		int boucle_count = 0;
 		int line_count = 0;
 
-		br = new BufferedReader(new FileReader(fileName));
 		String sCurrentLine;
 
 		//****************************************
@@ -467,9 +370,6 @@ public class GestionFichier {
 
 		if (br != null)
 			br.close();
-
-		if (fr != null)
-			fr.close();
 
 		return result;
 
