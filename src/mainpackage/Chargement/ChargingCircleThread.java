@@ -22,7 +22,7 @@ public class ChargingCircleThread extends Thread {
 	private ChargingCircleThread parentThread;
 	
 	//Attributs pour rien pour l'instant
-	private int dataCount = 0;
+	private double dataCount = 0;
 	
 	
 	//Constructor OuterCircle
@@ -35,7 +35,7 @@ public class ChargingCircleThread extends Thread {
 	}
 	
 	//Constructor MiddleCircle
-	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ChargingStick inStick, ArrayList<ChargingStick> d, Stack<String> s, String da, int dC){
+	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ChargingStick inStick, ArrayList<ChargingStick> d, Stack<String> s, String da, double dC){
 		name = da;
 		jp = j;
 		cc = c;
@@ -74,14 +74,14 @@ public class ChargingCircleThread extends Thread {
 					while (m) {
 						for (ChargingCircleThread a : cct) {
 							try{
-								Thread.sleep(10);
+								Thread.sleep(20);
 							} catch (InterruptedException e){
 								e.printStackTrace();
 							}
 							if (a.ready) {
 								m=false;
 								//jp.logFrame.setFont(new Font("Verdana", Font.PLAIN, 10));
-								jp.log("Chargement du Groupe [Virus]" + data.peek()+".");
+								jp.log("["+cc.label+"]" + data.peek()+".");
 								a.name = data.pop();
 								break;
 							}

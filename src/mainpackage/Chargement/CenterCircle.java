@@ -112,9 +112,14 @@ public class CenterCircle {
 	   g.rotate(Math.toRadians(90));
 	   g.setFont(new Font("Verdana", Font.PLAIN, r/4));
 	   FontMetrics fm = g.getFontMetrics();
+	   
+	   if(progressCenter == 99)
+		   progressCenter = 100;
+	   
 	   Rectangle2D rect = fm.getStringBounds(progressCenter + "%", g);
 	   int x = (0-(int)rect.getWidth())/2;
 	   int y = (0-(int)rect.getHeight())/2+fm.getAscent();
+	   
 	   g.drawString(progressCenter + "%", x, y);
 	   
 	   //Light point

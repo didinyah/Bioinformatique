@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -70,13 +71,14 @@ public class Chargement extends Frame{
 	private JTextArea logFrame;
 	private GlobalJPanel panel;
 	private int dataCount;
+	private JScrollPane sp;
 	
 	private int width = 1100;
 	private int height = 700;
 	private int panelWidth = 700;
 	
-	public Chargement(int nombreMax){
-		dataCount = nombreMax;
+	public Chargement(int nombreKingdom){
+		dataCount = nombreKingdom;
 		prepareGUI();
 	}
 
@@ -89,25 +91,32 @@ public class Chargement extends Frame{
 				System.exit(0);
 			}        
 		});
-		
+				
 		JTextArea logs = new JTextArea();
 		logs.setEditable(false);
-		logs.setBounds(panelWidth, 0, mainFrame.getWidth()-panelWidth, height);
-		mainFrame.add(logs);
+		//logs.setBounds(panelWidth, 0, mainFrame.getWidth()-panelWidth, height);
+		//mainFrame.add(logs);
 		logFrame = logs;
 		
-		final GlobalJPanel gjp = new GlobalJPanel(panelWidth, height, dataCount, logFrame);
+		JScrollPane scroll = new JScrollPane (logs, 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scroll.setBounds(panelWidth, 0, mainFrame.getWidth()-panelWidth, height);
+		sp = scroll;
+		mainFrame.add(scroll);
+		
+		final GlobalJPanel gjp = new GlobalJPanel(panelWidth, height, dataCount, logFrame, scroll);
 		mainFrame.add(gjp);
 		panel = gjp;
 		
-		mainFrame.addComponentListener(new ComponentAdapter() 
+		/*mainFrame.addComponentListener(new ComponentAdapter() 
 		{  
 	        public void componentResized(ComponentEvent evt) {
 	        	int newPanelWidth = (int)(panelWidth/(double)width*mainFrame.getWidth());
 	        	gjp.Resized(newPanelWidth, mainFrame.getHeight());
 	        	logFrame.setBounds(newPanelWidth, 0, mainFrame.getWidth()-newPanelWidth, mainFrame.getHeight());
+	        	sp.setBounds(newPanelWidth, 0, mainFrame.getWidth()-newPanelWidth, mainFrame.getHeight());
 	        }
-		});
+		});*/
 		mainFrame.setVisible(true);  
 	}
 	
@@ -122,6 +131,5 @@ public class Chargement extends Frame{
 	
 	public void log(String s){
 		panel.log(s);
-		System.out.println("Un message a été log");
 	}
 }

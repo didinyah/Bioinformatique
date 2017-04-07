@@ -13,6 +13,8 @@ import java.util.Hashtable;
 import java.util.Stack;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -41,8 +43,9 @@ public class GlobalJPanel extends JPanel{
 	private int dataDone = 0;
 	
 	private GlobalJPanel jpanel;
+	private JScrollPane sp;
 	
-	public GlobalJPanel(int lo, int la, int data, JTextArea log){
+	public GlobalJPanel(int lo, int la, int data, JTextArea log, JScrollPane jsp){
 		fW = lo;
 		fH = la;
 		setSize(lo, la);
@@ -53,6 +56,7 @@ public class GlobalJPanel extends JPanel{
 		jpanel = this;
 		dataCount = data;
 		logFrame = log;
+		sp = jsp;
 	}
 	
 	public void paintComponent(Graphics g){
@@ -113,46 +117,59 @@ public class GlobalJPanel extends JPanel{
 	}
 	
 	public void createCirclesAndLines(){
-		ChargingCircle c1 = new ChargingCircle(fW, fH, 0.85f, 0.2f);
+		ChargingCircle c1 = new ChargingCircle(fW, fH, 0.50f, 0.28f);
 		circles.add(c1);
-		ChargingCircle c2 = new ChargingCircle(fW, fH, 0.6f, 0.1f);
-		circles.add(c2);		
-		ChargingCircle c3 = new ChargingCircle(fW, fH, 0.65f, 0.28f);
+		ChargingCircle c2 = new ChargingCircle(fW, fH, 0.1f, 0.2f);
+		circles.add(c2);
+		ChargingCircle c3 = new ChargingCircle(fW, fH, 0.35f, 0.1f);
 		circles.add(c3);
-		ChargingCircle c4 = new ChargingCircle(fW, fH, 0.1f, 0.35f);
+		ChargingCircle c4 = new ChargingCircle(fW, fH, 0.65f, 0.1f);
 		circles.add(c4);
-		ChargingCircle c5 = new ChargingCircle(fW, fH, 0.25f, 0.2f);
+		ChargingCircle c5 = new ChargingCircle(fW, fH, 0.9f, 0.2f);
 		circles.add(c5);
-		ChargingCircle c6 = new ChargingCircle(fW, fH, 0.3f, 0.36f);
+		
+		ChargingCircle c6 = new ChargingCircle(fW, fH, 0.3f, 0.7f);
 		circles.add(c6);
-		ChargingCircle c7 = new ChargingCircle(fW, fH, 0.65f, 0.78f);
+		ChargingCircle c7 = new ChargingCircle(fW, fH, 0.15f, 0.55f);
 		circles.add(c7);
-		ChargingCircle c8 = new ChargingCircle(fW, fH, 0.82f, 0.65f);
+		ChargingCircle c8 = new ChargingCircle(fW, fH, 0.15f, 0.85f);
 		circles.add(c8);
-		ChargingCircle c9 = new ChargingCircle(fW, fH, 0.3f, 0.70f);
+		ChargingCircle c9 = new ChargingCircle(fW, fH, 0.45f, 0.85f);
 		circles.add(c9);
 		
-		ChargingStick s1 = new ChargingStick(c1, c3);
+		ChargingCircle c10 = new ChargingCircle(fW, fH, 0.7f, 0.7f);
+		circles.add(c10);
+		ChargingCircle c11 = new ChargingCircle(fW, fH, 0.75f, 0.9f);
+		circles.add(c11);
+		ChargingCircle c12 = new ChargingCircle(fW, fH, 0.9f, 0.75f);
+		circles.add(c12);
+		
+		ChargingStick s1 = new ChargingStick(c1, cc);
 		lines.add(s1);
-		ChargingStick s2 = new ChargingStick(c2, c3);
+		ChargingStick s2 = new ChargingStick(c2, c1);
 		lines.add(s2);
-		
-		ChargingStick s3 = new ChargingStick(c4, c6);
+		ChargingStick s3 = new ChargingStick(c3, c1);
 		lines.add(s3);
-		ChargingStick s4 = new ChargingStick(c5, c6);
+		ChargingStick s4 = new ChargingStick(c4, c1);
 		lines.add(s4);
-		
-		ChargingStick s5 = new ChargingStick(c3, cc);
+		ChargingStick s5 = new ChargingStick(c5, c1);
 		lines.add(s5);
+		
 		ChargingStick s6 = new ChargingStick(c6, cc);
 		lines.add(s6);
-		
-		ChargingStick s7 = new ChargingStick(c7, cc);
+		ChargingStick s7 = new ChargingStick(c7, c6);
 		lines.add(s7);
-		ChargingStick s8 = new ChargingStick(c8, cc);
+		ChargingStick s8 = new ChargingStick(c8, c6);
 		lines.add(s8);
-		ChargingStick s9 = new ChargingStick(c9, cc);
+		ChargingStick s9 = new ChargingStick(c9, c6);
 		lines.add(s9);
+		
+		ChargingStick s10 = new ChargingStick(c10, cc);
+		lines.add(s10);
+		ChargingStick s11 = new ChargingStick(c11, c10);
+		lines.add(s11);
+		ChargingStick s12 = new ChargingStick(c12, c10);
+		lines.add(s12);
 	}
 	
 	public void Resized(int w, int h){
@@ -198,24 +215,64 @@ public class GlobalJPanel extends JPanel{
 	public void setElement(String s, int dataCount){
 		if(s.equals("VIRUSES")){
 			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
-			a.add(lines.get(0));
 			a.add(lines.get(1));
+			a.add(lines.get(2));
+			a.add(lines.get(3));
+			a.add(lines.get(4));
 			
-			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(2), lines.get(4), a, new Stack<String>(), s, dataCount);
+			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(0), lines.get(0), a, new Stack<String>(), s, dataCount);
 			threads.put(s, c);
 			c.start();
 			
 			//logFrame.setFont(new Font("Verdana", Font.BOLD, 15));
 			log("Chargement du royaume \"Virus\"");
 		}
+		else if(s.equals("PROKARYOTES")){
+			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
+			a.add(lines.get(6));
+			a.add(lines.get(7));
+			a.add(lines.get(8));
+			
+			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(5), lines.get(5), a, new Stack<String>(), s, dataCount);
+			threads.put(s, c);
+			c.start();
+			
+			//logFrame.setFont(new Font("Verdana", Font.BOLD, 15));
+			log("Chargement du royaume \"Prokaryotes\"");
+		}
+		else if(s.equals("EUKARYOTES")){
+			ArrayList<ChargingStick> a = new ArrayList<ChargingStick>();
+			a.add(lines.get(10));
+			a.add(lines.get(11));
+			
+			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(9), lines.get(9), a, new Stack<String>(), s, dataCount);
+			threads.put(s, c);
+			c.start();
+			
+			//logFrame.setFont(new Font("Verdana", Font.BOLD, 15));
+			log("Chargement du royaume \"Eukaryotes\"");
+		}
 	}
 	
 	public void setElement(Organism s){
 		if(s.getKingdom().equals("VIRUSES")){
-			System.out.println("JE SUIS UN VIRUS");
 			if(threads.containsKey(s.getKingdom())){
 				threads.get(s.getKingdom()).addStack(s.getName());
-			}else{
+			} else{
+				System.out.println("Le royaume " + s.getKingdom() + " n'existe pas.");
+			}
+		}
+		else if(s.getKingdom().equals("PROKARYOTES")){
+			if(threads.containsKey(s.getKingdom())){
+				threads.get(s.getKingdom()).addStack(s.getName());
+			} else{
+				System.out.println("Le royaume " + s.getKingdom() + " n'existe pas.");
+			}
+		}
+		else if(s.getKingdom().equals("EUKARYOTES")){
+			if(threads.containsKey(s.getKingdom())){
+				threads.get(s.getKingdom()).addStack(s.getName());
+			} else{
 				System.out.println("Le royaume " + s.getKingdom() + " n'existe pas.");
 			}
 		}
@@ -224,14 +281,18 @@ public class GlobalJPanel extends JPanel{
 	public void enterData(){
 		dataDone++;
 		cc.updateProgress(dataDone*(100/dataCount));
-		if(dataDone >= dataCount)
+		if(dataDone >= dataCount){
 			log("Chargement terminé.");
+		}
 		jpanel.repaint();
 	}
 	
-	public void log(String s){
+	public void log(String s){		
 		Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		logFrame.append("["+sdf.format(cal.getTime())+"]"+s+"\n");
+		
+		JScrollBar vertical = sp.getVerticalScrollBar();
+		vertical.setValue(vertical.getMaximum());
 	}
 }

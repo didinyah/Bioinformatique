@@ -19,7 +19,7 @@ import java.awt.geom.Point2D;
 public class ChargingCircle {
 	private int fW;
 	private int fH;
-	private int progressCenter = 0;
+	private double progressCenter = 0;
 	private int circleSize = 75;
 	protected float coeffX;
 	protected float coeffY;
@@ -55,7 +55,7 @@ public class ChargingCircle {
 		outPosY = (int)posY;
 	}
 	
-   public void updateProgress(int progress){
+   public void updateProgress(double progress){
 	   progressCenter = progress;
    }
    
@@ -135,8 +135,8 @@ public class ChargingCircle {
 	   
 	   //Texte du cercle
 	   g.setColor(Color.WHITE);
-	   g.setFont(new Font("Verdana", Font.BOLD, r/5));
-	   g.drawString(label, -6, r-20);
+	   g.setFont(new Font("Verdana", Font.BOLD, r/6));
+	   g.drawString(label, -label.length()*3+10, r-20);
 	   
 	   g.rotate(-Math.toRadians(arc.getAngleExtent()), pSize/2, pSize*2);
 	   p = new RadialGradientPaint(new Point2D.Double(pSize/2, pSize/2), 
