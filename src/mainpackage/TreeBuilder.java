@@ -61,6 +61,8 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 		case VIRUSES:
 			this.baseURL = Utils.TREE_VIRUSES_URL;
 		}
+		// 1293 éléments pour pages entre 1 et 10
+		int nombreOrganismes = 1293;
 		this.type = type;
 		this.organismList = new ArrayList<Organism>();
 	}
@@ -68,7 +70,9 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 	public void readAllPages(){
 		this.currentPage = 1;
 		boolean cont = true;
-		while(cont && currentPage < 5) {
+		
+		//charg.log("Début du téléchargement des organismes");
+		while(cont && currentPage < 3) {
 			try{
 				List<Organism> result = retryer.call(this.pageCallable);
 				if(result == null){
@@ -80,10 +84,11 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 				e.printStackTrace();
 				System.exit(1);
 			}
-			//TODO : Envoyer ici la page qu'on lit en ce moment au chargement
+			
 			System.out.println(this.type.toString()+ " page : "+ this.currentPage);
 			currentPage ++;
 		}
+		//charg.log("Fin du téléchargement des organismes");
 	}
 	
 	public List<Organism> parseCurrentPage() throws MalformedURLException, IOException{
@@ -147,10 +152,10 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 					boolean validRepliconFound = false;
 					// TODO : Check si on garde MT, CL et CH
 					for(String rID : repliconIDs) {
-						if(rID.startsWith("NC") ||
+						if(rID.startsWith("NC") /*||
 						   rID.startsWith("MT") ||
 						   rID.startsWith("CL") ||
-						   rID.startsWith("CH")){
+						   rID.startsWith("CH")*/){
 							repliconID = rID;
 							validRepliconFound = true;
 							break;
@@ -166,6 +171,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 				}
 				if(validOrganism){
 					organismsList.add(currentOrganism);
+					//charg.send(currentOrganism);
 				}
 			}
 		}
@@ -175,6 +181,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 	public List<Organism> organisms(){
 		return this.organismList;
 	}
+	
 	
 	@Override
 	protected void run() throws Exception {

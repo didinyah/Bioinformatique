@@ -19,6 +19,7 @@ public class Organism {
 	private HashMap<String, String> replicons;
 	private ArrayList<String> replicons_traites;
 	private boolean activated;
+	private String base_folder = "C:\\tmpBio\\results\\"; // on stocke les données ici pour l'instant
 	
 	public Organism(String kingdom, String group, String subgroup, String name, String creation_date, String modification_date){
 		this.kingdom = kingdom.replace("/", "_").replace(" ", "_");
@@ -46,40 +47,6 @@ public class Organism {
 			return true;
 		}
 	}
-	
-	/* Crï¿½ï¿½ l'arborescence avec les organismes traitï¿½s (kingom, group et subgroup)
-	
-	public void updateTree(JCheckBoxTree mainT){
-		DefaultMutableTreeNode kingdomT;
-		DefaultMutableTreeNode groupT;
-		DefaultMutableTreeNode subgroupT;
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode)mainT.getModel().getRoot();
-		
-		if(mainT.contains(root, this.kingdom)!= null){
-			kingdomT = mainT.contains(root, this.kingdom);
-		} else {
-			kingdomT = new DefaultMutableTreeNode(this.kingdom);
-			root.add(kingdomT);
-		}
-		
-		if(mainT.contains(kingdomT, this.group)!= null){
-			groupT = mainT.contains(kingdomT, this.group);
-		} else {
-			groupT = new DefaultMutableTreeNode(this.group);
-			kingdomT.add(groupT);
-		}
-		
-		if(mainT.contains(groupT, this.subgroup) != null){
-			subgroupT = mainT.contains(groupT, this.subgroup);
-		} else {
-			subgroupT = new DefaultMutableTreeNode(this.subgroup);
-			groupT.add(subgroupT);
-		}
-		
-		DefaultMutableTreeNode nameOrg = new DefaultMutableTreeNode(this.name);
-		subgroupT.add(nameOrg);
-	}
-	*/
 	
 	public void updateTree(DefaultMutableTreeNode mainT){
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)mainT.getRoot();
@@ -214,6 +181,37 @@ public class Organism {
 		for(String replicon : replicons){
 			this.replicons.remove(replicon);
 		}
+	}
+	
+	public String getPath(){
+		// Construction de la chaine de charactere
+		String cur = base_folder;
+		cur += "\\"+this.getKingdom();
+		cur += "\\"+this.getGroup();
+		cur += "\\"+this.getSubgroup();
+		cur += "\\"+this.getName();
+		
+		return cur;
+	}
+	
+	public boolean createPath(){
+		String path = this.getPath();
+		// Création du dossier
+		
+		/*AccessManager.accessFile(path);
+		File p = new File(path);
+		
+		if(p.exists() && p.isDirectory()) {
+			// Si le dossier existe déjà
+			AccessManager.doneWithFile(path);
+			return true;
+		}else{
+			// Si le fichier n'existe pas
+			boolean ok = p.mkdirs();
+			AccessManager.doneWithFile(path);
+			return ok;
+		}*/
+		return false;
 	}
 	
 }
