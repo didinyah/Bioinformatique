@@ -206,7 +206,7 @@ public class Nucleotide {
 			String key = entry.getKey();
 			Integer vHMAP0 = entry.getValue();
 			if (HMAP1.getOrDefault(key, -1) != -1 && prefHMAP0.getOrDefault(key, -1) != -1) { // test useless mais au cas ou
-				if(vHMAP0 != 0 && HMAP1.get(key) != 0 && HMAP2.get(key) !=0) {
+				if(vHMAP0 + HMAP1.get(key) + HMAP2.get(key) != 0) { // on verifie si la somme n'est pas null si c'est le cas alors on compte pas
 					if (vHMAP0 >= HMAP1.get(key) && vHMAP0 >= HMAP2.get(key)) {
 						// Pref0
 						prefHMAP0.replace(key, 1 + prefHMAP0.get(key));
