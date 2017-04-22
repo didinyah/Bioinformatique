@@ -75,7 +75,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 		this.currentPage = 1;
 		boolean cont = true;
 		
-		charg.log("Début du téléchargement des organismes");
+		//charg.log("Début du téléchargement des organismes");
 		while(cont && currentPage < 3) {
 			try{
 				List<Organism> result = retryer.call(this.pageCallable);
@@ -92,7 +92,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 			System.out.println(this.type.toString()+ " page : "+ this.currentPage);
 			currentPage ++;
 		}
-		charg.log("Fin du téléchargement des organismes");
+		//charg.log("Fin du téléchargement des organismes");
 	}
 	
 	public List<Organism> parseCurrentPage() throws MalformedURLException, IOException{
