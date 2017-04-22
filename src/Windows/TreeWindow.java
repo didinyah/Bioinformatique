@@ -24,6 +24,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import mainpackage.Chargement.Chargement;
 import mainpackage.TreeGestion;
 
 import java.awt.FlowLayout;
@@ -94,12 +95,12 @@ public class TreeWindow {
 		gbc_cbtScrollPane.gridy = 0;
 		panel.add(cbtScrollPane, gbc_cbtScrollPane);
 		
-		final JCheckBoxTree cbt = TreeGestion.construct();
+		/*final JCheckBoxTree cbt = TreeGestion.construct();
 		cbt.setMinimumSize(new Dimension(10, 10));
 		cbt.setPreferredSize(new Dimension(100, 100));
 		cbt.setMaximumSize(new Dimension(2000, 2000));
 		cbtScrollPane.setViewportView(cbt);
-		
+		*/
 		JScrollPane listScollPane = new JScrollPane();
 		GridBagConstraints gbc_listScollPane = new GridBagConstraints();
 		gbc_listScollPane.fill = GridBagConstraints.BOTH;

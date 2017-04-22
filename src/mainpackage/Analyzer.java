@@ -406,4 +406,8 @@ public class Analyzer {
         return fullLine;
     }
 
+    public static boolean isFeatureLine(String sCurrentLine) {
+        Pattern p = Pattern.compile("FEATURES");
+        return p.matcher(sCurrentLine).find();
+    }
 }

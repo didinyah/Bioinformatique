@@ -15,7 +15,9 @@ public class ResultData {
     Trinucleotide ttt = null;
     Dinucleotide  dd = null;
     Integer numberCdsSeq = 0;
-    Integer numberCdsSeqInvalid = 0;
+    Integer numberCdsSeqInvalid = 0; // Nombre de cds mal formé
+
+    Integer inBorneContentFail = 0; // Nombre de cds Invalide (pendant la phase de content)
 
     //Tri
     public Integer getTotalTri(int phase){
@@ -69,7 +71,6 @@ public class ResultData {
     Integer blockTransition= 0;
 
     Integer borneComplementFail = 0;
-    Integer inBorneContentFail = 0;
     Integer codonOfBornFail = 0;
 
     public ResultData(){

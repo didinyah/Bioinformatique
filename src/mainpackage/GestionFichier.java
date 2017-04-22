@@ -29,6 +29,7 @@ public class GestionFichier {
 		boolean HEADER = true;
 		boolean CONTENT = false;
 		boolean CDS_MULTI_LINE = false;
+		boolean HEADER_FEATURE = false;
 
 		//Tableau de ligne pour la reconstruction
 		List<String> multiLine = new ArrayList<String>();
@@ -88,6 +89,7 @@ public class GestionFichier {
 				//****************************************
 				HEADER = false;
 				CONTENT = false;
+				HEADER_FEATURE = false;
 
 			}else if(Analyzer.checkEnd((sCurrentLine)) && CONTENT){
 
@@ -96,6 +98,7 @@ public class GestionFichier {
 				//****************************************
 				HEADER = true;
 				CONTENT = false;
+				HEADER_FEATURE = false;
 				// On additione les Trinucleotide
 
 				block_transition += 1;
@@ -109,7 +112,7 @@ public class GestionFichier {
 			//********************************
 			//**    HEADER ANALYSER  		**
 			//********************************
-			if(HEADER && !CONTENT){
+			if(HEADER && !CONTENT && HEADER_FEATURE){
 				// pendant la phase d'en tête (HEADER = 1) on extracte toutes les infos importants
 				// ... (à vérifier avec l'enonce) (ANALYZER)
 				header_line += 1;
@@ -163,7 +166,15 @@ public class GestionFichier {
 
 
 			}
+			//********************************
+			//**    FEATURE HEADER ANALYZER **
+			//********************************
+			else if (HEADER && !CONTENT && !HEADER_FEATURE){
 
+				if(Analyzer.isFeatureLine(sCurrentLine)){
+					HEADER_FEATURE = true;
+				}
+			}
 			//****************************************
 			//**    CONTENT ANALYSE					**
 			//****************************************
