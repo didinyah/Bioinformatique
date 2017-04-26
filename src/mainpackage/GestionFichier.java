@@ -385,54 +385,8 @@ public class GestionFichier {
 		return result;
 
 	}
-	
-	public static void readCSVFile(String filename) {
-		CSVReader reader;
-		try {
-			reader = new CSVReader(new FileReader(filename));
-		    String[] nextLine = reader.readNext();
-		    String[] nextLine2 = reader.readNext();
-		    
-		    for(int i =0; i<nextLine.length; i++) {
-		    	System.out.println(nextLine[i]+ "|||" + nextLine2[i]);
-		    }
-		    //while ((nextLine = reader.readNext()) != null) {
-			    /* INFO EUKARYOTES
-			     * nextLine[0] = Nom de l'organisme
-			     * nextLine[4] = Groupe de l'organisme
-			     * nextLine[5] = Sous-groupe de l'organisme
-			     * nextLine[6] = Taille en Mb
-			     * nextLine[9] = A REGARDER POUR CHECK SI Y A NC
-			     * nextLine[12] = Nombre de genes
-			     * nextLine[14] = Date de sortie
-			     * nextLine[15] = Date de modification
-			     * nextLine[17] = Lien FTP du refseq
-			     * nextLine[18] = Lien FTP du genbank
-			     */
-			    
-			    // On v�rifie que c'est bien un �l�ment que l'on veut
-		    	
-			    if(nextLine[9].contains("NC")) {
-			    	System.out.println(nextLine[17]);
-			    }
-		       
-		    //}
-		    
-		}
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-            e.printStackTrace();
-        }
-	}
 
 	public static void main(String[] args) throws IOException {
-		String eukaryotes = "files/genomes_euks.csv";
-		String organelles = "files/genomes_organelles.csv";
-		String plasmids = "files/genomes_plasmids.csv";
-		String prokaryotes = "files/genomes_proks.csv";
-		String viruses = "files/genomes_viruses.csv";
-		readCSVFile(viruses);
+
 	}
 }
