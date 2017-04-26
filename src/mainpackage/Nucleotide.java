@@ -215,7 +215,7 @@ public class Nucleotide {
 						// Pref1
 						prefHMAP1.replace(key, 1 + prefHMAP1.get(key));
 					}
-					if (HMAP2.get(key) >= vHMAP0 && HMAP2.get(key) >= HMAP2.get(key)) {
+					if (HMAP2.get(key) >= vHMAP0 && HMAP2.get(key) >= HMAP1.get(key)) {
 						// Pref2
 						prefHMAP2.replace(key, 1 + prefHMAP2.get(key));
 					}
