@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -97,13 +99,13 @@ public class TreeGestion {
 	}
 	
 	// Fonction temporaire pour voir le contenu de l'arbre
-	private static String getTreeText(TreeModel model, Object object, String indent) {
+	/*private static String getTreeText(TreeModel model, Object object, String indent) {
 	    String myRow = indent + object + "\n";
 	    for (int i = 0; i < model.getChildCount(object); i++) {
 	        myRow += getTreeText(model, model.getChild(object, i), indent + "-");
 	    }
 	    return myRow;
-	}
+	}*/
 	
 	private static void lectureEtDL() {
 		System.out.println(listeOrga.size());
@@ -202,15 +204,72 @@ public class TreeGestion {
 		System.out.println("fin de lecture et de DL");
 	}
 	
+	private static void lectureAvecThread() {
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		System.setProperty("https.protocols", "TLSv1.1");
+		
+		List<ArrayList<ResultData>> listResultData = new ArrayList<ArrayList<ResultData>>();
+		int countEnd = 50;
+		int countCurrent = 0;
+		
+		// Pour chaque organisme ajouté à la liste
+		for(int i=0; i<countEnd; i++){
+			Organism organism = listeOrga.get(i);
+			String name = organism.getName();
+			String replicons = organism.getReplicons().toString();
+			ArrayList<ResultData> tmpListData = new ArrayList<ResultData>();
+			
+			// On regarde tous les NC_... qu'on a pour pouvoir les DL
+			for (String key: organism.getReplicons().keySet()) {
+			    //System.out.println("key : " + key);
+				String valueID = organism.getReplicons().get(key);
+			    //System.out.println(name + " " + valueID.toString());
+			    
+			    // FAIRE LES DL ICI
+			    String url = "";
+				try{
+					url = Utils.DOWNLOAD_NC_URL.replaceAll("<ID>", valueID.toString());
+					URL urlDL = new URL(url);
+					File f = new File(organism.getPath() + "\\" + organism.getName() + "_" + valueID + ".txt");
+
+					// On télécharge le replicon
+					System.out.println("Téléchargement du fichier : " + name + "_" + valueID.toString());
+					
+					// Ligne suivante : créé le fichiers en brut avec la séquence complète
+					FileUtils.copyURLToFile(urlDL, f);
+					
+					// Lancement du thread d'analyse (suppression du fichier à la fin du thread)
+					executorService.execute(new LancementAnalyse(urlDL, f));
+					
+					//tmpListData.add(rd);
+					
+					//System.out.println(rd);
+					
+				}
+				catch(Exception e){
+					System.out.println(url);
+					e.printStackTrace();
+				}
+				
+			}
+			System.out.println(countCurrent);
+			countCurrent++;
+			
+		}
+		executorService.shutdown();
+		System.out.println("fin de lecture avec thread");
+	}
+	
 	public static void main(String[] args) throws Exception {
 		int nbOrgaEnTout = 295;
-		//Chargement charg = new Chargement(3);
-		//JCheckBoxTree test = TreeGestion.construct(charg);
+		Chargement charg = new Chargement(3);
+		JCheckBoxTree test = TreeGestion.construct(charg);
+
+		//lectureEtDL();
+		//lectureTest();
+		lectureAvecThread();
 		
 		//TreeModel model = test.getModel();
-		
-		//lectureEtDL();
-		lectureTest();
 		//System.out.println(getTreeText(model, model.getRoot(), ""));
 	}
 	
