@@ -36,11 +36,11 @@ public class GestionExcel
 	
 	private enum Phase { Phase0, FreqPhase0, Phase1, FreqPhase1, Phase2, FreqPhase2, PrefPhase0, PrefPhase1, PrefPhase2};
 	
+	private static XSSFWorkbook wb;
 	
 	//Crée un fichier excel vide
 	public static void CreationFichierVide(String file)
 	{
-		XSSFWorkbook wb = new XSSFWorkbook();
 		FileOutputStream fileOut;
 		try 
 		{
@@ -60,7 +60,7 @@ public class GestionExcel
 		}
 	}
 	
-	public static void CreationFichier(String file, XSSFWorkbook wb)
+	public static void CreationFichier(String file/*, XSSFWorkbook wb*/)
 	{
 		FileOutputStream fileOut;
 		try 
@@ -68,7 +68,7 @@ public class GestionExcel
 			fileOut = new FileOutputStream(file);
 			wb.write(fileOut);
 			fileOut.close();
-			System.out.println("fincréationfichier");
+			System.out.println("Le ficher " + file + "a été créé.");
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -103,58 +103,69 @@ public class GestionExcel
 		}
 	}
 	
-	public static void CreationCelluleText(XSSFSheet sheet, String contenu, int ligne, int colonne)
+	public static void CreationCelluleText(String sheet, String contenu, int ligne, int colonne)
 	{
-		Row row = sheet.getRow(ligne);
+		XSSFSheet feuille =  wb.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
 		if (row == null) {
-			row = sheet.createRow(ligne);
+			row = feuille.createRow(ligne);
 		}
 		Cell cell = null;
-		cell = row.createCell((short) colonne);
+		cell = row.getCell((short) colonne);
 		cell.setCellValue(contenu);
 	}
 	
-	public static void CreationCelluleValeur(XSSFSheet sheet, Object contenu, int ligne, int colonne)
+	public static void CreationCelluleValeur(String sheet, Object contenu, int ligne, int colonne)
 	{
-		Row row = sheet.getRow(ligne);
+		XSSFSheet feuille =  wb.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
 		if (row == null) {
-			row = sheet.createRow(ligne);
+			row = feuille.createRow(ligne);
 		}
 		Cell cell = null;
-		cell = row.createCell((short) colonne);
+		cell = row.getCell((short) colonne);
+		if(cell == null)
+			cell = row.createCell((short)colonne);
 		if(contenu instanceof Integer)
+		{
 			cell.setCellValue((Integer)contenu);
+		}
 		else if(contenu instanceof Double)
+		{	
 			cell.setCellValue((Double)contenu);
+		}
 	}
 	
-	public static void CreationCelluleFormule(XSSFSheet sheet, String contenu, int ligne, int colonne)
+	public static void CreationCelluleFormule(String sheet, String contenu, int ligne, int colonne)
 	{
-		Row row = sheet.getRow(ligne);
+		XSSFSheet feuille =  wb.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
 		if (row == null) {
-			row = sheet.createRow(ligne);
+			row = feuille.createRow(ligne);
 		}
 		Cell cell = null;
-		cell = row.createCell((short) colonne);
+		cell = row.getCell((short) colonne);
 		cell.setCellFormula(contenu);
 	}
 	
-	public static void ViderCellule(XSSFSheet sheet, int ligne, int colonne)
+	public static void ViderCellule(String sheet, int ligne, int colonne)
 	{
-		Row row = sheet.getRow(ligne);
+		XSSFSheet feuille =  wb.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
 		if (row == null) {
-			row = sheet.createRow(ligne);
+			row = feuille.createRow(ligne);
 		}
 		Cell cell = null;
-		cell = row.createCell((short) colonne);
+		cell = row.getCell((short) colonne);
 		cell.setCellValue("");
 	}
 	
-	public static void ColorierLigne(XSSFSheet sheet, int ligne, IndexedColors couleur, XSSFWorkbook wb)
+	public static void ColorierLigne(String sheet, int ligne, IndexedColors couleur, XSSFWorkbook wb)
 	{
-		Row row = sheet.getRow(ligne);
+		XSSFSheet feuille =  wb.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
 		if (row == null) {
-			row = sheet.createRow(ligne);
+			row = feuille.createRow(ligne);
 		}
 		CellStyle cellStyle = wb.createCellStyle();
 		cellStyle.setFillBackgroundColor(couleur.getIndex());
@@ -179,35 +190,35 @@ public class GestionExcel
 		fonte.setFontName(police);
 		fonte.setColor(couleur.getIndex());
 	}
-	public static void RemplirLigneText(XSSFSheet sheet, int ligne, int debutColonne, ArrayList<String> data)
+	public static void RemplirLigneText(String sheet, int ligne, int debutColonne, ArrayList<String> data)
 	{
 		for(int i =0; i < data.size(); i++)
 		{
 			CreationCelluleText(sheet, data.get(i), ligne, i+debutColonne);
 		}
 	}
-	public static void RemplirColonneText(XSSFSheet sheet, int colonne, int debutLigne, ArrayList<String>data)
+	public static void RemplirColonneText(String sheet, int colonne, int debutLigne, ArrayList<String>data)
 	{
 		for(int i =0; i < data.size(); i++)
 		{
 			CreationCelluleText(sheet, data.get(i), i+debutLigne, colonne);
 		}
 	}
-	public static void RemplirLigneValeurs(XSSFSheet sheet, int ligne, int debutColonne, ArrayList<Integer> data)
+	public static void RemplirLigneValeurs(String sheet, int ligne, int debutColonne, ArrayList<Integer> data)
 	{
 		for(int i =0; i < data.size(); i++)
 		{
 			CreationCelluleValeur(sheet, data.get(i), ligne, i+debutColonne);
 		}
 	}
-	public static void RemplirColonneValeursInt(XSSFSheet sheet, int colonne, int debutLigne, ArrayList<Integer>data)
+	public static void RemplirColonneValeursInt(String sheet, int colonne, int debutLigne, ArrayList<Integer>data)
 	{
 		for(int i =0; i < data.size(); i++)
 		{
 			CreationCelluleValeur(sheet, data.get(i), i+debutLigne, colonne);
 		}
 	}
-	public static void RemplirColonneValeursDouble(XSSFSheet sheet, int colonne, int debutLigne, ArrayList<Double>data)
+	public static void RemplirColonneValeursDouble(String sheet, int colonne, int debutLigne, ArrayList<Double>data)
 	{
 		for(int i =0; i < data.size(); i++)
 		{
@@ -215,9 +226,10 @@ public class GestionExcel
 		}
 	}
 	
-	public static void SupprimerLigne(XSSFSheet sheet, int ligne)
+	public static void SupprimerLigne(String sheet, int ligne)
 	{
-		Row row = sheet.getRow(ligne);
+		XSSFSheet feuille =  wb.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
 		Cell cell = null;
 		for (Iterator cellIt = row.cellIterator(); cellIt.hasNext();) 
 		{
@@ -225,10 +237,11 @@ public class GestionExcel
 			cell.setCellValue("");
 		}
 	}
-	public static void SupprimerColonne(XSSFSheet sheet, int colonne)
+	public static void SupprimerColonne(String sheet, int colonne)
 	{
+		XSSFSheet feuille =  wb.getSheet(sheet);
 		Row row = null;
-		for (Iterator rowIt = sheet.rowIterator(); rowIt.hasNext();) 
+		for (Iterator rowIt = feuille.rowIterator(); rowIt.hasNext();) 
 		{
 			row = (Row) rowIt.next();
 			row.getCell(0).setCellValue("");
@@ -242,7 +255,7 @@ public class GestionExcel
 			System.out.println("allo1");
 			XSSFWorkbook wb = (XSSFWorkbook) WorkbookFactory.create(file);
 			System.out.println("allo2");
-			CreationFichier("files/testtest.xlsx", wb);
+			CreationFichier("files/testtest.xlsx");
 			System.out.println("allo3");
 		} catch (EncryptedDocumentException e) {
 			System.out.println(e.getMessage());
@@ -260,47 +273,67 @@ public class GestionExcel
 		
 	}
 	
-	private static void RemplirColonnePhaseInt(XSSFSheet sheet,HashMap<String, Integer>hmap, Phase phase)
+	private static void RemplirColonnePhaseInt(String sheet,HashMap<String, Integer>hmap, Phase phase)
 	{
 		//parcourir tout le hashmap et ajouter dans la colonne 1+Phase à la bonne ligne le nombre adéquat
 		ArrayList<String> trinucleotide = Utils.getListOfTriNucleotideCAPSLOCK();
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for(String s : trinucleotide)
 		{
-			list.add(hmap.get(s));
+			list.add(hmap.get(s.toLowerCase()));
 		}
-		RemplirColonneValeursInt(sheet, phase.ordinal()+1, 0, list);
+		RemplirColonneValeursInt(sheet, phase.ordinal()+2, 1, list);
 	}
 	
-	private static void RemplirColonnePhaseDouble(XSSFSheet sheet,HashMap<String, Double>hmap, Phase phase)
+	private static void RemplirColonnePhaseDouble(String sheet,HashMap<String, Double>hmap, Phase phase)
 	{
 		//parcourir tout le hashmap et ajouter dans la colonne 1+Phase à la bonne ligne le nombre adéquat
 		ArrayList<String> trinucleotide = Utils.getListOfTriNucleotideCAPSLOCK();
 		ArrayList<Double> list = new ArrayList<Double>();
 		for(String s : trinucleotide)
 		{
-			list.add(hmap.get(s));
+			list.add(hmap.get(s.toLowerCase()));
 		}
-		RemplirColonneValeursDouble(sheet, phase.ordinal()+1, 0, list);
+		RemplirColonneValeursDouble(sheet, phase.ordinal()+2, 1, list);
+	}
+	
+	private static void MajFormules()
+	{
+		FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+		evaluator.evaluateAll();
+	}
+	
+	public static void testGeneration()
+	{
+		String fichierTest = "files/chromosome_NC_015850.1.txt";
+		ResultData rd = new ResultData();
+		try {
+			rd = GestionFichier.readWithFileName(fichierTest);
+			CreateFromTemplate("files/test.xlsx",rd);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
-	public static void CreateFromTemplate(String out, Trinucleotide tri)
+	public static void CreateFromTemplate(String out, ResultData rd)
 	{
-		File file = new File("files/template.xlsx");
+		File file = new File("files/templateEdit.xlsx");
 		try {
-			XSSFWorkbook wb = (XSSFWorkbook) WorkbookFactory.create(file);
-			XSSFSheet sum_chromosome = wb.getSheetAt(1);
-			RemplirColonnePhaseDouble(sum_chromosome, tri.getFreqHMAP(0), Phase.FreqPhase0);
-			RemplirColonnePhaseDouble(sum_chromosome, tri.getFreqHMAP(1), Phase.FreqPhase1);
-			RemplirColonnePhaseDouble(sum_chromosome, tri.getFreqHMAP(2), Phase.FreqPhase2);
-			RemplirColonnePhaseInt(sum_chromosome, tri.getHMAP(0), Phase.Phase0);
-			RemplirColonnePhaseInt(sum_chromosome, tri.getHMAP(1), Phase.Phase1);
-			RemplirColonnePhaseInt(sum_chromosome, tri.getHMAP(2), Phase.Phase2);
-			RemplirColonnePhaseInt(sum_chromosome, tri.getPrefHMAP(0), Phase.PrefPhase0);
-			RemplirColonnePhaseInt(sum_chromosome, tri.getPrefHMAP(1), Phase.PrefPhase1);
-			RemplirColonnePhaseInt(sum_chromosome, tri.getPrefHMAP(2), Phase.PrefPhase2);
-			CreationFichier("files/testtest.xlsx", wb);
+			wb = (XSSFWorkbook) WorkbookFactory.create(file);
+			String sum_chromosome = "Sum_Chromosome";
+			RemplirColonnePhaseDouble(sum_chromosome, rd.getTrinucleotide().getFreqHMAP(0), Phase.FreqPhase0);
+			RemplirColonnePhaseDouble(sum_chromosome, rd.getTrinucleotide().getFreqHMAP(1), Phase.FreqPhase1);
+			RemplirColonnePhaseDouble(sum_chromosome, rd.getTrinucleotide().getFreqHMAP(2), Phase.FreqPhase2);
+			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getHMAP(0), Phase.Phase0);
+			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getHMAP(1), Phase.Phase1);
+			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getHMAP(2), Phase.Phase2);
+			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getPrefHMAP(0), Phase.PrefPhase0);
+			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getPrefHMAP(1), Phase.PrefPhase1);
+			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getPrefHMAP(2), Phase.PrefPhase2);
+			MajFormules();
+			CreationFichier(out);
 		} catch (EncryptedDocumentException e) {
 			System.out.println(e.getMessage());
 			// TODO Auto-generated catch block
@@ -319,9 +352,7 @@ public class GestionExcel
 	
 	public static void main(String[] args) 
 	{
-		System.out.println("allo");
-		DuplicateTemplate("testdupli");
-		System.out.println("à l'huile");
+		testGeneration();
 		/*XSSFWorkbook wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("mafeuille");
 		ArrayList<String> trinucleotides = Utils.getListOfTriNucleotideCAPSLOCK();
