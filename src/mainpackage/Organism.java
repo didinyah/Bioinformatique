@@ -17,7 +17,7 @@ public class Organism {
 	private String creation_date;
 	private String modification_date;
 	private HashMap<String, String> replicons;
-	private ArrayList<String> replicons_traites;
+	private HashMap<String, ResultData> replicons_traites;
 	private boolean activated;
 	private String base_folder = "C:\\tmpBio\\results\\"; // on stocke les données ici pour l'instant
 	
@@ -29,13 +29,13 @@ public class Organism {
 		this.creation_date = creation_date;
 		this.modification_date = modification_date;
 		this.replicons = new HashMap<String, String>();
-		this.replicons_traites = new ArrayList<String>();
+		this.replicons_traites = new HashMap<String, ResultData>();
 		this.activated = true;
 	}
 	
 	public Organism(){
 		this.replicons = new HashMap<String, String>();
-		this.replicons_traites = new ArrayList<String>();
+		this.replicons_traites = new HashMap<String, ResultData>();
 		this.activated = true;
 	}
 	
@@ -169,12 +169,12 @@ public class Organism {
 		return this.activated ? this.replicons.size() : 0;
 	}
 	
-	public void addRepliconTraite(String replicon){
-		this.replicons_traites.add(replicon);
+	public HashMap<String, ResultData> getRepliconsTraites() {
+		return replicons_traites;
 	}
-	
-	public ArrayList<String> getProcessedReplicons(){
-		return this.replicons_traites;
+
+	public void setRepliconsTraites(HashMap<String, ResultData> repliconsTraites) {
+		this.replicons_traites = repliconsTraites;
 	}
 	
 	public void removeReplicons(ArrayList<String> replicons){

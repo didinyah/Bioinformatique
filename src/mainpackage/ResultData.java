@@ -9,7 +9,16 @@ public class ResultData {
 
     // Ce fichier consiste à rassembler toutes les informations de l'extractions d'un fichier ou de plusieurs fichiers
 
-
+	// Nom du resultdata (syntaxe : Sum_type || plasmid_NC_99999)
+	public String name;
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 
     // Important var
     Trinucleotide ttt = null;
@@ -53,7 +62,57 @@ public class ResultData {
         return numberCdsSeqInvalid;
     }
 
-
+    // Type Of ResultData
+    
+    public boolean plasmid;
+    public boolean mitochondrion;
+    public boolean chromosome;
+    public boolean chloroplast;
+    public boolean dna;
+    public boolean linkage;
+    
+    public boolean isPlasmid() {
+    	return plasmid;
+    }
+    
+    public boolean isMitochondrion() {
+    	return mitochondrion;
+    }
+    
+    public boolean isChromosome() {
+    	return chromosome;
+    }
+    
+    public boolean isChloroplast() {
+    	return chloroplast;
+    }
+    
+    public boolean isDna() {
+    	return dna;
+    }
+    
+    public boolean isLinkage() {
+    	return linkage;
+    }
+    
+    public void setPlasmid(boolean b) {
+    	plasmid = b;
+    }
+    public void setMitochondrion(boolean b) {
+    	mitochondrion = b;
+    }
+    public void setChromosome(boolean b) {
+    	chromosome = b;
+    }
+    public void setChloroplast(boolean b) {
+    	chloroplast = b;
+    }
+    public void setDna(boolean b) {
+    	dna = b;
+    }
+    public void setLinkage(boolean b) {
+    	linkage = b;
+    }
 
 
     // Optional var
@@ -119,6 +178,7 @@ public class ResultData {
 
     public String toString(){
         String str = "";
+        str += "Name:"+name+"\n";
         str += "Line count:"+lineCount+"\n";
 
         str += "BlockTransition detected:" + blockTransition+"\n";

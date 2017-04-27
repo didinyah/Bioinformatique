@@ -1,5 +1,8 @@
 package mainpackage;
 
+import Windows.JCheckBoxTree;
+import mainpackage.Chargement.Chargement;
+
 /*
  * Classe Main
  * Classe principale qui charge l'interface et lance les tests
@@ -13,16 +16,15 @@ public class Main {
 	 * Return : void
 	 */
 	public static void main(String[] args) {
-		//loadInterface();
-		//testNucleotide();
-		System.out.println("Hello World");
-		//load data
-		// test
+		int nbOrgaEnTout = 295;
+		int nbThread = 10;
+		Chargement charg = new Chargement(3);
+		TreeGestion t = new TreeGestion();
+		JCheckBoxTree tree = t.construct(charg);
 
-		// file test
-
-		System.out.println("Working Directory = " +
-				System.getProperty("user.dir"));
+		//TraitementOrganisme.lectureEtDL(t.getListOrganism());
+		//TraitementOrganisme.lectureTest();
+		TraitementOrganisme.lectureAvecThread(t.getListOrganism(), nbThread);
 	}
 
 }
