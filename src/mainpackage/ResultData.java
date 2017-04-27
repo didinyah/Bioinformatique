@@ -28,6 +28,15 @@ public class ResultData {
 
     Integer inBorneContentFail = 0; // Nombre de cds Invalide (pendant la phase de content)
 
+    private boolean plasmid = false;
+    private boolean chromosome =  false;
+    private boolean linkage = false;
+    private boolean chloroplast = false;
+    private boolean mitochondrion = false;
+    private boolean completeGenome = false;
+
+    
+
     //Tri
     public Integer getTotalTri(int phase){
         return ttt.sumNumberOfNucleotide(phase);
@@ -64,54 +73,17 @@ public class ResultData {
 
     // Type Of ResultData
     
-    public boolean plasmid;
-    public boolean mitochondrion;
-    public boolean chromosome;
-    public boolean chloroplast;
+
     public boolean dna;
-    public boolean linkage;
-    
-    public boolean isPlasmid() {
-    	return plasmid;
-    }
-    
-    public boolean isMitochondrion() {
-    	return mitochondrion;
-    }
-    
-    public boolean isChromosome() {
-    	return chromosome;
-    }
-    
-    public boolean isChloroplast() {
-    	return chloroplast;
-    }
+
+
     
     public boolean isDna() {
     	return dna;
     }
-    
-    public boolean isLinkage() {
-    	return linkage;
-    }
-    
-    public void setPlasmid(boolean b) {
-    	plasmid = b;
-    }
-    public void setMitochondrion(boolean b) {
-    	mitochondrion = b;
-    }
-    public void setChromosome(boolean b) {
-    	chromosome = b;
-    }
-    public void setChloroplast(boolean b) {
-    	chloroplast = b;
-    }
+
     public void setDna(boolean b) {
     	dna = b;
-    }
-    public void setLinkage(boolean b) {
-    	linkage = b;
     }
 
 
@@ -141,6 +113,55 @@ public class ResultData {
         dd.initFreq();
     }
 
+    public void setPlasmid(boolean plasmid) {
+        plasmid = plasmid;
+    }
+
+    public void setChromosome(boolean chromosome) {
+        chromosome = chromosome;
+    }
+
+    public void setLinkage(boolean linkage) {
+        linkage = linkage;
+    }
+
+    public void setChloroplast(boolean chloroplast) {
+        chloroplast = chloroplast;
+    }
+
+    public void setMitochondrion(boolean mitochondrion) {
+        mitochondrion = mitochondrion;
+    }
+
+    public void setCompleteGenome(boolean completeGenome) {
+        completeGenome = completeGenome;
+    }
+
+    public  boolean isPlasmid() {
+        return plasmid;
+    }
+
+    public  boolean isChromosome() {
+        return chromosome;
+    }
+
+    public  boolean isLinkage() {
+        return linkage;
+    }
+
+    public  boolean isChloroplast() {
+        return chloroplast;
+    }
+
+    public  boolean isMitochondrion() {
+        return mitochondrion;
+    }
+
+    public  boolean isCompleteGenome() {
+        return completeGenome;
+    }
+
+    
     // fusion function
     public void fusion(ResultData resultData){
         // fusion current resultData with the resultdata in param

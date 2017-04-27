@@ -30,10 +30,13 @@ public class GestionFichier {
 		boolean CONTENT = false;
 		boolean CDS_MULTI_LINE = false;
 		boolean HEADER_FEATURE = false;
-
+		boolean HEADER_GET_SOURCE_DATA =false;
 		//Tableau de ligne pour la reconstruction
 		List<String> multiLine = new ArrayList<String>();
 
+
+		// RESULT
+		ResultData result = new ResultData();
 		// CDS
 		Bornes cdsInHeader= new Bornes();
 		HashMap<Bornes.Borne,Boolean> multiLineOnCds = new HashMap<Bornes.Borne,Boolean>();
@@ -90,6 +93,7 @@ public class GestionFichier {
 				HEADER = false;
 				CONTENT = false;
 				HEADER_FEATURE = false;
+				HEADER_GET_SOURCE_DATA = false;
 
 			}else if(Analyzer.checkEnd((sCurrentLine)) && CONTENT){
 
@@ -99,6 +103,7 @@ public class GestionFichier {
 				HEADER = true;
 				CONTENT = false;
 				HEADER_FEATURE = false;
+				HEADER_GET_SOURCE_DATA = false;
 				// On additione les Trinucleotide
 
 				block_transition += 1;
@@ -164,12 +169,50 @@ public class GestionFichier {
 				}
 
 
+				//*************************************
+				//**   GET OTHER INFO				 **
+				//*************************************
+				/*
 
+
+
+				 */
+				// AFTER FEATURE
+				if(!HEADER_GET_SOURCE_DATA) {
+					if (Analyzer.isPlasmidLine(sCurrentLine)) {
+						result.setPlasmid(true);
+						HEADER_GET_SOURCE_DATA = true;
+					}
+					if (Analyzer.isChromosome(sCurrentLine)) {
+						result.setChromosome(true);
+						HEADER_GET_SOURCE_DATA = true;
+					}
+					if (Analyzer.isLinkage(sCurrentLine)) {
+						result.setLinkage(true);
+						HEADER_GET_SOURCE_DATA = true;
+					}
+					if (Analyzer.isChloroplast(sCurrentLine)) {
+						result.setChloroplast(true);
+						HEADER_GET_SOURCE_DATA = true;
+					}
+					if (Analyzer.isMitochondrion(sCurrentLine)) {
+						result.setMitochondrion(true);
+						HEADER_GET_SOURCE_DATA = true;
+					}
+				}
+
+				if (Analyzer.isDnaLine(sCurrentLine)) {
+					result.setDna(true);
+				}
 			}
 			//********************************
 			//**    FEATURE HEADER ANALYZER **
 			//********************************
 			else if (HEADER && !CONTENT && !HEADER_FEATURE){
+				//BEFORE FEATURE
+				if(Analyzer.isCompleteGenome(sCurrentLine)){
+					result.setCompleteGenome(true);
+				}
 
 				if(Analyzer.isFeatureLine(sCurrentLine)){
 					HEADER_FEATURE = true;
@@ -347,7 +390,7 @@ public class GestionFichier {
 		//***************************
 		//**    FIN DE BOUCLE	   **
 		//***************************
-		ResultData result = new ResultData();
+
 		result.lineCount = line_count;
 		result.headerLine = header_line;
 		result.contentLine = content_line;

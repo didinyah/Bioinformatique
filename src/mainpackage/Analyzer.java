@@ -410,4 +410,39 @@ public class Analyzer {
         Pattern p = Pattern.compile("FEATURES");
         return p.matcher(sCurrentLine).find();
     }
+
+    public static boolean isPlasmidLine(String sCurrentLine) {
+        Pattern p = Pattern.compile("/plasmid");
+        return p.matcher(sCurrentLine).find();
+    }
+
+    public static boolean isChromosome(String sCurrentLine) {
+        Pattern p = Pattern.compile("/chromosome");
+        return p.matcher(sCurrentLine).find();
+    }
+
+    public static boolean isLinkage(String sCurrentLine) {
+        Pattern p = Pattern.compile("/linkage_group");
+        return p.matcher(sCurrentLine).find();
+    }
+
+    public static boolean isChloroplast(String sCurrentLine) {
+        Pattern p = Pattern.compile("/organelle=\"plastid:chloroplast\"");
+        return p.matcher(sCurrentLine).find();
+    }
+
+    public static boolean isMitochondrion(String sCurrentLine) {
+        Pattern p = Pattern.compile("/organelle=\"mitochondrion\"");
+        return p.matcher(sCurrentLine).find();
+    }
+
+    public static boolean isCompleteGenome(String sCurrentLine) {
+        Pattern p = Pattern.compile("/organelle=\"mitochondrion\"");
+        return p.matcher(sCurrentLine).find();
+    }
+
+    public static boolean isDnaLine(String sCurrentLine) {
+        Pattern p = Pattern.compile("/mol_type=\"genomic DNA\"");
+        return p.matcher(sCurrentLine).find();
+    }
 }
