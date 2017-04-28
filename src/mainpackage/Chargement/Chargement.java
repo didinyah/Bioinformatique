@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -30,7 +31,7 @@ public class Chargement extends Frame{
 	
 	private Frame mainFrame;
 	private JTextArea logFrame;
-	private GlobalJPanel panel;
+	public GlobalJPanel panel;
 	private int dataCount;
 	private JScrollPane sp;
 	
@@ -46,7 +47,7 @@ public class Chargement extends Frame{
 	}
 
 	private void prepareGUI(){
-		mainFrame = new Frame("Charging");
+		mainFrame = new Frame("Chargement");
 		mainFrame.setSize(width, height);
 		mainFrame.setLayout(null);
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -80,7 +81,7 @@ public class Chargement extends Frame{
 	        	sp.setBounds(newPanelWidth, 0, mainFrame.getWidth()-newPanelWidth, mainFrame.getHeight());
 	        }
 		});
-		mainFrame.setVisible(true);  
+		mainFrame.setVisible(true);
 	}
 	
 	//Fonction qui récupère les catégories du chargement

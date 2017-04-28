@@ -19,12 +19,13 @@ import java.awt.event.ActionListener;
 public class MainWindow {
 
 	private JFrame frame;
+	private static boolean clic = false;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void displayMainWindow() {
-		EventQueue.invokeLater(new Runnable() {
+		/*EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
@@ -33,7 +34,19 @@ public class MainWindow {
 					e.printStackTrace();
 				}
 			}
-		});
+		});*/
+		MainWindow window = new MainWindow();
+		window.frame.setVisible(true);
+		
+		while(!clic){ 
+			System.out.println("");
+		}
+		int nbOrgaEnTout = 289 + 10*2; // nombre d'orga + nb d'analyses et nb de tï¿½lï¿½chargements
+		int nbThread = 10;
+		Chargement charg = new Chargement(5, nbOrgaEnTout);
+		TreeGestion t = new TreeGestion();
+		JCheckBoxTree tree = t.construct(charg);
+		TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread, t.getChargement(), tree);
 	}
 
 	/**
@@ -83,12 +96,7 @@ public class MainWindow {
 				}
 				if(Configuration.OPTION_DL_EUKARYOTES || Configuration.OPTION_DL_VIRUSES || Configuration.OPTION_DL_PROKARYOTES)
 				{
-					int nbOrgaEnTout = 289 + 10*2; // nombre d'orga + nb d'analyses et nb de téléchargements
-					int nbThread = 10;
-					Chargement charg = new Chargement(5, nbOrgaEnTout);
-					TreeGestion t = new TreeGestion();
-					JCheckBoxTree tree = t.construct(charg);
-					TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread, t.getChargement(), tree);
+					clic = true;
 				}
 			  }
 			});
@@ -98,6 +106,6 @@ public class MainWindow {
 		JLabel lblTitre = new JLabel("Bioinfo");
 		lblTitre.setFont(new Font("Dialog", Font.BOLD, 22));
 		lblTitre.setBounds(18, 12, 190, 28);
-		frame.getContentPane().add(lblTitre);
+		frame.getContentPane().add(lblTitre);	
 	}
 }
