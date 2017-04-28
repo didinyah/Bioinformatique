@@ -342,8 +342,10 @@ public class GestionExcel
 		ResultData rd = new ResultData();
 		try {
 			rd = GestionFichier.readWithFileName(fichierTest);
+			ArrayList<ResultData> rds = new ArrayList<ResultData>();
+			rds.add(rd);
 			System.out.println(rd.getTrinucleotide().getFreqHMAP1());
-			CreateFromTemplate("test/test.xlsx",rd);
+			CreateExcel("test/test.xlsx", rds);
 			System.out.println(rd.getDinucleotide().getPrefHMAP(0));
 		} 
 		catch (IOException e) {
@@ -384,6 +386,9 @@ public class GestionExcel
 		RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getHMAP(1), Phase.Phase1, 1);
 		RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getPrefHMAP(0), Phase.PrefPhase0, 1);
 		RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getPrefHMAP(1), Phase.PrefPhase1, 1);
+		
+		CreationCelluleValeur(onglet, rd.getNumberCdsSeq(), 23, 13);
+		CreationCelluleValeur(onglet, rd.getNumberCdsSeqInvalid(), 24, 13);
 	}
 	public static void CreateExcel(String chemin,  ArrayList<ResultData>rds)
 	{
@@ -395,10 +400,13 @@ public class GestionExcel
 			for(int i = 0; i< rds.size() ; i++)
 			{
 				if(i==0)
+				{
 					RemplirInfo(rds.get(i));
+				}
 				else
 					AjouterOnglet(rds.get(i));
 			}
+			wb.removeSheetAt(1);
 			MajFormules();
 			CreationFichier(chemin);
 		}
@@ -417,7 +425,7 @@ public class GestionExcel
 		}
 	}
 	
-	public static void CreateFromTemplate(String out, ResultData rd)
+	/*public static void CreateFromTemplate(String out, ResultData rd)
 	{
 		File file = new File("files/templateEdit.xlsx");
 		try {
@@ -499,7 +507,7 @@ public class GestionExcel
 			e.printStackTrace();
 		}
 		
-	}
+	}*/
 	
 	public static void main(String[] args) 
 	{
