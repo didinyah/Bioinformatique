@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Stack;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -41,11 +42,15 @@ public class GlobalJPanel extends JPanel{
 	
 	private int dataCount;
 	private int dataDone = 0;
+	private int totalData = 0;
+	protected int totalDataDone = 0;
+	protected int timeEcoule = 0;
 	
 	private GlobalJPanel jpanel;
 	private JScrollPane sp;
+	private JLabel time;
 	
-	public GlobalJPanel(int lo, int la, int data, JTextArea log, JScrollPane jsp){
+	public GlobalJPanel(int lo, int la, int data, JTextArea log, JScrollPane jsp, int total){
 		fW = lo;
 		fH = la;
 		setSize(lo, la);
@@ -57,6 +62,27 @@ public class GlobalJPanel extends JPanel{
 		dataCount = data;
 		logFrame = log;
 		sp = jsp;
+		totalData = total;
+		
+		time = new JLabel("Estimation du temps de chargement : ... minutes restantes.");
+		time.setForeground(Color.WHITE);
+		this.add(time);
+		
+		Thread t = new Thread() {
+			public void run() {
+				while(dataDone < dataCount){
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					timeEcoule += 200;
+					setChargingTime();
+				}
+			}
+		};
+		t.start();
 	}
 	
 	public void paintComponent(Graphics g){
@@ -283,8 +309,22 @@ public class GlobalJPanel extends JPanel{
 		cc.updateProgress(dataDone*(100/dataCount));
 		if(dataDone >= dataCount){
 			log("Chargement terminé.");
+			totalDataDone = totalData;
+			time.setText("Estimation du temps de chargement : 0 minutes restantes.");
 		}
 		jpanel.repaint();
+	}
+	
+	public void setChargingTime(){
+		if(totalDataDone != 0){
+			int temps = timeEcoule*totalData/totalDataDone;
+			temps = temps/100/60;
+			time.setText("Estimation du temps de chargement : " + temps + " minutes restantes.");
+		}
+		if(dataDone >= dataCount){
+			totalDataDone = totalData;
+			time.setText("Estimation du temps de chargement : 0 minutes restantes.");
+		}
 	}
 	
 	public void log(String s){		

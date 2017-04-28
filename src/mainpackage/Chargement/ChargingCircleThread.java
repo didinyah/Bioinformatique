@@ -83,6 +83,7 @@ public class ChargingCircleThread extends Thread {
 								//jp.logFrame.setFont(new Font("Verdana", Font.PLAIN, 10));
 								jp.log("["+cc.label+"]" + data.peek()+".");
 								a.name = data.pop();
+								jp.totalDataDone++;
 								break;
 							}
 						}

@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -26,46 +27,6 @@ public class Chargement extends Frame{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public static void main(String[] args){
-		Chargement c = new Chargement(1);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		c.send("Virus", 5);
-		Organism o = new Organism();
-		o.setKingdom("Virus");
-		o.setName("Virus1");
-		Organism o2 = new Organism();
-		o2.setKingdom("Virus");
-		o2.setName("Virus2");
-		Organism o3 = new Organism();
-		o3.setKingdom("Virus");
-		o3.setName("Virus3");
-		Organism o4 = new Organism();
-		o4.setKingdom("Virus");
-		o4.setName("Virus4");
-		Organism o5 = new Organism();
-		o5.setKingdom("Virus");
-		o5.setName("Virus5");
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		c.send(o);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		c.send(o2);
-		c.send(o3);
-		c.send(o4);
-		c.send(o5);
-	}
 	
 	private Frame mainFrame;
 	private JTextArea logFrame;
@@ -76,9 +37,11 @@ public class Chargement extends Frame{
 	private int width = 1100;
 	private int height = 700;
 	private int panelWidth = 700;
+	private int totalData = 0;
 	
-	public Chargement(int nombreKingdom){
+	public Chargement(int nombreKingdom, int total){
 		dataCount = nombreKingdom;
+		totalData = total;
 		prepareGUI();
 	}
 
@@ -104,11 +67,11 @@ public class Chargement extends Frame{
 		sp = scroll;
 		mainFrame.add(scroll);
 		
-		final GlobalJPanel gjp = new GlobalJPanel(panelWidth, height, dataCount, logFrame, scroll);
+		final GlobalJPanel gjp = new GlobalJPanel(panelWidth, height, dataCount, logFrame, scroll, totalData);
 		mainFrame.add(gjp);
 		panel = gjp;
 		
-		/*mainFrame.addComponentListener(new ComponentAdapter() 
+		mainFrame.addComponentListener(new ComponentAdapter() 
 		{  
 	        public void componentResized(ComponentEvent evt) {
 	        	int newPanelWidth = (int)(panelWidth/(double)width*mainFrame.getWidth());
@@ -116,7 +79,7 @@ public class Chargement extends Frame{
 	        	logFrame.setBounds(newPanelWidth, 0, mainFrame.getWidth()-newPanelWidth, mainFrame.getHeight());
 	        	sp.setBounds(newPanelWidth, 0, mainFrame.getWidth()-newPanelWidth, mainFrame.getHeight());
 	        }
-		});*/
+		});
 		mainFrame.setVisible(true);  
 	}
 	
