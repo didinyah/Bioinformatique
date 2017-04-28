@@ -382,13 +382,6 @@ public class GestionExcel
 			else
 				remove.add("Sum_Chromosome");
 			
-			if(rd.isCompleteGenome())
-			{
-				onglets.add("Complete_Genome");
-			}
-			else
-				remove.add("Complete_Genome");
-			
 			if(rd.isDna())
 			{
 				onglets.add("Sum_DNA");
