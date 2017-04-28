@@ -60,14 +60,10 @@ public class TreeWindow {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void displayTreeWindow(final JCheckBoxTree cbt) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					int nbOrgaEnTout = 289;
-					Chargement charg = new Chargement(3, nbOrgaEnTout);
-					TreeGestion t = new TreeGestion();
-					final JCheckBoxTree cbt = t.construct(charg);
 					TreeWindow window = new TreeWindow(cbt);
 					window.frame.setVisible(true);
 				} catch (Exception e) {

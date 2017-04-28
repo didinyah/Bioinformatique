@@ -1,6 +1,7 @@
 package mainpackage;
 
 import Windows.JCheckBoxTree;
+import Windows.MainWindow;
 import mainpackage.Chargement.Chargement;
 
 /*
@@ -22,6 +23,7 @@ public class Main {
 			Configuration.DIR_SEPARATOR = "\\";
 		}
 		*/
+		/*
 		int nbOrgaEnTout = 289 + 10*2; // nombre d'orga + nb d'analyses et nb de téléchargements
 		int nbThread = 10;
 		Chargement charg = new Chargement(5, nbOrgaEnTout);
@@ -30,7 +32,10 @@ public class Main {
 
 		//TraitementOrganisme.lectureEtDL(t.getListOrganism());
 		//TraitementOrganisme.lectureTest();
-		TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread, t.getChargement());
+		TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread, t.getChargement(), tree);
+		*/
+		
+		MainWindow.displayMainWindow();
 	}
 
 }

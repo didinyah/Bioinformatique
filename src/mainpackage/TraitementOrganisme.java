@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 
+import Windows.JCheckBoxTree;
+import Windows.TreeWindow;
 import mainpackage.Chargement.Chargement;
 
 public class TraitementOrganisme {
@@ -33,7 +35,7 @@ public class TraitementOrganisme {
 	}
 	
 	// Téléchargement des fichiers avec thread
-	public static void DLAnalyseThread(ArrayList<Organism> listeOrga, int nbThread, Chargement charg) {
+	public static void DLAnalyseThread(ArrayList<Organism> listeOrga, int nbThread, Chargement charg, JCheckBoxTree tree) {
 		ExecutorService executorService = Executors.newFixedThreadPool(nbThread);
 		System.setProperty("https.protocols", "TLSv1.1");
 		
@@ -119,6 +121,9 @@ public class TraitementOrganisme {
 		}
 		
 		System.out.println("fin d'analyse avec thread");
+		
+		// On affiche maintenant la fenêtre pour consulter les excel
+		TreeWindow.displayTreeWindow(tree);
 	}
 	
 	public static ArrayList<ResultData> allResultsOrganism(Organism organism) {
