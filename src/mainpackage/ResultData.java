@@ -152,7 +152,7 @@ public class ResultData {
     	return dna;
     }
     
-    // Infos supplémentaires pour information générale
+    // Infos supplï¿½mentaires pour information gï¿½nï¿½rale
     
     public Integer getNbOrganism() {
     	return nbOrganism;
@@ -267,8 +267,8 @@ public class ResultData {
         str += dd.getHMAP0()+"\n";
         str += dd.getHMAP1()+"\n";
         str += "Pref :"+"\n";
-        //str += dd.getPrefHMAP0()+"\n";
-        //str += dd.getPrefHMAP1()+"\n";
+        str += dd.getPrefHMAP0()+"\n";
+        str += dd.getPrefHMAP1()+"\n";
 
         // Calcul des frequences :
 

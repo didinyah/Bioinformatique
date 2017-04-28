@@ -204,7 +204,7 @@ public class GestionFichier {
 						result.setDna(true);
 					}
 				}
-				// sinon ça veut dire qu'on a eu l'info du type du fichier, ==> type DNA faux
+				// sinon ï¿½a veut dire qu'on a eu l'info du type du fichier, ==> type DNA faux
 				else {
 					result.setDna(false);
 				}
@@ -325,7 +325,7 @@ public class GestionFichier {
 							Analyzer.countTrinIn3PhasesFromString(strToCount,tttGeneral,tttCurrentCds);
 							tttGeneral.calculPref(tttCurrentCds);
 							Analyzer.countDinIn2PhasesFromString(strToCount,ddGeneral,ddCurrentCds);
-							//ddGeneral.calculPref(ddCurrentCds); TODO il parait qu'il ne faut pas le faire
+							ddGeneral.calculPref(ddCurrentCds);
 						} catch (Exceptions.ExceptionCodonNotFound e) {
 
 							fail_codon += 1;
