@@ -194,7 +194,20 @@ public class ResultData {
     	this.lastModifDate = lastModifDate;
     }
 
+    public int getCDSRestants()
+    {
+    	return numberCdsSeq - numberCdsSeqInvalid;
+    }
     
+    public int getCDSTraites()
+    {
+    	return numberCdsSeq - numberCdsSeqInvalid - inBorneContentFail;
+    }
+    
+    public int getCDSInvalide()
+    {
+    	return inBorneContentFail;
+    }
     // fusion function
     public void fusion(ResultData resultData){
         // fusion current resultData with the resultdata in param
