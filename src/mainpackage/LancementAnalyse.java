@@ -48,8 +48,7 @@ public class LancementAnalyse implements Runnable {
 			}
 			
 			// Suppression du fichier
-			boolean delete_file_option = false;
-			if(delete_file_option) {
+			if(!Configuration.OPTION_DL_KEEPFILES) {
 				if(file.delete()){
 	    			// System.out.println(file.getName() + " est supprimé !");
 	    		}

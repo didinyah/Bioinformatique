@@ -38,6 +38,15 @@ public class TreeGestion {
 	
 	public JCheckBoxTree construct(Chargement charg){
 		List<TreeBuilder> services = new ArrayList<TreeBuilder>();
+		if(Configuration.OPTION_DL_EUKARYOTES) {
+			
+		}
+		if(Configuration.OPTION_DL_PROKARYOTES) {
+					
+				}
+		if(Configuration.OPTION_DL_VIRUSES) {
+			
+		}
 		charg.send("EUKARYOTES", 24);
 		charg.send("PROKARYOTES", 64);
 		charg.send("VIRUSES", 200);
