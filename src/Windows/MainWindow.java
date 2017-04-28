@@ -70,18 +70,26 @@ public class MainWindow {
 		frame.getContentPane().add(chckbxEucaryotes);
 		
 		final JCheckBox chckbxVirus = new JCheckBox("Virus");
-		chckbxVirus.setBounds(8, 84, 129, 23);
+		chckbxVirus.setBounds(8, 84, 96, 23);
 		frame.getContentPane().add(chckbxVirus);
 		
 		final JCheckBox chckbxProcaryotes = new JCheckBox("Procaryotes");
-		chckbxProcaryotes.setBounds(8, 154, 129, 23);
+		chckbxProcaryotes.setBounds(8, 144, 129, 23);
 		frame.getContentPane().add(chckbxProcaryotes);
+		
+		final JCheckBox chckbxKeepTxt = new JCheckBox("Garder les fichiers texte");
+		chckbxKeepTxt.setBounds(250, 300, 196, 23);;
+		frame.getContentPane().add(chckbxKeepTxt);
 		
 		JButton btnDl = new JButton("Télécharger");
 		btnDl.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				if(chckbxKeepTxt.isSelected())
+				{
+					Configuration.OPTION_DL_KEEPFILES = true;
+				}
 				if(chckbxEucaryotes.isSelected())
 				{
 					Configuration.OPTION_DL_EUKARYOTES = true;
@@ -100,7 +108,7 @@ public class MainWindow {
 				}
 			  }
 			});
-		btnDl.setBounds(277, 211, 117, 25);
+		btnDl.setBounds(277, 211, 119, 25);
 		frame.getContentPane().add(btnDl);
 		
 		JLabel lblTitre = new JLabel("Bioinfo");

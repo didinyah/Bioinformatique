@@ -7,4 +7,5 @@ public class Configuration {
 	public static Boolean OPTION_DL_EUKARYOTES = false;
 	public static Boolean OPTION_DL_VIRUSES = false;
 	public static Boolean OPTION_DL_PROKARYOTES = false;
+	public static Boolean OPTION_DL_KEEPFILES = false;
 }
