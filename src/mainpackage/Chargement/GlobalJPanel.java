@@ -6,6 +6,8 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +21,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import mainpackage.Organism;
 
@@ -80,6 +83,7 @@ public class GlobalJPanel extends JPanel{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
 					timeEcoule += 200;
 					setChargingTime();
 				}
@@ -285,7 +289,6 @@ public class GlobalJPanel extends JPanel{
 			a.add(lines.get(3));
 			a.add(lines.get(4));
 			
-			while(threads.get(2)!=null){ }
 			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(0), lines.get(0), a, new Stack<String>(), s, dataCount);
 			threads.put(s, c);
 			c.start();
@@ -298,7 +301,6 @@ public class GlobalJPanel extends JPanel{
 			a.add(lines.get(7));
 			a.add(lines.get(8));
 			
-			while(threads.get(1)!=null){ }
 			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(5), lines.get(5), a, new Stack<String>(), s, dataCount);
 			threads.put(s, c);
 			c.start();
@@ -333,14 +335,14 @@ public class GlobalJPanel extends JPanel{
 			if(threads.containsKey(s.getKingdom())){
 				threads.get(s.getKingdom()).addStack(s.getName());
 			} else{
-				System.out.println("Le royaume " + s.getKingdom() + " n'existe pas.");
+				System.out.println("Erreur d'analyse");
 			}
 		}
 		else if(s.getKingdom().equals("TELECHARGEMENT")){
 			if(threads.containsKey(s.getKingdom())){
 				threads.get(s.getKingdom()).addStack(s.getName());
 			} else{
-				System.out.println("Le royaume " + s.getKingdom() + " n'existe pas.");
+				System.out.println("Erreur de téléchargement");
 			}
 		}
 	}

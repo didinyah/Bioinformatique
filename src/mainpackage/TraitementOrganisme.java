@@ -20,7 +20,7 @@ import mainpackage.Chargement.Chargement;
 
 public class TraitementOrganisme {
 	
-	// Exécution avec un fichier test
+	// Exï¿½cution avec un fichier test
 	public static void lectureTest() {
 		String fichierTest = "files/chromosome_NC_015850.1.txt";
 		ResultData rd = new ResultData();
@@ -35,7 +35,7 @@ public class TraitementOrganisme {
 		System.out.println("fin de lecture et de DL");
 	}
 	
-	// Téléchargement des fichiers avec thread
+	// Tï¿½lï¿½chargement des fichiers avec thread
 	public static void DLAnalyseThread(ArrayList<Organism> listeOrga, int nbThread, Chargement charg, JCheckBoxTree tree) {
 		ExecutorService executorService = Executors.newFixedThreadPool(nbThread);
 		System.setProperty("https.protocols", "TLSv1.1");
@@ -46,7 +46,7 @@ public class TraitementOrganisme {
 		charg.send("TELECHARGEMENT", countEnd);
 		charg.send("ANALYSE", countEnd);
 		
-		// Pour chaque organisme ajouté à la liste
+		// Pour chaque organisme ajoutï¿½ ï¿½ la liste
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
 			String name = organism.getName();
@@ -64,10 +64,10 @@ public class TraitementOrganisme {
 					URL urlDL = new URL(url);
 					File f = new File(organism.getPath() + Configuration.DIR_SEPARATOR + organism.getName() + "_" + valueID + ".txt");
 
-					// On télécharge le replicon
-					System.out.println("Téléchargement du fichier : " + name + "_" + valueID.toString());
+					// On tï¿½lï¿½charge le replicon
+					System.out.println("Tï¿½lï¿½chargement du fichier : " + name + "_" + valueID.toString());
 					
-					// Ligne suivante : créé le fichiers en brut avec la séquence complète
+					// Ligne suivante : crï¿½ï¿½ le fichiers en brut avec la sï¿½quence complï¿½te
 					FileUtils.copyURLToFile(urlDL, f);
 					
 					// On envoie au chargement l'organisme si les replicons sont tous DL
@@ -80,7 +80,7 @@ public class TraitementOrganisme {
 						charg.send(orgTmp);
 					}
 					
-					// Lancement du thread d'analyse (suppression du fichier à la fin du thread)
+					// Lancement du thread d'analyse (suppression du fichier ï¿½ la fin du thread)
 					executorService.execute(new LancementAnalyse(f, organism, key, charg));
 					
 					//System.out.println(rd);
@@ -117,7 +117,7 @@ public class TraitementOrganisme {
 			Organism organism = listeOrga.get(i);
 			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
 			
-			// Création des excel ici !
+			// Créer les excel ici
 			GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
 			
 			String subgroupOrg = organism.getSubgroup();
@@ -170,7 +170,7 @@ public class TraitementOrganisme {
 		
 		System.out.println("fin des sommes des résultats");
 		
-		// On affiche maintenant la fenêtre pour consulter les excel
+		// On affiche maintenant la fenï¿½tre pour consulter les excel
 		TreeWindow.displayTreeWindow(tree);
 	}
 	
@@ -256,7 +256,7 @@ public class TraitementOrganisme {
 			allResultData.add(sumLinkage);
 		}
 		
-		// Pour avoir toutes les sommes et les replicons de base on doit les ajouter aussi à la liste
+		// Pour avoir toutes les sommes et les replicons de base on doit les ajouter aussi ï¿½ la liste
 		for(String key: organism.getRepliconsTraites().keySet()) {
 			ResultData rd = organism.getRepliconsTraites().get(key);
 			allResultData.add(rd);

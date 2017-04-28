@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -52,6 +53,7 @@ public class TreeGestion {
 		ServiceManager sm = new ServiceManager(services);
 		sm.startAsync();
 		sm.awaitStopped();
+
 		
 		List<Organism> organisms = new ArrayList<Organism>();
 		organisms.addAll(eukaryotes.organisms());
