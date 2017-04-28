@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,6 +66,8 @@ public class GestionExcel
 		FileOutputStream fileOut;
 		try 
 		{
+			File f = new File(file);
+			f.getParentFile().mkdirs();
 			fileOut = new FileOutputStream(file);
 			wb.write(fileOut);
 			fileOut.close();
@@ -340,7 +343,7 @@ public class GestionExcel
 		try {
 			rd = GestionFichier.readWithFileName(fichierTest);
 			System.out.println(rd.getTrinucleotide().getFreqHMAP1());
-			CreateFromTemplate("files/test.xlsx",rd);
+			CreateFromTemplate("test/test.xlsx",rd);
 			System.out.println(rd.getDinucleotide().getPrefHMAP(0));
 		} 
 		catch (IOException e) {
@@ -500,7 +503,7 @@ public class GestionExcel
 	
 	public static void main(String[] args) 
 	{
-		//testGeneration();
+		testGeneration();
 		/*XSSFWorkbook wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("mafeuille");
 		ArrayList<String> trinucleotides = Utils.getListOfTriNucleotideCAPSLOCK();
