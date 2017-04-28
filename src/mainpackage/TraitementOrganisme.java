@@ -177,6 +177,7 @@ public class TraitementOrganisme {
 			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
 			
 			// TODO : Créer les excel ici !
+			GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
 			
 			for(int j=0; j<allDataOrga.size(); j++) {
 				//System.out.println(allDataOrga.get(j));

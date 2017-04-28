@@ -19,7 +19,7 @@ public class Organism {
 	private HashMap<String, String> replicons;
 	private HashMap<String, ResultData> replicons_traites;
 	private boolean activated;
-	private String base_folder = "C:\\tmpBio\\results\\"; // on stocke les données ici pour l'instant
+	private String base_folder = System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"genomes"; // on stocke les données ici pour l'instant
 	
 	public Organism(String kingdom, String group, String subgroup, String name, String creation_date, String modification_date){
 		this.kingdom = kingdom.replace("/", "_").replace(" ", "_");
