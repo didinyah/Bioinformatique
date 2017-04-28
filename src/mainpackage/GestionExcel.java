@@ -367,7 +367,7 @@ public class GestionExcel
 	public static void AjouterOnglet(ResultData rd)
 	{
 		String onglet = rd.getName();
-		wb.createSheet(onglet);
+		wb.cloneSheet(1,onglet);
 		RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(0), Phase.FreqPhase0, 0);
 		RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(1), Phase.FreqPhase1, 0);
 		RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(2), Phase.FreqPhase2, 0);
