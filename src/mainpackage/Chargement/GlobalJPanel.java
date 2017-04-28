@@ -285,7 +285,6 @@ public class GlobalJPanel extends JPanel{
 			a.add(lines.get(3));
 			a.add(lines.get(4));
 			
-			while(threads.get(2)!=null){ }
 			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(0), lines.get(0), a, new Stack<String>(), s, dataCount);
 			threads.put(s, c);
 			c.start();
@@ -298,7 +297,6 @@ public class GlobalJPanel extends JPanel{
 			a.add(lines.get(7));
 			a.add(lines.get(8));
 			
-			while(threads.get(1)!=null){ }
 			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(5), lines.get(5), a, new Stack<String>(), s, dataCount);
 			threads.put(s, c);
 			c.start();

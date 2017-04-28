@@ -36,7 +36,13 @@ public class ChargingCircleThread extends Thread {
 	
 	//Constructor MiddleCircle
 	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ChargingStick inStick, ArrayList<ChargingStick> d, Stack<String> s, String da, double dC){
-		name = da;
+		if(da == "ANALYSE")
+			name = "VIRUSES";
+		else if(da == "TELECHARGEMENT")
+			name = "PROKARYOTES";
+		else
+			name = da;
+		
 		jp = j;
 		cc = c;
 		delegate = d;
@@ -94,9 +100,16 @@ public class ChargingCircleThread extends Thread {
 			//On lance le stick
 			(new ChargingStickThread(jp, sT)).start();
 			
-			jp.log("Royaume \""+cc.label+"\" chargé.");
-			cc.updateProgress(0);
-			cc.label = "";
+			if(cc.label == "VIRUSES"){
+				jp.log("Royaume \""+cc.label+"\" chargé.");
+				cc.label = "ANALYSE";
+			} else if(cc.label == "PROKARYOTES"){
+				jp.log("Royaume \""+cc.label+"\" chargé.");
+				cc.label = "TELECHARGEMENT";
+			} else {
+				cc.updateProgress(0);
+				cc.label = "";
+			}
 			jp.repaint();
 		}
 		//Si c'est un OuterCircle

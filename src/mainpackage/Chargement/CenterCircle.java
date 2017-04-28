@@ -22,7 +22,7 @@ import java.awt.geom.Rectangle2D;
 public class CenterCircle {
 	protected int fW;
 	protected int fH;
-	private int progressCenter = 0;
+	protected int progressCenter = 0;
 	private int circleSize = 150;
 	
 	protected int inPosX;
