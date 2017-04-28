@@ -71,7 +71,7 @@ public class GestionExcel
 			fileOut = new FileOutputStream(file);
 			wb.write(fileOut);
 			fileOut.close();
-			System.out.println("Le ficher " + file + "a été créé.");
+			System.out.println("Le fichier " + file + "a été créé.");
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -389,6 +389,10 @@ public class GestionExcel
 		
 		CreationCelluleValeur(onglet, rd.getNumberCdsSeq(), 23, 13);
 		CreationCelluleValeur(onglet, rd.getNumberCdsSeqInvalid(), 24, 13);
+		CreationCelluleValeur(onglet, 0, 25, 13); //CDS DOUBLE
+		CreationCelluleValeur(onglet, rd.getCDSRestants(), 26, 13);
+		CreationCelluleValeur(onglet, rd.getCDSInvalide(), 27, 13);
+		CreationCelluleValeur(onglet, rd.getCDSTraites(), 28, 13);
 	}
 	public static void CreateExcel(String chemin,  ArrayList<ResultData>rds)
 	{

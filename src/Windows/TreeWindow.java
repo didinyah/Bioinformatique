@@ -14,11 +14,14 @@ import javax.swing.tree.TreePath;
 
 import java.awt.List;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
@@ -35,19 +38,24 @@ import com.jgoodies.forms.layout.RowSpec;
 import Windows.JCheckBoxTree.CheckChangeEvent;
 import Windows.JCheckBoxTree.CheckChangeEventListener;
 import mainpackage.Chargement.Chargement;
+import mainpackage.Configuration;
 import mainpackage.TreeGestion;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+
 import java.awt.ComponentOrientation;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import javax.swing.ScrollPaneConstants;
 
 public class TreeWindow {
 
 	private JFrame frame;
+	private HashMap<String,String> filespath = new HashMap<String,String>();
 
 	/**
 	 * Launch the application.
@@ -56,7 +64,11 @@ public class TreeWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TreeWindow window = new TreeWindow();
+					int nbOrgaEnTout = 289;
+					Chargement charg = new Chargement(3, nbOrgaEnTout);
+					TreeGestion t = new TreeGestion();
+					final JCheckBoxTree cbt = t.construct(charg);
+					TreeWindow window = new TreeWindow(cbt);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -68,14 +80,14 @@ public class TreeWindow {
 	/**
 	 * Create the application.
 	 */
-	public TreeWindow() {
-		initialize();
+	public TreeWindow(final JCheckBoxTree cbt) {
+		initialize(cbt);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(final JCheckBoxTree cbt) {
 		frame = new JFrame();
 		frame.getContentPane().setPreferredSize(new Dimension(2000, 2000));
 		frame.getContentPane().setMaximumSize(new Dimension(2000, 2000));
@@ -101,11 +113,6 @@ public class TreeWindow {
 		gbc_cbtScrollPane.gridx = 0;
 		gbc_cbtScrollPane.gridy = 0;
 		panel.add(cbtScrollPane, gbc_cbtScrollPane);
-
-		int nbOrgaEnTout = 289;
-		Chargement charg = new Chargement(3, nbOrgaEnTout);
-		TreeGestion t = new TreeGestion();
-		final JCheckBoxTree cbt = t.construct(charg);
 		cbtScrollPane.setViewportView(cbt);
 		
 		JScrollPane listScollPane = new JScrollPane();
@@ -115,21 +122,22 @@ public class TreeWindow {
 		gbc_listScollPane.gridy = 0;
 		panel.add(listScollPane, gbc_listScollPane);
 		
+
 		final List list = new List();
-		
+		final Desktop desktop = Desktop.getDesktop();
 		cbt.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent arg0) {
             	list.removeAll();
         		for(TreePath t : cbt.getCheckedPaths())
         		{
-        			String path = System.getProperty("user.dir") + "/" + t.toString().replace(",", "/").replace("[", "").replace("]","").replace(" ", "")+".xlsx";
+        			String path = System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + t.toString().replace(",", Configuration.DIR_SEPARATOR).replace("[", "").replace("]","").replace(" ", "")+".xlsx";
         			File tempf = new File(path);
-        			if(tempf.isFile())
+        			if(tempf.isFile() && tempf.exists())
         			{
-        				list.add(tempf.toString());
+        				list.add(tempf.getName());
+        				filespath.put(tempf.getName(), path);
         			}
         		}
-        		this.notify();
             }           
             public void mouseEntered(MouseEvent arg0) {         
             }           
@@ -140,6 +148,26 @@ public class TreeWindow {
             public void mouseReleased(MouseEvent arg0) {
             }           
         });
+		
+		
+		list.addMouseListener(new MouseAdapter() 
+		{
+		    public void mouseClicked(MouseEvent evt) 
+		    {
+		        if (evt.getClickCount() == 2) 
+		        {
+
+		            try 
+		            {
+						desktop.open(new File(filespath.get(list.getSelectedItem())));
+					} 
+		            catch (Exception e) 
+		            {
+						e.printStackTrace();
+					}
+		        }
+		    }
+		});
 		
 		listScollPane.setViewportView(list);
 		list.setFont(new Font("Cabin", Font.PLAIN, 12));
