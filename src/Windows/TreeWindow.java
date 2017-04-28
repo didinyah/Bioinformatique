@@ -5,12 +5,20 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Component;
+
 import javax.swing.JSplitPane;
 import javax.swing.JList;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
 import java.awt.List;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
@@ -24,6 +32,8 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import Windows.JCheckBoxTree.CheckChangeEvent;
+import Windows.JCheckBoxTree.CheckChangeEventListener;
 import mainpackage.Chargement.Chargement;
 import mainpackage.TreeGestion;
 
@@ -85,22 +95,18 @@ public class TreeWindow {
 		panel.setLayout(gbl_panel);
 		
 		JScrollPane cbtScrollPane = new JScrollPane();
-		cbtScrollPane.setMinimumSize(new Dimension(10, 10));
-		cbtScrollPane.setMaximumSize(new Dimension(2000, 2000));
-		cbtScrollPane.setPreferredSize(new Dimension(100, 100));
 		GridBagConstraints gbc_cbtScrollPane = new GridBagConstraints();
 		gbc_cbtScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_cbtScrollPane.insets = new Insets(0, 0, 0, 5);
 		gbc_cbtScrollPane.gridx = 0;
 		gbc_cbtScrollPane.gridy = 0;
 		panel.add(cbtScrollPane, gbc_cbtScrollPane);
-		
-		/*final JCheckBoxTree cbt = TreeGestion.construct();
-		cbt.setMinimumSize(new Dimension(10, 10));
-		cbt.setPreferredSize(new Dimension(100, 100));
-		cbt.setMaximumSize(new Dimension(2000, 2000));
+
+		Chargement charg = new Chargement(3);
+		TreeGestion t = new TreeGestion();
+		final JCheckBoxTree cbt = t.construct(charg);
 		cbtScrollPane.setViewportView(cbt);
-		*/
+		
 		JScrollPane listScollPane = new JScrollPane();
 		GridBagConstraints gbc_listScollPane = new GridBagConstraints();
 		gbc_listScollPane.fill = GridBagConstraints.BOTH;
@@ -108,12 +114,43 @@ public class TreeWindow {
 		gbc_listScollPane.gridy = 0;
 		panel.add(listScollPane, gbc_listScollPane);
 		
-		List list = new List();
+		final List list = new List();
+		
+		cbt.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent arg0) {
+            	list.removeAll();
+        		for(TreePath t : cbt.getCheckedPaths())
+        		{
+        			String path = System.getProperty("user.dir") + "/" + t.toString().replace(",", "/").replace("[", "").replace("]","").replace(" ", "")+".xlsx";
+        			File tempf = new File(path);
+        			if(tempf.isFile())
+        			{
+        				list.add(tempf.toString());
+        			}
+        		}
+        		this.notify();
+            }           
+            public void mouseEntered(MouseEvent arg0) {         
+            }           
+            public void mouseExited(MouseEvent arg0) {              
+            }
+            public void mousePressed(MouseEvent arg0) {             
+            }
+            public void mouseReleased(MouseEvent arg0) {
+            }           
+        });
+		
 		listScollPane.setViewportView(list);
 		list.setFont(new Font("Cabin", Font.PLAIN, 12));
-		list.add("test");
-		list.add("test1");
-		list.add("test2");
-		list.add("test3");
 	}
+	/*
+	private void updateCheck(List list, JCheckBoxTree jtree)
+	{
+		list.removeAll();
+		for(TreePath t : jtree.getCheckedPaths())
+		{
+			list.add(t.toString());
+		}
+		this.notify();
+	}*/
 }
