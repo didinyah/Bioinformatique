@@ -8,18 +8,22 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
+import mainpackage.Chargement.Chargement;
+
 // La classe suivante va se lancer dans plusieurs threads, elle se fait à la fin d'un DL de fichier pour analyse
 public class LancementAnalyse implements Runnable {
 
 	public File file;
 	public Organism organism;
 	public String keyReplicon;
+	public Chargement charg;
 	
-    public LancementAnalyse(File f, Organism o, String key) 
+    public LancementAnalyse(File f, Organism o, String key, Chargement charg) 
     { 
     	file = f;
     	organism = o;
     	keyReplicon = key;
+    	this.charg = charg;
     }
     
 	public void run() {
@@ -34,6 +38,14 @@ public class LancementAnalyse implements Runnable {
 			HashMap<String, ResultData> hash = organism.getRepliconsTraites();
 			hash.put(keyReplicon, rd);
 			organism.setRepliconsTraites(hash);
+			
+			// On envoie au chargement l'organisme si les replicons sont tous DL
+			if(organism.getReplicons().keySet().size() == organism.getRepliconsTraites().keySet().size()) {
+				Organism orgTmp = new Organism();
+				orgTmp.setKingdom("ANALYSE");
+				orgTmp.setName(organism.getName());
+				charg.send(orgTmp);
+			}
 			
 			// Suppression du fichier
 			boolean delete_file_option = false;
