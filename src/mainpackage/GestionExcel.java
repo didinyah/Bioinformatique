@@ -35,7 +35,7 @@ public class GestionExcel
 	// TYPES DE CELL :HSSFCell.[CELL_TYPE_FORMULA, CELL_TYPE_NUMERIC, ou CELL_TYPE_STRING]
 	
 	private enum Phase { Phase0, FreqPhase0, Phase1, FreqPhase1, Phase2, FreqPhase2, PrefPhase0, PrefPhase1, PrefPhase2};
-	
+	private String[] onglet = {"Sum_Chromosome","Sum_Mitochondrion", "Sum_Chloroplast", "Sum_Plasmid", "Sum_DNA", "Sum_Linkage", "completeGenome"};
 	private static XSSFWorkbook wb;
 	
 	//Crée un fichier excel vide
@@ -273,28 +273,58 @@ public class GestionExcel
 		
 	}
 	
-	private static void RemplirColonnePhaseInt(String sheet,HashMap<String, Integer>hmap, Phase phase)
+	private static void RemplirColonnePhaseInt(String sheet,HashMap<String, Integer>hmap, Phase phase, int dinucleotide)
 	{
 		//parcourir tout le hashmap et ajouter dans la colonne 1+Phase à la bonne ligne le nombre adéquat
 		ArrayList<String> trinucleotide = Utils.getListOfTriNucleotideCAPSLOCK();
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		for(String s : trinucleotide)
+		/*for(String s : trinucleotide)
 		{
 			list.add(hmap.get(s.toLowerCase()));
+		}*/
+		if(dinucleotide==0)
+		{
+			for(String s : trinucleotide)
+			{
+				list.add(hmap.get(s.toLowerCase()));
+			}
 		}
-		RemplirColonneValeursInt(sheet, phase.ordinal()+2, 1, list);
+		else
+		{
+			for(String s : Utils.getListOfDiNucleotideCAPSLOCK())
+			{
+				list.add(hmap.get(s.toLowerCase()));
+			}
+		}
+		if(phase == Phase.PrefPhase0 || phase == Phase.PrefPhase1)
+			RemplirColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*10, 1, list);
+		else
+			RemplirColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*12, 1, list);
 	}
 	
-	private static void RemplirColonnePhaseDouble(String sheet,HashMap<String, Double>hmap, Phase phase)
+	private static void RemplirColonnePhaseDouble(String sheet,HashMap<String, Double>hmap, Phase phase, int dinucleotide)
 	{
 		//parcourir tout le hashmap et ajouter dans la colonne 1+Phase à la bonne ligne le nombre adéquat
 		ArrayList<String> trinucleotide = Utils.getListOfTriNucleotideCAPSLOCK();
 		ArrayList<Double> list = new ArrayList<Double>();
-		for(String s : trinucleotide)
+		if(dinucleotide==0)
 		{
-			list.add(hmap.get(s.toLowerCase()));
+			for(String s : trinucleotide)
+			{
+				list.add(hmap.get(s.toLowerCase()));
+			}
 		}
-		RemplirColonneValeursDouble(sheet, phase.ordinal()+2, 1, list);
+		else
+		{
+			for(String s : Utils.getListOfDiNucleotideCAPSLOCK())
+			{
+				list.add(hmap.get(s.toLowerCase()));
+			}
+		}
+		if(phase == Phase.PrefPhase0 || phase == Phase.PrefPhase1)
+			RemplirColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*10, 1, list);
+		else
+			RemplirColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*12, 1, list);
 	}
 	
 	private static void MajFormules()
@@ -309,11 +339,25 @@ public class GestionExcel
 		ResultData rd = new ResultData();
 		try {
 			rd = GestionFichier.readWithFileName(fichierTest);
+			System.out.println(rd.getTrinucleotide().getFreqHMAP1());
 			CreateFromTemplate("files/test.xlsx",rd);
+			System.out.println(rd.getDinucleotide().getPrefHMAP(0));
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void RemplirInfo(ResultData rd)
+	{
+		CreationCelluleValeur("General Information", rd.getName(), 2, 1);
+		//CreationCelluleValeur("General Information", rd.), 4, 1); //last modification
+		CreationCelluleValeur("General Information", rd.getNumberCdsSeq(), 6, 1);
+		CreationCelluleValeur("General Information", rd.getNumberCdsSeqInvalid(), 8, 1);
+		//CreationCelluleValeur("General Information", (), 10, 1);  //nb organisme
+		//CreationCelluleValeur("General Information", rd.nb(), 3, 4); // chromosome
+		//CreationCelluleValeur("General Information", rd.(), 4, 4); //nb plasmid
+		//CreationCelluleValeur("General Information", rd.dna(), 5, 4); //dna
 	}
 	
 	
@@ -322,16 +366,74 @@ public class GestionExcel
 		File file = new File("files/templateEdit.xlsx");
 		try {
 			wb = (XSSFWorkbook) WorkbookFactory.create(file);
-			String sum_chromosome = "Sum_Chromosome";
-			RemplirColonnePhaseDouble(sum_chromosome, rd.getTrinucleotide().getFreqHMAP(0), Phase.FreqPhase0);
-			RemplirColonnePhaseDouble(sum_chromosome, rd.getTrinucleotide().getFreqHMAP(1), Phase.FreqPhase1);
-			RemplirColonnePhaseDouble(sum_chromosome, rd.getTrinucleotide().getFreqHMAP(2), Phase.FreqPhase2);
-			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getHMAP(0), Phase.Phase0);
-			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getHMAP(1), Phase.Phase1);
-			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getHMAP(2), Phase.Phase2);
-			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getPrefHMAP(0), Phase.PrefPhase0);
-			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getPrefHMAP(1), Phase.PrefPhase1);
-			RemplirColonnePhaseInt(sum_chromosome, rd.getTrinucleotide().getPrefHMAP(2), Phase.PrefPhase2);
+			ArrayList<String> onglets = new ArrayList<String>();
+			ArrayList<String> remove = new ArrayList<String>();
+			if(rd.isChloroplast())
+			{
+				onglets.add("Sum_Chloroplast");
+			}
+			else
+				remove.add("Sum_Chloroplast");
+				
+			if(rd.isChromosome())
+			{
+				onglets.add("Sum_Chromosome");
+			}
+			else
+				remove.add("Sum_Chromosome");
+			
+			if(rd.isCompleteGenome())
+			{
+				onglets.add("Complete_Genome");
+			}
+			else
+				remove.add("Complete_Genome");
+			
+			if(rd.isDna())
+			{
+				onglets.add("Sum_DNA");
+			}
+			else
+				remove.add("Sum_DNA");
+			
+			if(rd.isLinkage())
+			{
+				onglets.add("Sum_Linkage");
+			}
+			else 
+				remove.add("Sum_Linkage");
+			
+			if(rd.isMitochondrion())
+			{
+				onglets.add("Sum_Mitochondrion");
+			}
+			else
+				remove.add("Sum_Mitochondrion");
+			
+			for(String onglet : onglets)
+			{
+				RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(0), Phase.FreqPhase0, 0);
+				RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(1), Phase.FreqPhase1, 0);
+				RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(2), Phase.FreqPhase2, 0);
+				RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getHMAP(0), Phase.Phase0, 0);
+				RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getHMAP(1), Phase.Phase1, 0);
+				RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getHMAP(2), Phase.Phase2, 0);
+				RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getPrefHMAP(0), Phase.PrefPhase0, 0);
+				RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getPrefHMAP(1), Phase.PrefPhase1, 0);
+				RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getPrefHMAP(2), Phase.PrefPhase2, 0);
+
+				RemplirColonnePhaseDouble(onglet, rd.getDinucleotide().getFreqHMAP(0), Phase.FreqPhase0, 1);
+				RemplirColonnePhaseDouble(onglet, rd.getDinucleotide().getFreqHMAP(1), Phase.FreqPhase1, 1);
+				RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getHMAP(0), Phase.Phase0, 1);
+				RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getHMAP(1), Phase.Phase1, 1);
+				RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getPrefHMAP(0), Phase.PrefPhase0, 1);
+				RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getPrefHMAP(1), Phase.PrefPhase1, 1);
+			}
+			for(String rem : remove)
+			{
+				wb.removeSheetAt(wb.getSheetIndex(rem));
+			}
+			RemplirInfo(rd);
 			MajFormules();
 			CreationFichier(out);
 		} catch (EncryptedDocumentException e) {
