@@ -38,6 +38,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import Windows.JCheckBoxTree.CheckChangeEvent;
 import Windows.JCheckBoxTree.CheckChangeEventListener;
 import mainpackage.Chargement.Chargement;
+import mainpackage.Configuration;
 import mainpackage.TreeGestion;
 
 import java.awt.FlowLayout;
@@ -54,7 +55,7 @@ import javax.swing.ScrollPaneConstants;
 public class TreeWindow {
 
 	private JFrame frame;
-	private HashMap<String,File> filespath;
+	private HashMap<String,String> filespath = new HashMap<String,String>();
 
 	/**
 	 * Launch the application.
@@ -130,12 +131,12 @@ public class TreeWindow {
             	list.removeAll();
         		for(TreePath t : cbt.getCheckedPaths())
         		{
-        			String path = System.getProperty("user.dir") + "/" + t.toString().replace(",", "/").replace("[", "").replace("]","").replace(" ", "")+".xlsx";
+        			String path = System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + t.toString().replace(",", Configuration.DIR_SEPARATOR).replace("[", "").replace("]","").replace(" ", "")+".xlsx";
         			File tempf = new File(path);
-        			if(tempf.isFile())
+        			if(tempf.isFile() && tempf.exists())
         			{
-        				filespath.put(tempf.getName(), tempf);
         				list.add(tempf.getName());
+        				filespath.put(tempf.getName(), path);
         			}
         		}
             }           
@@ -149,22 +150,22 @@ public class TreeWindow {
             }           
         });
 		
+		
+		list.addMouseListener(new MouseAdapter() 
+		{
+		    public void mouseClicked(MouseEvent evt) 
+		    {
+		        if (evt.getClickCount() == 2) 
+		        {
 
-		list.addMouseListener(new MouseAdapter() {
-		    public void mouseClicked(MouseEvent evt) {
-		        if (evt.getClickCount() == 2) {
-
-		            // Double-click detected
-		            try {
-						desktop.open(filespath.get(list.getSelectedItem()));
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
+		            try 
+		            {
+						desktop.open(new File(filespath.get(list.getSelectedItem())));
+					} 
+		            catch (Exception e) 
+		            {
 						e.printStackTrace();
 					}
-		        } else if (evt.getClickCount() == 3) {
-
-		            // Triple-click detected
-		            //int index = list.locationToIndex(evt.getPoint());
 		        }
 		    }
 		});
