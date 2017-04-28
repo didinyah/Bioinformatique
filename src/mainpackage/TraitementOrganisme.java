@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -77,7 +78,6 @@ public class TraitementOrganisme {
 						orgTmp.setKingdom("TELECHARGEMENT");
 						orgTmp.setName(organism.getName());
 						charg.send(orgTmp);
-						System.out.println("BONJOUR");
 					}
 					
 					// Lancement du thread d'analyse (suppression du fichier à la fin du thread)
@@ -106,21 +106,69 @@ public class TraitementOrganisme {
 			e.printStackTrace();
 		}
 		// FIN DU DL ET DE L'ANALYSE !
+		System.out.println("fin d'analyse avec thread");
 		
 		// Ici, tous les organismes ont leurs resultdata sur chacun de leurs replicons, on fait la somme de tout
+		HashMap<String, ArrayList<ResultData>> mapSubGroupResult = new HashMap<String, ArrayList<ResultData>>();
+		HashMap<String, ArrayList<ResultData>> mapGroupResult = new HashMap<String, ArrayList<ResultData>>();
+		HashMap<String, ArrayList<ResultData>> mapKingdomResult = new HashMap<String, ArrayList<ResultData>>();
+		
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
 			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
 			
-			// TODO : Créer les excel ici !
+			// Création des excel ici !
 			GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
+			
+			String subgroupOrg = organism.getSubgroup();
+			String groupOrg = organism.getGroup();
+			String kingdomOrg = organism.getKingdom();
+			
+			// si le sous groupe n'est pas connu, alors on l'ajoute au map, sinon on additionne les données des résultdata déjà existants
+			if(mapSubGroupResult.get(subgroupOrg) == null) {
+				mapSubGroupResult.put(subgroupOrg, allDataOrga);
+			}
+			else {
+				mapSubGroupResult.put(subgroupOrg, addResultsTotal(mapSubGroupResult.get(subgroupOrg), allDataOrga));
+			}
+			
+			if(mapGroupResult.get(groupOrg) == null) {
+				mapGroupResult.put(groupOrg, allDataOrga);
+			}
+			else {
+				mapGroupResult.put(groupOrg, addResultsTotal(mapGroupResult.get(groupOrg), allDataOrga));
+			}
+			
+			if(mapKingdomResult.get(kingdomOrg) == null) {
+				mapKingdomResult.put(kingdomOrg, allDataOrga);
+			}
+			else {
+				mapKingdomResult.put(kingdomOrg, addResultsTotal(mapKingdomResult.get(kingdomOrg), allDataOrga));
+			}
 			
 			for(int j=0; j<allDataOrga.size(); j++) {
 				//System.out.println(allDataOrga.get(j));
 			}
 		}
 		
-		System.out.println("fin d'analyse avec thread");
+		// Maintenant on créé les excel totaux
+		// total_subgroup
+		for(String key: mapSubGroupResult.keySet()) {
+			ArrayList<ResultData> allRd = mapSubGroupResult.get(key);
+			GestionExcel.CreateExcel(System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Genomes" + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
+		}
+		// total_group
+		for(String key: mapGroupResult.keySet()) {
+			ArrayList<ResultData> allRd = mapGroupResult.get(key);
+			GestionExcel.CreateExcel(System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Genomes" + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
+		}
+		// total_kingdom
+		for(String key: mapKingdomResult.keySet()) {
+			ArrayList<ResultData> allRd = mapKingdomResult.get(key);
+			GestionExcel.CreateExcel(System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Genomes" + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
+		}
+		
+		System.out.println("fin des sommes des résultats");
 		
 		// On affiche maintenant la fenêtre pour consulter les excel
 		TreeWindow.displayTreeWindow(tree);
@@ -213,6 +261,127 @@ public class TraitementOrganisme {
 			ResultData rd = organism.getRepliconsTraites().get(key);
 			allResultData.add(rd);
 		}
+		
+		return allResultData;
+	}
+	
+public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, ArrayList<ResultData> rd2) {
+		
+		ArrayList<ResultData> allResultData = new ArrayList<ResultData>();
+		
+		ArrayList<ResultData> listChloroplast = new ArrayList<ResultData>();
+		ArrayList<ResultData> listChromosome = new ArrayList<ResultData>();
+		ArrayList<ResultData> listDna = new ArrayList<ResultData>();
+		ArrayList<ResultData> listPlasmid = new ArrayList<ResultData>();
+		ArrayList<ResultData> listMitochondrion = new ArrayList<ResultData>();
+		ArrayList<ResultData> listLinkage = new ArrayList<ResultData>();
+		int nbChromosome = 0;
+		int nbPlasmid = 0;
+		int nbDna = 0;
+		String lastModifDate = "";
+		int nbOrganism = 0;
+		
+		
+		
+		for(ResultData rd: rd1) {
+			if(rd.getName().equals("Sum_Chloroplasts")) {
+				listChloroplast.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Chromosomes")) {
+				listChromosome.add(rd);
+			}
+			else if(rd.getName().equals("Sum_DNA")) {
+				listDna.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Plasmids")) {
+				listPlasmid.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Mitochondrions")) {
+				listMitochondrion.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Linkages")) {
+				listLinkage.add(rd);
+			}
+		}
+		
+		for(ResultData rd: rd2) {
+			if(rd.getName().equals("Sum_Chloroplasts")) {
+				listChloroplast.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Chromosomes")) {
+				listChromosome.add(rd);
+			}
+			else if(rd.getName().equals("Sum_DNA")) {
+				listDna.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Plasmids")) {
+				listPlasmid.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Mitochondrions")) {
+				listMitochondrion.add(rd);
+			}
+			else if(rd.getName().equals("Sum_Linkages")) {
+				listLinkage.add(rd);
+			}
+			else if(rd.getName().equals("General_Information")) {
+				nbChromosome += rd.getNbChromosome();
+				nbPlasmid += rd.getNbPlasmid();
+				nbDna += rd.getNbDna();
+				if(rd.getLastModifDate().compareTo(lastModifDate) >1) {
+					lastModifDate = rd.getLastModifDate();
+				};
+				nbOrganism += rd.getNbOrganism();
+			}
+		}
+		
+		// ResultData avec les infos de base
+		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(nbOrganism, nbChromosome, nbPlasmid, nbDna, lastModifDate);
+		allResultData.add(rdGeneralInformation);
+		
+		// On met les sommes de tout
+		if(!listChloroplast.isEmpty()) {
+			ResultData sumChloroplast = new ResultData();
+			sumChloroplast.setName("Sum_Chloroplasts");
+			sumChloroplast.fusions(listChloroplast);
+			sumChloroplast.setChloroplast(true);
+			allResultData.add(sumChloroplast);
+		}
+		if(!listChromosome.isEmpty()) {
+			ResultData sumChromosome = new ResultData();
+			sumChromosome.setName("Sum_Chromosomes");
+			sumChromosome.fusions(listChromosome);
+			sumChromosome.setChromosome(true);
+			allResultData.add(sumChromosome);
+		}
+		if(!listDna.isEmpty()) {
+			ResultData sumDna = new ResultData();
+			sumDna.setName("Sum_DNA");
+			sumDna.fusions(listDna);
+			sumDna.setDna(true);
+			allResultData.add(sumDna);
+		}
+		if(!listPlasmid.isEmpty()) {
+			ResultData sumPlasmid = new ResultData();
+			sumPlasmid.setName("Sum_Plasmids");
+			sumPlasmid.fusions(listPlasmid);
+			sumPlasmid.setPlasmid(true);
+			allResultData.add(sumPlasmid);
+		}
+		if(!listMitochondrion.isEmpty()) {
+			ResultData sumMitochondrion = new ResultData();
+			sumMitochondrion.setName("Sum_Mitochondrions");
+			sumMitochondrion.fusions(listMitochondrion);
+			sumMitochondrion.setMitochondrion(true);
+			allResultData.add(sumMitochondrion);
+		}
+		if(!listLinkage.isEmpty()) {
+			ResultData sumLinkage = new ResultData();
+			sumLinkage.setName("Sum_Linkages");
+			sumLinkage.fusions(listLinkage);
+			sumLinkage.setLinkage(true);
+			allResultData.add(sumLinkage);
+		}
+		
 		
 		return allResultData;
 	}
