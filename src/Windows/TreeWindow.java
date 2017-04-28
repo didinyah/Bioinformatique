@@ -102,7 +102,8 @@ public class TreeWindow {
 		gbc_cbtScrollPane.gridy = 0;
 		panel.add(cbtScrollPane, gbc_cbtScrollPane);
 
-		Chargement charg = new Chargement(3);
+		int nbOrgaEnTout = 289;
+		Chargement charg = new Chargement(3, nbOrgaEnTout);
 		TreeGestion t = new TreeGestion();
 		final JCheckBoxTree cbt = t.construct(charg);
 		cbtScrollPane.setViewportView(cbt);

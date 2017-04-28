@@ -186,10 +186,10 @@ public class Organism {
 	public String getPath(){
 		// Construction de la chaine de charactere
 		String cur = base_folder;
-		cur += "\\"+this.getKingdom();
-		cur += "\\"+this.getGroup();
-		cur += "\\"+this.getSubgroup();
-		cur += "\\"+this.getName();
+		cur += Configuration.DIR_SEPARATOR+this.getKingdom();
+		cur += Configuration.DIR_SEPARATOR+this.getGroup();
+		cur += Configuration.DIR_SEPARATOR+this.getSubgroup();
+		cur += Configuration.DIR_SEPARATOR+this.getName();
 		
 		return cur;
 	}
