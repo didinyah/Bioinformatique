@@ -22,15 +22,15 @@ public class Main {
 			Configuration.DIR_SEPARATOR = "\\";
 		}
 		*/
-		int nbOrgaEnTout = 289;
+		int nbOrgaEnTout = 289 + 10*2; // nombre d'orga + nb d'analyses et nb de téléchargements
 		int nbThread = 10;
-		Chargement charg = new Chargement(3, nbOrgaEnTout);
+		Chargement charg = new Chargement(5, nbOrgaEnTout);
 		TreeGestion t = new TreeGestion();
 		JCheckBoxTree tree = t.construct(charg);
 
 		//TraitementOrganisme.lectureEtDL(t.getListOrganism());
 		//TraitementOrganisme.lectureTest();
-		TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread);
+		TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread, t.getChargement());
 	}
 
 }

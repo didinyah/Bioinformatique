@@ -13,91 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 
+import mainpackage.Chargement.Chargement;
+
 public class TraitementOrganisme {
-	
-	// lecture sans thread
-	public static void lectureEtDL(ArrayList<Organism> listeOrga) {
-		System.out.println(listeOrga.size());
-		List<ArrayList<ResultData>> listResultData = new ArrayList<ArrayList<ResultData>>();
-		int countEnd = 20; // mettre listeOrga.size() pour tout
-		int countCurrent = 0;
-		
-		// Pour chaque organisme ajouté à la liste
-		for(int i=0; i<countEnd; i++){
-			Organism organism = listeOrga.get(i);
-			String name = organism.getName();
-			String replicons = organism.getReplicons().toString();
-			ArrayList<ResultData> tmpListData = new ArrayList<ResultData>();
-			
-			// On regarde tous les NC_... qu'on a pour pouvoir les DL
-			for (String key: organism.getReplicons().keySet()) {
-			    //System.out.println("key : " + key);
-				String valueID = organism.getReplicons().get(key);
-			    //System.out.println(name + " " + valueID.toString());
-			    
-			    // FAIRE LES DL ICI
-			    String url = "";
-				try{
-					long timeDebut = System.currentTimeMillis();
-					url = Utils.DOWNLOAD_NC_URL.replaceAll("<ID>", valueID.toString());
-					URL urlDL = new URL(url);
-					BufferedReader in = new BufferedReader(new InputStreamReader(urlDL.openStream()));
-					File f = new File(organism.getPath() + "\\" + organism.getName() + "_" + valueID + ".gb");
-					
-					
-					
-					
-					// On lit le replicon
-					System.out.println("Lecture du fichier : " + name + " " + valueID.toString());
-					System.out.println(urlDL);
-					
-					ResultData rd = GestionFichier.read(in);
-					
-					long timeEnd = System.currentTimeMillis();
-					int tailleFichier = rd.lineCount * 80; // taille du fichier = nb lignes * nb caractères par ligne
-					double debit = tailleFichier / ((timeEnd - timeDebut)/1000.0); // o/s
-					double debitKs = debit / 1024.0; // Ko/s
-					System.out.println("Débit du fichier téléchargé : " + debitKs);
-					System.out.println("temps pour l'analyse : " + (timeEnd-timeDebut));
-					System.out.println("linecount : " + rd.lineCount);
-					
-					// Ligne suivante : créé les fichiers en brut avec la séquence complète
-					FileUtils.copyURLToFile(urlDL, f);
-					long timeEnd2 = System.currentTimeMillis();
-					double debit2 = tailleFichier / ((timeEnd2 - timeEnd)/1000.0); // o/s
-					double debit2Ks = debit2 / 1024.0; // Ko/s
-					//System.out.println("Débit du fichier téléchargé : " + debitKs);
-					System.out.println("temps pour le DL : " + debit2Ks);
-					
-					tmpListData.add(rd);
-					
-					//System.out.println(rd);
-				}
-				catch(Exception e){
-					System.out.println(url);
-					e.printStackTrace();
-				}
-				
-			}
-			countCurrent++;
-			System.out.println(countCurrent);
-			listResultData.add(tmpListData);
-			//System.out.println(name + " " + replicons);
-		}
-		ResultData mergeTotal = new ResultData();
-		for(ArrayList<ResultData>listtmp : listResultData) {
-			// mergeRD additionne tous les chromosomes d'un seul organisme
-			ResultData mergeRD = new ResultData();
-			// listtmp = chromosome 1, chromosome 2, etc...
-			mergeRD.fusions(listtmp);
-			// création d'excel ici
-			System.out.println(mergeRD);
-			// fusion de fusion
-			mergeTotal.fusion(mergeRD);
-		}
-		System.out.println(mergeTotal);
-		System.out.println("fin de lecture et de DL");
-	}
 	
 	// Exécution avec un fichier test
 	public static void lectureTest() {
@@ -115,18 +33,22 @@ public class TraitementOrganisme {
 	}
 	
 	// Téléchargement des fichiers avec thread
-	public static void DLAnalyseThread(ArrayList<Organism> listeOrga, int nbThread) {
+	public static void DLAnalyseThread(ArrayList<Organism> listeOrga, int nbThread, Chargement charg) {
 		ExecutorService executorService = Executors.newFixedThreadPool(nbThread);
 		System.setProperty("https.protocols", "TLSv1.1");
 		
 		int countEnd = 10; // mettre listeOrga.size() pour tout
 		int countCurrent = 0;
 		
+		charg.send("TELECHARGEMENT", countEnd);
+		charg.send("ANALYSE", countEnd);
+		
 		// Pour chaque organisme ajouté à la liste
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
 			String name = organism.getName();
 			
+			int nbRepliconsDL=0;
 			// On regarde tous les NC_... qu'on a pour pouvoir les DL
 			for (String key: organism.getReplicons().keySet()) {
 			    //System.out.println("key : " + key);
@@ -137,7 +59,7 @@ public class TraitementOrganisme {
 				try{
 					url = Utils.DOWNLOAD_NC_URL.replaceAll("<ID>", valueID.toString());
 					URL urlDL = new URL(url);
-					File f = new File(organism.getPath() + "\\" + organism.getName() + "_" + valueID + ".txt");
+					File f = new File(organism.getPath() + Configuration.DIR_SEPARATOR + organism.getName() + "_" + valueID + ".txt");
 
 					// On télécharge le replicon
 					System.out.println("Téléchargement du fichier : " + name + "_" + valueID.toString());
@@ -145,10 +67,22 @@ public class TraitementOrganisme {
 					// Ligne suivante : créé le fichiers en brut avec la séquence complète
 					FileUtils.copyURLToFile(urlDL, f);
 					
+					// On envoie au chargement l'organisme si les replicons sont tous DL
+					System.out.println("nb replicons org " + organism.getReplicons().keySet().size());
+					System.out.println("nb replicons DL " + nbRepliconsDL);
+					if(organism.getReplicons().keySet().size()-1 == nbRepliconsDL) {
+						Organism orgTmp = new Organism();
+						orgTmp.setKingdom("TELECHARGEMENT");
+						orgTmp.setName(organism.getName());
+						charg.send(orgTmp);
+						System.out.println("BONJOUR");
+					}
+					
 					// Lancement du thread d'analyse (suppression du fichier à la fin du thread)
-					executorService.execute(new LancementAnalyse(f, organism, key));
+					executorService.execute(new LancementAnalyse(f, organism, key, charg));
 					
 					//System.out.println(rd);
+					nbRepliconsDL++;
 					
 				}
 				catch(Exception e){

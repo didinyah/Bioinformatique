@@ -29,6 +29,8 @@ public class TreeGestion {
 	
 	private ArrayList<Organism> listeOrga = new ArrayList<Organism>();
 	
+	private Chargement charg;
+	
 	public TreeGestion() {
 		
 	}
@@ -101,11 +103,17 @@ public class TreeGestion {
 		JCheckBoxTree mainTree = new JCheckBoxTree();
 		DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
 		mainTree.setModel(treeModel);
+		
+		this.charg = charg;
 		return mainTree;
 	}
 	
 	public ArrayList<Organism> getListOrganism() {
 		return listeOrga;
+	}
+	
+	public Chargement getChargement() {
+		return this.charg;
 	}
 	
 	// Fonction temporaire pour voir le contenu de l'arbre
