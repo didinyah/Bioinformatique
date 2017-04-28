@@ -23,7 +23,7 @@ public class MainWindow {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void displayMainWindow() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -83,12 +83,12 @@ public class MainWindow {
 				}
 				if(Configuration.OPTION_DL_EUKARYOTES || Configuration.OPTION_DL_VIRUSES || Configuration.OPTION_DL_PROKARYOTES)
 				{
-					int nbOrgaEnTout = 289;
+					int nbOrgaEnTout = 289 + 10*2; // nombre d'orga + nb d'analyses et nb de téléchargements
 					int nbThread = 10;
-					Chargement charg = new Chargement(3, nbOrgaEnTout);
+					Chargement charg = new Chargement(5, nbOrgaEnTout);
 					TreeGestion t = new TreeGestion();
 					JCheckBoxTree tree = t.construct(charg);
-					TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread);
+					TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread, t.getChargement(), tree);
 				}
 			  }
 			});
