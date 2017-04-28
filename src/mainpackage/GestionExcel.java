@@ -396,6 +396,8 @@ public class GestionExcel
 				else
 					AjouterOnglet(rds.get(i));
 			}
+			MajFormules();
+			CreationFichier(chemin);
 		}
 		catch (EncryptedDocumentException e) {
 			System.out.println(e.getMessage());
