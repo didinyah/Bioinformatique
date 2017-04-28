@@ -64,7 +64,11 @@ public class TreeWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TreeWindow window = new TreeWindow();
+					int nbOrgaEnTout = 289;
+					Chargement charg = new Chargement(3, nbOrgaEnTout);
+					TreeGestion t = new TreeGestion();
+					final JCheckBoxTree cbt = t.construct(charg);
+					TreeWindow window = new TreeWindow(cbt);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -76,14 +80,14 @@ public class TreeWindow {
 	/**
 	 * Create the application.
 	 */
-	public TreeWindow() {
-		initialize();
+	public TreeWindow(final JCheckBoxTree cbt) {
+		initialize(cbt);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(final JCheckBoxTree cbt) {
 		frame = new JFrame();
 		frame.getContentPane().setPreferredSize(new Dimension(2000, 2000));
 		frame.getContentPane().setMaximumSize(new Dimension(2000, 2000));
@@ -109,11 +113,6 @@ public class TreeWindow {
 		gbc_cbtScrollPane.gridx = 0;
 		gbc_cbtScrollPane.gridy = 0;
 		panel.add(cbtScrollPane, gbc_cbtScrollPane);
-
-		int nbOrgaEnTout = 289;
-		Chargement charg = new Chargement(3, nbOrgaEnTout);
-		TreeGestion t = new TreeGestion();
-		final JCheckBoxTree cbt = t.construct(charg);
 		cbtScrollPane.setViewportView(cbt);
 		
 		JScrollPane listScollPane = new JScrollPane();

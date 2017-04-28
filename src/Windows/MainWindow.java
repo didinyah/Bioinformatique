@@ -6,7 +6,15 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+
+import mainpackage.Configuration;
+import mainpackage.TraitementOrganisme;
+import mainpackage.TreeGestion;
+import mainpackage.Chargement.Chargement;
+
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MainWindow {
 
@@ -44,29 +52,52 @@ public class MainWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(277, 211, 117, 25);
-		frame.getContentPane().add(btnNewButton);
-		
-		JCheckBox chckbxEucaryotes = new JCheckBox("Eucaryotes");
+		final JCheckBox chckbxEucaryotes = new JCheckBox("Eucaryotes");
 		chckbxEucaryotes.setBounds(8, 48, 129, 23);
 		frame.getContentPane().add(chckbxEucaryotes);
 		
-		JCheckBox chckbxVirus = new JCheckBox("Virus");
+		final JCheckBox chckbxVirus = new JCheckBox("Virus");
 		chckbxVirus.setBounds(8, 84, 129, 23);
 		frame.getContentPane().add(chckbxVirus);
 		
-		JCheckBox chckbxProcaryotes = new JCheckBox("Procaryotes");
+		final JCheckBox chckbxProcaryotes = new JCheckBox("Procaryotes");
 		chckbxProcaryotes.setBounds(8, 154, 129, 23);
 		frame.getContentPane().add(chckbxProcaryotes);
 		
-		JCheckBox chckbxBacteries = new JCheckBox("Bacteries");
-		chckbxBacteries.setBounds(8, 115, 129, 23);
-		frame.getContentPane().add(chckbxBacteries);
+		JButton btnDl = new JButton("Télécharger");
+		btnDl.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				if(chckbxEucaryotes.isSelected())
+				{
+					Configuration.OPTION_DL_EUKARYOTES = true;
+				}
+				if(chckbxVirus.isSelected())
+				{
+					Configuration.OPTION_DL_VIRUSES = true;
+				}
+				if(chckbxProcaryotes.isSelected())
+				{
+					Configuration.OPTION_DL_PROKARYOTES = true;
+				}
+				if(Configuration.OPTION_DL_EUKARYOTES || Configuration.OPTION_DL_VIRUSES || Configuration.OPTION_DL_PROKARYOTES)
+				{
+					int nbOrgaEnTout = 289;
+					int nbThread = 10;
+					Chargement charg = new Chargement(3, nbOrgaEnTout);
+					TreeGestion t = new TreeGestion();
+					JCheckBoxTree tree = t.construct(charg);
+					TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread);
+				}
+			  }
+			});
+		btnDl.setBounds(277, 211, 117, 25);
+		frame.getContentPane().add(btnDl);
 		
-		JLabel lblCaca = new JLabel("Bioinfo");
-		lblCaca.setFont(new Font("Dialog", Font.BOLD, 22));
-		lblCaca.setBounds(18, 12, 190, 28);
-		frame.getContentPane().add(lblCaca);
+		JLabel lblTitre = new JLabel("Bioinfo");
+		lblTitre.setFont(new Font("Dialog", Font.BOLD, 22));
+		lblTitre.setBounds(18, 12, 190, 28);
+		frame.getContentPane().add(lblTitre);
 	}
 }
