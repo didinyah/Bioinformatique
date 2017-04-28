@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.Stack;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -49,6 +50,8 @@ public class GlobalJPanel extends JPanel{
 	private GlobalJPanel jpanel;
 	private JScrollPane sp;
 	private JLabel time;
+	
+	public boolean finished = false;
 	
 	public GlobalJPanel(int lo, int la, int data, JTextArea log, JScrollPane jsp, int total){
 		fW = lo;
@@ -349,6 +352,7 @@ public class GlobalJPanel extends JPanel{
 			log("Chargement terminé.");
 			totalDataDone = totalData;
 			time.setText("Estimation du temps de chargement : chargement terminé.");
+			finished = true;
 		}
 		jpanel.repaint();
 	}

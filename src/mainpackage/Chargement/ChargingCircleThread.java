@@ -103,7 +103,7 @@ public class ChargingCircleThread extends Thread {
 		else {
 			while(true){
 				try{
-					Thread.sleep(10);
+					Thread.sleep(2);
 				} catch (InterruptedException e){
 					e.printStackTrace();
 				}

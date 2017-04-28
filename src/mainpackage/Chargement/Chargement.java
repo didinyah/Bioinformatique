@@ -95,4 +95,8 @@ public class Chargement extends Frame{
 	public void log(String s){
 		panel.log(s);
 	}
+	
+	public boolean isDone(){
+		return panel.finished;
+	}
 }
