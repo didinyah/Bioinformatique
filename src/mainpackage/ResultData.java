@@ -10,7 +10,7 @@ public class ResultData {
     // Ce fichier consiste Ã  rassembler toutes les informations de l'extractions d'un fichier ou de plusieurs fichiers
 
 	// Nom du resultdata (syntaxe : Sum_type || plasmid_NC_99999)
-	public String name;
+	private String name;
 	
 	public String getName() {
 		return name;
@@ -33,8 +33,13 @@ public class ResultData {
     private boolean linkage = false;
     private boolean chloroplast = false;
     private boolean mitochondrion = false;
-    private boolean completeGenome = false;
+    private boolean dna = false;
 
+    private Integer nbOrganism;
+    private Integer nbChromosome;
+    private Integer nbPlasmid;
+    private Integer nbDna;
+    private String lastModifDate;
     
 
     //Tri
@@ -71,22 +76,6 @@ public class ResultData {
         return numberCdsSeqInvalid;
     }
 
-    // Type Of ResultData
-    
-
-    public boolean dna;
-
-
-    
-    public boolean isDna() {
-    	return dna;
-    }
-
-    public void setDna(boolean b) {
-    	dna = b;
-    }
-
-
     // Optional var
 
     Integer lineCount = 0;
@@ -112,31 +101,33 @@ public class ResultData {
         dd.initPref();
         dd.initFreq();
     }
+    
+    // Fonctions d'accesseurs pour le type de la cellule
 
     public void setPlasmid(boolean plasmid) {
-        plasmid = plasmid;
+        this.plasmid = plasmid;
     }
 
     public void setChromosome(boolean chromosome) {
-        chromosome = chromosome;
+        this.chromosome = chromosome;
     }
 
     public void setLinkage(boolean linkage) {
-        linkage = linkage;
+        this.linkage = linkage;
     }
 
     public void setChloroplast(boolean chloroplast) {
-        chloroplast = chloroplast;
+        this.chloroplast = chloroplast;
     }
 
     public void setMitochondrion(boolean mitochondrion) {
-        mitochondrion = mitochondrion;
+        this.mitochondrion = mitochondrion;
     }
-
-    public void setCompleteGenome(boolean completeGenome) {
-        completeGenome = completeGenome;
+    
+    public void setDna(boolean dna) {
+    	this.dna = dna;
     }
-
+    
     public  boolean isPlasmid() {
         return plasmid;
     }
@@ -156,9 +147,51 @@ public class ResultData {
     public  boolean isMitochondrion() {
         return mitochondrion;
     }
-
-    public  boolean isCompleteGenome() {
-        return completeGenome;
+    
+    public boolean isDna() {
+    	return dna;
+    }
+    
+    // Infos supplémentaires pour information générale
+    
+    public Integer getNbOrganism() {
+    	return nbOrganism;
+    }
+    
+    public void setNbOrganism(Integer nbOrganism) {
+    	this.nbOrganism = nbOrganism;
+    }
+    
+    public Integer getNbChromosome() {
+    	return nbChromosome;
+    }
+    
+    public void setNbChromosome(Integer nbChromosome) {
+    	this.nbChromosome = nbChromosome;
+    }
+    
+    public Integer getNbPlasmid() {
+    	return nbPlasmid;
+    }
+    
+    public void setNbPlasmid(Integer nbPlasmid) {
+    	this.nbPlasmid = nbPlasmid;
+    }
+    
+    public Integer getNbDna() {
+    	return nbDna;
+    }
+    
+    public void setNbDna(Integer nbDna) {
+    	this.nbDna = nbDna;
+    }
+    
+    public String getLastModifDate() {
+    	return lastModifDate;
+    }
+    
+    public void setLastModifDate(String lastModifDate) {
+    	this.lastModifDate = lastModifDate;
     }
 
     

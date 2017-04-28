@@ -115,19 +115,17 @@ public class TraitementOrganisme {
 	}
 	
 	// Téléchargement des fichiers avec thread
-	public static void lectureAvecThread(ArrayList<Organism> listeOrga, int nbThread) {
+	public static void DLAnalyseThread(ArrayList<Organism> listeOrga, int nbThread) {
 		ExecutorService executorService = Executors.newFixedThreadPool(nbThread);
 		System.setProperty("https.protocols", "TLSv1.1");
 		
-		int countEnd = 15; // mettre listeOrga.size() pour tout
+		int countEnd = 10; // mettre listeOrga.size() pour tout
 		int countCurrent = 0;
 		
 		// Pour chaque organisme ajouté à la liste
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
 			String name = organism.getName();
-			String replicons = organism.getReplicons().toString();
-			ArrayList<ResultData> tmpListData = new ArrayList<ResultData>();
 			
 			// On regarde tous les NC_... qu'on a pour pouvoir les DL
 			for (String key: organism.getReplicons().keySet()) {
@@ -148,7 +146,7 @@ public class TraitementOrganisme {
 					FileUtils.copyURLToFile(urlDL, f);
 					
 					// Lancement du thread d'analyse (suppression du fichier à la fin du thread)
-					executorService.execute(new LancementAnalyse(urlDL, f, organism, key));
+					executorService.execute(new LancementAnalyse(f, organism, key));
 					
 					//System.out.println(rd);
 					
@@ -171,20 +169,24 @@ public class TraitementOrganisme {
 		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		// FIN DU DL ET DE L'ANALYSE !
 		
 		// Ici, tous les organismes ont leurs resultdata sur chacun de leurs replicons, on fait la somme de tout
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
-			ArrayList<ResultData> allDataOrga = summingResultsOrganism(organism);
+			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
+			
+			// TODO : Créer les excel ici !
+			
 			for(int j=0; j<allDataOrga.size(); j++) {
-				System.out.println(allDataOrga.get(j));
+				//System.out.println(allDataOrga.get(j));
 			}
 		}
 		
 		System.out.println("fin d'analyse avec thread");
 	}
 	
-	public static ArrayList<ResultData> summingResultsOrganism(Organism organism) {
+	public static ArrayList<ResultData> allResultsOrganism(Organism organism) {
 		
 		ArrayList<ResultData> allResultData = new ArrayList<ResultData>();
 		
@@ -197,6 +199,7 @@ public class TraitementOrganisme {
 		
 		for(String key: organism.getRepliconsTraites().keySet()) {
 			ResultData rd = organism.getRepliconsTraites().get(key);
+			//System.out.println(rd);
 			if(rd.isChloroplast()) {
 				listChloroplast.add(rd);
 			}
@@ -216,6 +219,10 @@ public class TraitementOrganisme {
 				listLinkage.add(rd);
 			}
 		}
+		
+		// ResultData avec les infos de base (1 organisme)
+		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(1, listChromosome.size(), listPlasmid.size(), listDna.size(), organism.getModificationDate());
+		allResultData.add(rdGeneralInformation);
 		
 		// On met les sommes de tout
 		if(!listChloroplast.isEmpty()) {
@@ -259,6 +266,12 @@ public class TraitementOrganisme {
 			sumLinkage.fusions(listLinkage);
 			sumLinkage.setLinkage(true);
 			allResultData.add(sumLinkage);
+		}
+		
+		// Pour avoir toutes les sommes et les replicons de base on doit les ajouter aussi à la liste
+		for(String key: organism.getRepliconsTraites().keySet()) {
+			ResultData rd = organism.getRepliconsTraites().get(key);
+			allResultData.add(rd);
 		}
 		
 		return allResultData;

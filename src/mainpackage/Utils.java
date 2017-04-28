@@ -145,4 +145,18 @@ public class Utils {
 	public static ArrayList<String> getExcelTitlesPhaseInfo(){
 		return EXCELTITLESPHASEINFO;
 	}
+	
+	// Fonctions utiles pour ResultData
+	
+	// On fait un resultdata contenant les infos suivantes : nb d'organismes, de chromosomes, de dna, de plasmids et la dernière date de modification de l'organisme
+	public static ResultData setGeneralInformationRD(int nbOrganism, int nbChromosome, int nbPlasmid, int nbDna, String lastModifDate) {
+		ResultData rdGeneralInformation = new ResultData();
+		rdGeneralInformation.setName("General_Information");
+		rdGeneralInformation.setNbOrganism(1);
+		rdGeneralInformation.setNbChromosome(nbChromosome);
+		rdGeneralInformation.setNbPlasmid(nbPlasmid);
+		rdGeneralInformation.setNbDna(nbDna);
+		rdGeneralInformation.setLastModifDate(lastModifDate);
+		return rdGeneralInformation;
+	}
 }

@@ -24,7 +24,7 @@ public class Main {
 
 		//TraitementOrganisme.lectureEtDL(t.getListOrganism());
 		//TraitementOrganisme.lectureTest();
-		TraitementOrganisme.lectureAvecThread(t.getListOrganism(), nbThread);
+		TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread);
 	}
 
 }

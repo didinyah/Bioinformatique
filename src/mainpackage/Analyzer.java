@@ -436,11 +436,6 @@ public class Analyzer {
         return p.matcher(sCurrentLine).find();
     }
 
-    public static boolean isCompleteGenome(String sCurrentLine) {
-        Pattern p = Pattern.compile("/organelle=\"mitochondrion\"");
-        return p.matcher(sCurrentLine).find();
-    }
-
     public static boolean isDnaLine(String sCurrentLine) {
         Pattern p = Pattern.compile("/mol_type=\"genomic DNA\"");
         return p.matcher(sCurrentLine).find();

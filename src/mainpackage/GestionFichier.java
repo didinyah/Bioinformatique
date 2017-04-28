@@ -183,36 +183,39 @@ public class GestionFichier {
 						result.setPlasmid(true);
 						HEADER_GET_SOURCE_DATA = true;
 					}
-					if (Analyzer.isChromosome(sCurrentLine)) {
+					else if (Analyzer.isChromosome(sCurrentLine)) {
 						result.setChromosome(true);
 						HEADER_GET_SOURCE_DATA = true;
 					}
-					if (Analyzer.isLinkage(sCurrentLine)) {
+					else if (Analyzer.isLinkage(sCurrentLine)) {
 						result.setLinkage(true);
 						HEADER_GET_SOURCE_DATA = true;
 					}
-					if (Analyzer.isChloroplast(sCurrentLine)) {
+					else if (Analyzer.isChloroplast(sCurrentLine)) {
 						result.setChloroplast(true);
 						HEADER_GET_SOURCE_DATA = true;
 					}
-					if (Analyzer.isMitochondrion(sCurrentLine)) {
+					else if (Analyzer.isMitochondrion(sCurrentLine)) {
 						result.setMitochondrion(true);
 						HEADER_GET_SOURCE_DATA = true;
 					}
+					// else simple ? si on a pas d'infos alors ce sera un DNA
+					else if (Analyzer.isDnaLine(sCurrentLine)) {
+						result.setDna(true);
+					}
+				}
+				// sinon ça veut dire qu'on a eu l'info du type du fichier, ==> type DNA faux
+				else {
+					result.setDna(false);
 				}
 
-				if (Analyzer.isDnaLine(sCurrentLine)) {
-					result.setDna(true);
-				}
+				
 			}
 			//********************************
 			//**    FEATURE HEADER ANALYZER **
 			//********************************
 			else if (HEADER && !CONTENT && !HEADER_FEATURE){
 				//BEFORE FEATURE
-				if(Analyzer.isCompleteGenome(sCurrentLine)){
-					result.setCompleteGenome(true);
-				}
 
 				if(Analyzer.isFeatureLine(sCurrentLine)){
 					HEADER_FEATURE = true;
