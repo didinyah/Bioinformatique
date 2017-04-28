@@ -14,11 +14,14 @@ import javax.swing.tree.TreePath;
 
 import java.awt.List;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
@@ -41,13 +44,17 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+
 import java.awt.ComponentOrientation;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import javax.swing.ScrollPaneConstants;
 
 public class TreeWindow {
 
 	private JFrame frame;
+	private HashMap<String,File> filespath;
 
 	/**
 	 * Launch the application.
@@ -115,8 +122,9 @@ public class TreeWindow {
 		gbc_listScollPane.gridy = 0;
 		panel.add(listScollPane, gbc_listScollPane);
 		
+
 		final List list = new List();
-		
+		final Desktop desktop = Desktop.getDesktop();
 		cbt.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent arg0) {
             	list.removeAll();
@@ -126,10 +134,10 @@ public class TreeWindow {
         			File tempf = new File(path);
         			if(tempf.isFile())
         			{
-        				list.add(tempf.toString());
+        				filespath.put(tempf.getName(), tempf);
+        				list.add(tempf.getName());
         			}
         		}
-        		this.notify();
             }           
             public void mouseEntered(MouseEvent arg0) {         
             }           
@@ -140,6 +148,26 @@ public class TreeWindow {
             public void mouseReleased(MouseEvent arg0) {
             }           
         });
+		
+
+		list.addMouseListener(new MouseAdapter() {
+		    public void mouseClicked(MouseEvent evt) {
+		        if (evt.getClickCount() == 2) {
+
+		            // Double-click detected
+		            try {
+						desktop.open(filespath.get(list.getSelectedItem()));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        } else if (evt.getClickCount() == 3) {
+
+		            // Triple-click detected
+		            //int index = list.locationToIndex(evt.getPoint());
+		        }
+		    }
+		});
 		
 		listScollPane.setViewportView(list);
 		list.setFont(new Font("Cabin", Font.PLAIN, 12));
