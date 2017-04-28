@@ -351,13 +351,13 @@ public class GestionExcel
 	public static void RemplirInfo(ResultData rd)
 	{
 		CreationCelluleValeur("General Information", rd.getName(), 2, 1);
-		//CreationCelluleValeur("General Information", rd.), 4, 1); //last modification
+		CreationCelluleValeur("General Information", rd.getLastModifDate(), 4, 1); //last modification
 		CreationCelluleValeur("General Information", rd.getNumberCdsSeq(), 6, 1);
 		CreationCelluleValeur("General Information", rd.getNumberCdsSeqInvalid(), 8, 1);
-		//CreationCelluleValeur("General Information", (), 10, 1);  //nb organisme
-		//CreationCelluleValeur("General Information", rd.nb(), 3, 4); // chromosome
-		//CreationCelluleValeur("General Information", rd.(), 4, 4); //nb plasmid
-		//CreationCelluleValeur("General Information", rd.dna(), 5, 4); //dna
+		CreationCelluleValeur("General Information", rd.getNbOrganism(), 10, 1);  //nb organisme
+		CreationCelluleValeur("General Information", rd.getNbChromosome(), 3, 4); // chromosome
+		CreationCelluleValeur("General Information", rd.getNbPlasmid(), 4, 4); //nb plasmid
+		CreationCelluleValeur("General Information", rd.getNbDna(), 5, 4); //dna
 	}
 	
 	
