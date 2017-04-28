@@ -350,6 +350,7 @@ public class GestionExcel
 	
 	public static void RemplirInfo(ResultData rd)
 	{
+		wb.getSheetAt(0);
 		CreationCelluleValeur("General Information", rd.getName(), 2, 1);
 		CreationCelluleValeur("General Information", rd.getLastModifDate(), 4, 1); //last modification
 		CreationCelluleValeur("General Information", rd.getNumberCdsSeq(), 6, 1);
@@ -360,6 +361,56 @@ public class GestionExcel
 		CreationCelluleValeur("General Information", rd.getNbDna(), 5, 4); //dna
 	}
 	
+	public static void AjouterOnglet(ResultData rd)
+	{
+		String onglet = rd.getName();
+		wb.createSheet(onglet);
+		RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(0), Phase.FreqPhase0, 0);
+		RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(1), Phase.FreqPhase1, 0);
+		RemplirColonnePhaseDouble(onglet, rd.getTrinucleotide().getFreqHMAP(2), Phase.FreqPhase2, 0);
+		RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getHMAP(0), Phase.Phase0, 0);
+		RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getHMAP(1), Phase.Phase1, 0);
+		RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getHMAP(2), Phase.Phase2, 0);
+		RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getPrefHMAP(0), Phase.PrefPhase0, 0);
+		RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getPrefHMAP(1), Phase.PrefPhase1, 0);
+		RemplirColonnePhaseInt(onglet, rd.getTrinucleotide().getPrefHMAP(2), Phase.PrefPhase2, 0);
+
+		RemplirColonnePhaseDouble(onglet, rd.getDinucleotide().getFreqHMAP(0), Phase.FreqPhase0, 1);
+		RemplirColonnePhaseDouble(onglet, rd.getDinucleotide().getFreqHMAP(1), Phase.FreqPhase1, 1);
+		RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getHMAP(0), Phase.Phase0, 1);
+		RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getHMAP(1), Phase.Phase1, 1);
+		RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getPrefHMAP(0), Phase.PrefPhase0, 1);
+		RemplirColonnePhaseInt(onglet, rd.getDinucleotide().getPrefHMAP(1), Phase.PrefPhase1, 1);
+	}
+	public static void CreateExcel(String chemin,  ArrayList<ResultData>rds)
+	{
+
+		try
+		{
+			File file = new File("files/templateEdit.xlsx");
+			wb = (XSSFWorkbook) WorkbookFactory.create(file);
+			for(int i = 0; i< rds.size() ; i++)
+			{
+				if(i==0)
+					RemplirInfo(rds.get(i));
+				else
+					AjouterOnglet(rds.get(i));
+			}
+		}
+		catch (EncryptedDocumentException e) {
+			System.out.println(e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			System.out.println(e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public static void CreateFromTemplate(String out, ResultData rd)
 	{
@@ -447,7 +498,7 @@ public class GestionExcel
 	
 	public static void main(String[] args) 
 	{
-		testGeneration();
+		//testGeneration();
 		/*XSSFWorkbook wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("mafeuille");
 		ArrayList<String> trinucleotides = Utils.getListOfTriNucleotideCAPSLOCK();
