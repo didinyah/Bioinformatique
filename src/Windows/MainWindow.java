@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
@@ -91,7 +92,7 @@ public class MainWindow {
 	 */
 	private void initialize() 
 	{
-		frame = new JFrame();
+		frame = new JFrame("Projet de BioInformatique");
 		frame.setBounds(100, 100, 725, 800);
 		final MainJPanel mjp = new MainJPanel(frame.getWidth(), frame.getHeight());
 		frame.setContentPane(mjp);
@@ -125,7 +126,7 @@ public class MainWindow {
 		    }
 		}
 
-		ImageIcon image = new ImageIcon("files/gene1modif1.jpg");
+		ImageIcon image = new ImageIcon("files/gene1modif2.jpg");
 		ImageLabel label = new ImageLabel("");
 		label.setIcon(image);
 		GridBagConstraints gbcimg = new GridBagConstraints();
@@ -248,6 +249,10 @@ public class MainWindow {
 					clic = true;
 					frame.dispose();
 				}
+				else
+				{
+	            	JOptionPane.showMessageDialog(null, "Veuillez sélectionner au moins un royaume");
+				}
 			  }
 			});
 		GridBagConstraints gbcdl = new GridBagConstraints();
@@ -292,16 +297,16 @@ public class MainWindow {
 		    public void mouseClicked(MouseEvent e)  
 		    {  
 		       JFrame InfoFrame = new JFrame("A propos");
-		       InfoFrame.setBounds(300, 300, 400, 380);
-		       //InfoFrame.setBounds(300, 300, 400, 440);
+		       InfoFrame.setBounds(300, 300, 400, 390);
+		       //InfoFrame.setBounds(300, 300, 400, 445);
 		       InfoFrame.getContentPane().setBackground(new Color(255,255,255));
 		       InfoFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		       InfoFrame.getContentPane().setLayout(new BoxLayout(InfoFrame.getContentPane(), BoxLayout.PAGE_AXIS));
 		       InfoFrame.setVisible(true);
 		       InfoFrame.setResizable(false);
 		       
-		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
-		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas nécessaire de cocher un royaume.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume. Sinon, cliquez sur le bouton Consulter pour accéder aux fichiers déjà existants.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
+		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
+		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas nécessaire de cocher un royaume.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume. Sinon, cliquez sur le bouton Consulter pour accéder aux fichiers déjà existants.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
 			   InfoFrame.getContentPane().add(info);
 		    }  
 		}); 

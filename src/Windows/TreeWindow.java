@@ -9,6 +9,7 @@ import java.awt.Component;
 
 import javax.swing.JSplitPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
@@ -86,7 +87,7 @@ public class TreeWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(final JCheckBoxTree cbt) {
-		frame = new JFrame();
+		frame = new JFrame("Arbre des génomes");
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -178,7 +179,8 @@ public class TreeWindow {
 					} 
 		            catch (Exception e) 
 		            {
-						e.printStackTrace();
+		            	String[] tmp = e.getMessage().split("Error message:");
+		            	JOptionPane.showMessageDialog(null, "Erreur : " + tmp[tmp.length-1]);
 					}
 		        }
 		    }
