@@ -51,6 +51,9 @@ public class MainWindow {
 
 	private JFrame frame;
 	private static boolean clic = false;
+	private static int nb_euk = 0;
+	private static int nb_pro = 0;
+	private static int nb_vir = 0;
 
 	/**
 	 * Launch the application.
@@ -72,11 +75,22 @@ public class MainWindow {
 		while(!clic){ 
 			System.out.println("");
 		}
-		int nbOrgaEnTout = 289 + 10*2; // nombre d'orga + nb d'analyses et nb de t�l�chargements
+		int nbOrgaEnTout = nb_euk + nb_pro + nb_vir + 10*2; // nombre d'orga + nb d'analyses et nb de t�l�chargements
+		//int nbOrgaEnTout = (nb_euk + nb_pro + nb_vir)*3;
 		int nbThread = 10;
-		Chargement charg = new Chargement(5, nbOrgaEnTout);
+		int nbRoyaumesAAnalyser = 2; // analyse et DL
+		if(nb_euk > 0) {
+			nbRoyaumesAAnalyser++;
+		}
+		if(nb_pro > 0) {
+			nbRoyaumesAAnalyser++;
+		}
+		if(nb_vir> 0) {
+			nbRoyaumesAAnalyser++;
+		}
+		Chargement charg = new Chargement(nbRoyaumesAAnalyser, nbOrgaEnTout);
 		TreeGestion t = new TreeGestion();
-		JCheckBoxTree tree = t.construct(charg);
+		JCheckBoxTree tree = t.construct(charg, nb_euk, nb_pro, nb_vir);
 		TraitementOrganisme.DLAnalyseThread(t.getListOrganism(), nbThread, t.getChargement(), tree);
 	}
 
@@ -235,14 +249,17 @@ public class MainWindow {
 				if(chckbxEucaryotes.isSelected())
 				{
 					Configuration.OPTION_DL_EUKARYOTES = true;
+					nb_euk = 25;
 				}
 				if(chckbxVirus.isSelected())
 				{
 					Configuration.OPTION_DL_VIRUSES = true;
+					nb_vir = 200;
 				}
 				if(chckbxProcaryotes.isSelected())
 				{
 					Configuration.OPTION_DL_PROKARYOTES = true;
+					nb_pro = 63;
 				}
 				if(Configuration.OPTION_DL_EUKARYOTES || Configuration.OPTION_DL_VIRUSES || Configuration.OPTION_DL_PROKARYOTES)
 				{

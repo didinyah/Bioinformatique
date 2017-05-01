@@ -51,6 +51,12 @@ public class TraitementOrganisme {
 			Organism organism = listeOrga.get(i);
 			String name = organism.getName();
 			
+			// si on a déjà le fichier de l'organisme, on le DL pas
+			File orgExcel = new File(organism.getPath()+".xlsx");
+			if(!orgExcel.exists()) {
+				
+			}
+			
 			int nbRepliconsDL=0;
 			// On regarde tous les NC_... qu'on a pour pouvoir les DL
 			for (String key: organism.getReplicons().keySet()) {
@@ -130,21 +136,21 @@ public class TraitementOrganisme {
 				mapSubGroupResult.put(subgroupOrg, allDataOrga);
 			}
 			else {
-				mapSubGroupResult.put(subgroupOrg, addResultsTotal(mapSubGroupResult.get(subgroupOrg), allDataOrga));
+				mapSubGroupResult.put(subgroupOrg, addResultsTotal(mapSubGroupResult.get(subgroupOrg), allDataOrga, subgroupOrg));
 			}
 			
 			if(mapGroupResult.get(groupOrg) == null) {
 				mapGroupResult.put(groupOrg, allDataOrga);
 			}
 			else {
-				mapGroupResult.put(groupOrg, addResultsTotal(mapGroupResult.get(groupOrg), allDataOrga));
+				mapGroupResult.put(groupOrg, addResultsTotal(mapGroupResult.get(groupOrg), allDataOrga, groupOrg));
 			}
 			
 			if(mapKingdomResult.get(kingdomOrg) == null) {
 				mapKingdomResult.put(kingdomOrg, allDataOrga);
 			}
 			else {
-				mapKingdomResult.put(kingdomOrg, addResultsTotal(mapKingdomResult.get(kingdomOrg), allDataOrga));
+				mapKingdomResult.put(kingdomOrg, addResultsTotal(mapKingdomResult.get(kingdomOrg), allDataOrga, kingdomOrg));
 			}
 			
 			for(int j=0; j<allDataOrga.size(); j++) {
@@ -156,17 +162,17 @@ public class TraitementOrganisme {
 		// total_subgroup
 		for(String key: mapSubGroupResult.keySet()) {
 			ArrayList<ResultData> allRd = mapSubGroupResult.get(key);
-			GestionExcel.CreateExcel(System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Genomes" + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
+			GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 		}
 		// total_group
 		for(String key: mapGroupResult.keySet()) {
 			ArrayList<ResultData> allRd = mapGroupResult.get(key);
-			GestionExcel.CreateExcel(System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Genomes" + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
+			GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 		}
 		// total_kingdom
 		for(String key: mapKingdomResult.keySet()) {
 			ArrayList<ResultData> allRd = mapKingdomResult.get(key);
-			GestionExcel.CreateExcel(System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Genomes" + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
+			GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 		}
 		
 		System.out.println("fin des sommes des résultats");
@@ -268,7 +274,7 @@ public class TraitementOrganisme {
 		return allResultData;
 	}
 	
-public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, ArrayList<ResultData> rd2) {
+public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, ArrayList<ResultData> rd2, String totalName) {
 		
 		ArrayList<ResultData> allResultData = new ArrayList<ResultData>();
 		
@@ -283,12 +289,19 @@ public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, A
 		int nbDna = 0;
 		String lastModifDate = "";
 		int nbOrganism = 0;
-		String name = "";
-		
 		
 		
 		for(ResultData rd: rd1) {
-			if(rd.getName().equals("Sum_Chloroplasts")) {
+			if(rd.getName().equals("General_Information")) {
+				nbChromosome = rd.getNbChromosome();
+				nbPlasmid = rd.getNbPlasmid();
+				nbDna = rd.getNbDna();
+				if(rd.getLastModifDate().compareTo(lastModifDate) >1) {
+					lastModifDate = rd.getLastModifDate();
+				};
+				nbOrganism = rd.getNbOrganism();
+			}
+			else if(rd.getName().equals("Sum_Chloroplasts")) {
 				listChloroplast.add(rd);
 			}
 			else if(rd.getName().equals("Sum_Chromosomes")) {
@@ -335,12 +348,11 @@ public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, A
 					lastModifDate = rd.getLastModifDate();
 				};
 				nbOrganism += rd.getNbOrganism();
-				name = rd.getOrganismName();
 			}
 		}
 		
 		// ResultData avec les infos de base
-		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(nbOrganism, nbChromosome, nbPlasmid, nbDna, lastModifDate, name );
+		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(nbOrganism, nbChromosome, nbPlasmid, nbDna, lastModifDate, totalName );
 		allResultData.add(rdGeneralInformation);
 		// On met les sommes de tout
 		if(!listChloroplast.isEmpty()) {

@@ -19,7 +19,6 @@ public class Organism {
 	private HashMap<String, String> replicons;
 	private HashMap<String, ResultData> replicons_traites;
 	private boolean activated;
-	private String base_folder = System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Genomes"; // on stocke les données ici pour l'instant
 	
 	public Organism(String kingdom, String group, String subgroup, String name, String creation_date, String modification_date){
 		this.kingdom = kingdom.replace("/", "_").replace(" ", "_");
@@ -185,7 +184,7 @@ public class Organism {
 	
 	public String getPath(){
 		// Construction de la chaine de charactere
-		String cur = base_folder;
+		String cur = Configuration.RESULTS_FOLDER;
 		cur += Configuration.DIR_SEPARATOR+this.getKingdom();
 		cur += Configuration.DIR_SEPARATOR+this.getGroup();
 		cur += Configuration.DIR_SEPARATOR+this.getSubgroup();

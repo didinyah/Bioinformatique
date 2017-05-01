@@ -135,13 +135,13 @@ public class TreeWindow {
         			if(tempf.isFile() && tempf.exists() && !filespath.containsKey(tempf.getName()))
         			{
         				tmp.add(tempf.getName());
-        				filespath.put(tempf.getName(), path);
+        				filespath.put(tempf.getName(), path+".xlsx");
         			}
         			else
         			{
-        				String patht = (System.getProperty("user.dir") + Configuration.DIR_SEPARATOR+"Genomes"+Configuration.DIR_SEPARATOR+"Total_"+tempf.getName());
+        				String patht = (Configuration.RESULTS_FOLDER+Configuration.DIR_SEPARATOR+"Total_"+tempf.getName());
         				File tempft = new File(patht);
-        				System.out.println(patht);
+        				//System.out.println(patht);
         				if(tempft.isFile() && tempft.exists() && !filespath.containsKey(tempft.getName()))
         				{
         					tmp.add(tempft.getName());
@@ -175,7 +175,7 @@ public class TreeWindow {
 
 		            try 
 		            {
-						desktop.open(new File(filespath.get(list.getSelectedItem())));
+		            	desktop.open(new File(filespath.get(list.getSelectedItem())));
 					} 
 		            catch (Exception e) 
 		            {

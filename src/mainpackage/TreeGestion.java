@@ -36,28 +36,27 @@ public class TreeGestion {
 		
 	}
 	
-	public JCheckBoxTree construct(Chargement charg){
+	public JCheckBoxTree construct(Chargement charg, int nb_euk, int nb_pro, int nb_vir){
 		List<TreeBuilder> services = new ArrayList<TreeBuilder>();
+		
+		TreeBuilder eukaryotes = null;
+		TreeBuilder prokaryotes = null;
+		TreeBuilder viruses = null;
 		if(Configuration.OPTION_DL_EUKARYOTES) {
-			
+			charg.send("EUKARYOTES", nb_euk);
+			eukaryotes = new TreeBuilder(OrganismType.EUKARYOTES, charg);
+			services.add(eukaryotes);
 		}
 		if(Configuration.OPTION_DL_PROKARYOTES) {
-					
-				}
-		if(Configuration.OPTION_DL_VIRUSES) {
-			
+			charg.send("PROKARYOTES", nb_pro);
+			prokaryotes = new TreeBuilder(OrganismType.PROKARYOTES, charg);
+			services.add(prokaryotes);
 		}
-		charg.send("EUKARYOTES", 24);
-		charg.send("PROKARYOTES", 64);
-		charg.send("VIRUSES", 200);
-		TreeBuilder eukaryotes = new TreeBuilder(OrganismType.EUKARYOTES, charg);
-		TreeBuilder prokaryotes = new TreeBuilder(OrganismType.PROKARYOTES, charg);
-		TreeBuilder viruses = new TreeBuilder(OrganismType.VIRUSES, charg);
-		services.add(eukaryotes);
-		services.add(prokaryotes);
-		services.add(viruses);
-		
-		
+		if(Configuration.OPTION_DL_VIRUSES) {
+			charg.send("VIRUSES", nb_vir);
+			viruses = new TreeBuilder(OrganismType.VIRUSES, charg);
+			services.add(viruses);
+		}
 		
 		ServiceManager sm = new ServiceManager(services);
 		sm.startAsync();
@@ -65,13 +64,17 @@ public class TreeGestion {
 
 		
 		List<Organism> organisms = new ArrayList<Organism>();
-		organisms.addAll(eukaryotes.organisms());
-		organisms.addAll(prokaryotes.organisms());
-		organisms.addAll(viruses.organisms());
+		if(Configuration.OPTION_DL_EUKARYOTES) {
+			organisms.addAll(eukaryotes.organisms());
+		}
+		if(Configuration.OPTION_DL_PROKARYOTES) {
+			organisms.addAll(prokaryotes.organisms());
+		}
+		if(Configuration.OPTION_DL_VIRUSES) {
+			organisms.addAll(viruses.organisms());
+		}
 		
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Genomes");
-		
-		
 		
 		int count = 0;
 		int countPro = 0;
