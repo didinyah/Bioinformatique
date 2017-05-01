@@ -41,6 +41,71 @@ public class ResultData {
     private Integer nbDna;
     private String lastModifDate;
     
+    public String getOrganismName() {
+		return organismName;
+	}
+
+	public void setOrganismName(String organismName) {
+		this.organismName = organismName;
+	}
+
+	private String organismName;
+    
+    
+    public Integer getAllCDSSequence() {
+		return allCDSSequence;
+	}
+
+	public void setAllCDSSequence(Integer allCDSSequence) {
+		this.allCDSSequence = allCDSSequence;
+	}
+
+	public Integer getAllInvalidCDS() {
+		return allInvalidCDS;
+	}
+
+	public void setAllInvalidCDS(Integer allInvalidCDS) {
+		this.allInvalidCDS = allInvalidCDS;
+	}
+
+	public Integer getAllNbOrganism() {
+		return allNbOrganism;
+	}
+
+	public void setAllNbOrganism(Integer allNbOrganism) {
+		this.allNbOrganism = allNbOrganism;
+	}
+
+	public Integer getAllChromosome() {
+		return allChromosome;
+	}
+
+	public void setAllChromosome(Integer allChromosome) {
+		this.allChromosome = allChromosome;
+	}
+
+	public Integer getAllPlasmid() {
+		return allPlasmid;
+	}
+
+	public void setAllPlasmid(Integer allPlasmid) {
+		this.allPlasmid = allPlasmid;
+	}
+
+	public Integer getAllDNA() {
+		return allDNA;
+	}
+
+	public void setAllDNA(Integer allDNA) {
+		this.allDNA = allDNA;
+	}
+
+	private Integer allCDSSequence;
+    private Integer allInvalidCDS;
+    private Integer allNbOrganism;
+    private Integer allChromosome;
+    private Integer allPlasmid;
+    private Integer allDNA;
 
     //Tri
     public Integer getTotalTri(int phase){
@@ -246,6 +311,7 @@ public class ResultData {
     public String toString(){
         String str = "";
         str += "Name:"+name+"\n";
+        str += "Organism Name:"+organismName+"\n";
         str += "Line count:"+lineCount+"\n";
 
         str += "BlockTransition detected:" + blockTransition+"\n";

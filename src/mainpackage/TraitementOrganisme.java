@@ -118,6 +118,7 @@ public class TraitementOrganisme {
 			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
 			
 			// Créer les excel ici
+			//System.out.println(allDataOrga.get(0).toString());
 			GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
 			
 			String subgroupOrg = organism.getSubgroup();
@@ -187,6 +188,7 @@ public class TraitementOrganisme {
 		
 		for(String key: organism.getRepliconsTraites().keySet()) {
 			ResultData rd = organism.getRepliconsTraites().get(key);
+			rd.setOrganismName(organism.getName());
 			//System.out.println(rd);
 			if(rd.isChloroplast()) {
 				listChloroplast.add(rd);
@@ -209,7 +211,8 @@ public class TraitementOrganisme {
 		}
 		
 		// ResultData avec les infos de base (1 organisme)
-		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(1, listChromosome.size(), listPlasmid.size(), listDna.size(), organism.getModificationDate());
+		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(1, listChromosome.size(), listPlasmid.size(), listDna.size(), organism.getModificationDate(), organism.getName());
+		//System.out.println(rdGeneralInformation);
 		allResultData.add(rdGeneralInformation);
 		
 		// On met les sommes de tout
@@ -280,6 +283,7 @@ public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, A
 		int nbDna = 0;
 		String lastModifDate = "";
 		int nbOrganism = 0;
+		String name = "";
 		
 		
 		
@@ -331,13 +335,13 @@ public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, A
 					lastModifDate = rd.getLastModifDate();
 				};
 				nbOrganism += rd.getNbOrganism();
+				name = rd.getOrganismName();
 			}
 		}
 		
 		// ResultData avec les infos de base
-		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(nbOrganism, nbChromosome, nbPlasmid, nbDna, lastModifDate);
+		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(nbOrganism, nbChromosome, nbPlasmid, nbDna, lastModifDate, name );
 		allResultData.add(rdGeneralInformation);
-		
 		// On met les sommes de tout
 		if(!listChloroplast.isEmpty()) {
 			ResultData sumChloroplast = new ResultData();

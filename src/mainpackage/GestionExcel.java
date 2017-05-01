@@ -19,6 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;*/
 import org.apache.poi.xssf.*;
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.util.HSSFColor.RED;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -137,6 +138,12 @@ public class GestionExcel
 		{	
 			cell.setCellValue((Double)contenu);
 		}
+		else if(contenu instanceof String)
+		{
+			cell.setCellValue((String)contenu);
+		}
+		else
+			cell.setCellValue(contenu.toString());
 	}
 	
 	public static void CreationCelluleFormule(String sheet, String contenu, int ligne, int colonne)
@@ -356,13 +363,15 @@ public class GestionExcel
 	public static void RemplirInfo(ResultData rd)
 	{
 		wb.getSheetAt(0);
-		CreationCelluleValeur("General Information", rd.getName(), 2, 1);
+		System.out.println(rd.getOrganismName());
+		CreationCelluleValeur("General Information", rd.getOrganismName(), 2, 1);
 		CreationCelluleValeur("General Information", rd.getLastModifDate(), 4, 1); //last modification
 		CreationCelluleValeur("General Information", rd.getNumberCdsSeq(), 6, 1);
 		CreationCelluleValeur("General Information", rd.getNumberCdsSeqInvalid(), 8, 1);
 		CreationCelluleValeur("General Information", rd.getNbOrganism(), 10, 1);  //nb organisme
 		CreationCelluleValeur("General Information", rd.getNbChromosome(), 3, 4); // chromosome
 		CreationCelluleValeur("General Information", rd.getNbPlasmid(), 4, 4); //nb plasmid
+		CreationCelluleValeur("General Information", rd.getNbDna(), 5, 4); //dna
 		CreationCelluleValeur("General Information", rd.getNbDna(), 5, 4); //dna
 	}
 	
@@ -401,6 +410,7 @@ public class GestionExcel
 		{
 			File file = new File("files/templateEdit.xlsx");
 			wb = (XSSFWorkbook) WorkbookFactory.create(file);
+			//System.out.println(rds.get(0).toString());
 			for(int i = 0; i< rds.size() ; i++)
 			{
 				if(i==0)
