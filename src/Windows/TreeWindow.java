@@ -9,6 +9,7 @@ import java.awt.Component;
 
 import javax.swing.JSplitPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
@@ -21,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.awt.Font;
 import javax.swing.JComboBox;
@@ -84,12 +87,11 @@ public class TreeWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(final JCheckBoxTree cbt) {
-		frame = new JFrame();
-		frame.getContentPane().setPreferredSize(new Dimension(2000, 2000));
-		frame.getContentPane().setMaximumSize(new Dimension(2000, 2000));
-		frame.setBounds(100, 100, 480, 342);
+		frame = new JFrame("Arbre des génomes");
+		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		frame.setVisible(true);
 		
 		JPanel panel = new JPanel();
 		panel.setMaximumSize(new Dimension(2000, 2000));
@@ -111,28 +113,47 @@ public class TreeWindow {
 		panel.add(cbtScrollPane, gbc_cbtScrollPane);
 		cbtScrollPane.setViewportView(cbt);
 		
-		JScrollPane listScollPane = new JScrollPane();
+		JScrollPane listScrollPane = new JScrollPane();
 		GridBagConstraints gbc_listScollPane = new GridBagConstraints();
 		gbc_listScollPane.fill = GridBagConstraints.BOTH;
 		gbc_listScollPane.gridx = 1;
 		gbc_listScollPane.gridy = 0;
-		panel.add(listScollPane, gbc_listScollPane);
+		panel.add(listScrollPane, gbc_listScollPane);
 		
-
+		;
 		final List list = new List();
 		final Desktop desktop = Desktop.getDesktop();
 		cbt.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent arg0) {
-            	list.removeAll();
+            	//Création d'un arraylist temporaire car List n'a pas de fonction sort
+            	ArrayList<String> tmp = new ArrayList<String>();
+            	filespath.clear();
         		for(TreePath t : cbt.getCheckedPaths())
         		{
-        			String path = System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + t.toString().replace(",", Configuration.DIR_SEPARATOR).replace("[", "").replace("]","").replace(" ", "")+".xlsx";
-        			File tempf = new File(path);
-        			if(tempf.isFile() && tempf.exists())
+        			String path = System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + t.toString().replace(",", Configuration.DIR_SEPARATOR).replace("[", "").replace("]","").replace(" ", "");
+        			File tempf = new File(path+".xlsx");
+        			if(tempf.isFile() && tempf.exists() && !filespath.containsKey(tempf.getName()))
         			{
-        				list.add(tempf.getName());
+        				tmp.add(tempf.getName());
         				filespath.put(tempf.getName(), path);
         			}
+        			else
+        			{
+        				String patht = (System.getProperty("user.dir") + Configuration.DIR_SEPARATOR+"Genomes"+Configuration.DIR_SEPARATOR+"Total_"+tempf.getName());
+        				File tempft = new File(patht);
+        				System.out.println(patht);
+        				if(tempft.isFile() && tempft.exists() && !filespath.containsKey(tempft.getName()))
+        				{
+        					tmp.add(tempft.getName());
+            				filespath.put(tempft.getName(), patht);
+        				}
+        			}
+        		}
+            	list.removeAll();
+        		tmp.sort(null);
+        		for(String s : tmp)
+        		{
+        			list.add(s);
         		}
             }           
             public void mouseEntered(MouseEvent arg0) {         
@@ -144,7 +165,6 @@ public class TreeWindow {
             public void mouseReleased(MouseEvent arg0) {
             }           
         });
-		
 		
 		list.addMouseListener(new MouseAdapter() 
 		{
@@ -159,13 +179,14 @@ public class TreeWindow {
 					} 
 		            catch (Exception e) 
 		            {
-						e.printStackTrace();
+		            	String[] tmp = e.getMessage().split("Error message:");
+		            	JOptionPane.showMessageDialog(null, "Erreur : " + tmp[tmp.length-1]);
 					}
 		        }
 		    }
 		});
 		
-		listScollPane.setViewportView(list);
+		listScrollPane.setViewportView(list);
 		list.setFont(new Font("Cabin", Font.PLAIN, 12));
 	}
 	/*
