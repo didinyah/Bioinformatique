@@ -18,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.Border;
@@ -71,7 +73,6 @@ public class MainWindow {
 		});*/
 		MainWindow window = new MainWindow();
 		window.frame.setVisible(true);
-		
 		while(!clic){ 
 			System.out.println("");
 		}
@@ -284,27 +285,35 @@ public class MainWindow {
 		
 		
 		
-		/*
+		
 		JButton btnCst = new JButton("Consulter");
 		btnCst.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				TreeGestion t = new TreeGestion();
-				JCheckBoxTree jcbt = t.LightConstruct();
-				TreeWindow tr = new TreeWindow(jcbt);
+				String path =  System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + "Genomes";
+				System.out.println(path);
+				DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Genomes");
+				rootNode = recGen(rootNode, path);
+				
+				JCheckBoxTree jcbt = new JCheckBoxTree();
+				DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+				jcbt.setModel(treeModel);
+				
+				TreeWindow tw = new TreeWindow(jcbt);
+				
 			}
-			});
+		});
 		GridBagConstraints gbccst = new GridBagConstraints();
 		gbccst.fill = GridBagConstraints.NONE;
 		gbccst.anchor = GridBagConstraints.CENTER;
 		gbccst.gridx = 2;
 		gbccst.gridy = 4;
 		gbccst.weightx = 1.0;
-		gbccst.weighty = 0.6;
+		gbccst.weighty = 0.5;
 		btnCst.setBounds(277, 211, 119, 25);
 		frame.getContentPane().add(btnCst,gbccst);
-		*/
+		
 		
 		
 
@@ -314,16 +323,16 @@ public class MainWindow {
 		    public void mouseClicked(MouseEvent e)  
 		    {  
 		       JFrame InfoFrame = new JFrame("A propos");
-		       InfoFrame.setBounds(300, 300, 400, 390);
-		       //InfoFrame.setBounds(300, 300, 400, 445);
+		       //InfoFrame.setBounds(300, 300, 400, 390);
+		       InfoFrame.setBounds(300, 300, 400, 445);
 		       InfoFrame.getContentPane().setBackground(new Color(255,255,255));
 		       InfoFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		       InfoFrame.getContentPane().setLayout(new BoxLayout(InfoFrame.getContentPane(), BoxLayout.PAGE_AXIS));
 		       InfoFrame.setVisible(true);
 		       InfoFrame.setResizable(false);
 		       
-		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
-		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas nécessaire de cocher un royaume.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume. Sinon, cliquez sur le bouton Consulter pour accéder aux fichiers déjà existants.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
+		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
+		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas nécessaire de cocher un royaume.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume. Sinon, cliquez sur le bouton Consulter pour accéder aux fichiers déjà existants.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
 			   InfoFrame.getContentPane().add(info);
 		    }  
 		}); 
@@ -341,5 +350,28 @@ public class MainWindow {
 		gbcinf.ipady = 3;
 		gbcimg.insets = new Insets(100,0,0,0);
 		frame.getContentPane().add(lblInfo,gbcinf);
+	}
+	
+	private DefaultMutableTreeNode recGen(DefaultMutableTreeNode n, String path)
+	{
+		File f = new File(path);
+		DefaultMutableTreeNode res = n;
+		String[] files = f.list();
+		for(String s : files)
+		{
+			File tmp = new File(path + Configuration.DIR_SEPARATOR + s);
+			String tmpn = tmp.getName().split("$.$")[0];
+			if(tmp.isFile() && tmp.exists() && !tmp.getName().contains("Total"))
+			{
+				res.add(new DefaultMutableTreeNode(tmpn));
+			}
+			else if(tmp.isDirectory() && tmp.exists())
+			{
+				DefaultMutableTreeNode ntmp = new DefaultMutableTreeNode(tmpn);
+				ntmp = recGen(ntmp, tmp.getPath());
+				res.add(ntmp);
+			}
+		}
+		return res;
 	}
 }
