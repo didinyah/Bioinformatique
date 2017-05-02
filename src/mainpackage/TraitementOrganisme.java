@@ -104,15 +104,6 @@ public class TraitementOrganisme {
 			// On créé l'archive contenant toutes les séquences de l'organisme si l'user le veut
 			if(Configuration.OPTION_ARCHIVE_FILES) {
 				Utils.ZipFiles(organism.getPath());
-				// une fois zippé, si l'user ne veut pas conserver les fichiers txt, on les supprime
-				if(!Configuration.OPTION_DL_KEEPFILES) {
-					try {
-						FileUtils.deleteDirectory(new File(organism.getPath()+ Configuration.DIR_SEPARATOR));
-					} 
-					catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
 			}
 			System.out.println(countCurrent);
 			countCurrent++;
@@ -137,6 +128,17 @@ public class TraitementOrganisme {
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
 			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
+			
+			// une fois zippé, si l'user ne veut pas conserver les fichiers txt, on les supprime
+			if(!Configuration.OPTION_DL_KEEPFILES) {
+				File file = new File(organism.getPath()+ Configuration.DIR_SEPARATOR);
+				try {
+					FileUtils.deleteDirectory(file);
+				} 
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			
 			// Créer les excel ici
 			//System.out.println(allDataOrga.get(0).toString());
