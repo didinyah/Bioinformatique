@@ -87,7 +87,7 @@ public class TreeWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(final JCheckBoxTree cbt) {
-		frame = new JFrame("Arbre des génomes");
+		frame = new JFrame("Arbre des resultats");
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -125,7 +125,7 @@ public class TreeWindow {
 		final Desktop desktop = Desktop.getDesktop();
 		cbt.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent arg0) {
-            	//Création d'un arraylist temporaire car List n'a pas de fonction sort
+            	//Crï¿½ation d'un arraylist temporaire car List n'a pas de fonction sort
             	ArrayList<String> tmp = new ArrayList<String>();
             	filespath.clear();
         		for(TreePath t : cbt.getCheckedPaths())

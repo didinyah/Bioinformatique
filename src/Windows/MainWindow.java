@@ -238,7 +238,7 @@ public class MainWindow {
 		frame.getContentPane().add(chckbxKeepTxt,gbctxt);
 		chckbxKeepTxt.setBounds(250, 300, 196, 23);;
 		
-		JButton btnDl = new JButton("T�l�charger");
+		JButton btnDl = new JButton("Telecharger");
 		btnDl.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -269,7 +269,7 @@ public class MainWindow {
 				}
 				else
 				{
-	            	JOptionPane.showMessageDialog(null, "Veuillez s�lectionner au moins un royaume");
+	            	JOptionPane.showMessageDialog(null, "Veuillez selectionner au moins un royaume");
 				}
 			  }
 			});
@@ -332,7 +332,7 @@ public class MainWindow {
 		       InfoFrame.setResizable(false);
 		       
 		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des g�nes et de cr�er des fichiers XLSX en cons�quence.<br><br><br>1. S�lectionnez les royaumes que vous d�sirez analyser.<br><br><br>2. Les fichiers analys�s sont des fichiers textes. Ils sont effac�s automatiquement apr�s l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont tr�s volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton T�l�charger apr�s avoir s�l�ctionn� au moins un royaume.<br><br><br>Cette application � �t� r�alis�e par K�vin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Na�k Karst, Magdeleine Lebrun et Charl�lie Morineau, <br> dans le cadre du cours de BioInformatique propos� par Christian Michel pour le Master ILC de l'universit� de Strasbourg.");
-		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des g�nes et de cr�er des fichiers XLSX en cons�quence.<br><br><br>1. S�lectionnez les royaumes que vous d�sirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas n�cessaire de cocher un royaume.<br><br><br>2. Les fichiers analys�s sont des fichiers textes. Ils sont effac�s automatiquement apr�s l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont tr�s volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton T�l�charger apr�s avoir s�l�ctionn� au moins un royaume. Sinon, cliquez sur le bouton Consulter pour acc�der aux fichiers d�j� existants.<br><br><br>Cette application � �t� r�alis�e par K�vin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Na�k Karst, Magdeleine Lebrun et Charl�lie Morineau, <br> dans le cadre du cours de BioInformatique propos� par Christian Michel pour le Master ILC de l'universit� de Strasbourg.");
+		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des genes et de creer des fichiers XLSX en consequence.<br><br><br>1. Selectionnez les royaumes que vous desirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas necessaire de cocher un royaume.<br><br><br>2. Les fichiers analyses sont des fichiers textes. Ils sont effaces automatiquement apres l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont tres volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Telecharger apres avoir selectionne au moins un royaume. Sinon, cliquez sur le bouton Consulter pour acceder aux fichiers deja existants.<br><br><br>Cette application a ete realisee par Kevin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naik Karst, Magdeleine Lebrun et Charlelie Morineau, <br> dans le cadre du cours de BioInformatique propose par Christian Michel pour le Master ILC de l'universite de Strasbourg.");
 			   InfoFrame.getContentPane().add(info);
 		    }  
 		}); 

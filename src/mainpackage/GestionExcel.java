@@ -72,7 +72,7 @@ public class GestionExcel
 			fileOut = new FileOutputStream(file);
 			wb.write(fileOut);
 			fileOut.close();
-			System.out.println("Le fichier " + file + "a été créé.");
+			System.out.println("Le fichier " + file + "a ete cree.");
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -94,7 +94,7 @@ public class GestionExcel
 
 			if(file.delete())
 			{
-				System.out.println(file.getName() + " is deleted!");
+				System.out.println(file.getName() + " a ete supprime!");
 			}
 			else
 			{
@@ -367,7 +367,7 @@ public class GestionExcel
 		CreationCelluleValeur("General Information", rd.getOrganismName(), 2, 1);
 		CreationCelluleValeur("General Information", rd.getLastModifDate(), 4, 1); //last modification
 		CreationCelluleValeur("General Information", rd.getNumberCdsSeq(), 6, 1);
-		CreationCelluleValeur("General Information", rd.getNumberCdsSeqInvalid(), 8, 1);
+		CreationCelluleValeur("General Information", rd.getNumberCdsSeqInvalid() + rd.getCDSInvalide(), 8, 1);
 		CreationCelluleValeur("General Information", rd.getNbOrganism(), 10, 1);  //nb organisme
 		CreationCelluleValeur("General Information", rd.getNbChromosome(), 3, 4); // chromosome
 		CreationCelluleValeur("General Information", rd.getNbPlasmid(), 4, 4); //nb plasmid
@@ -398,10 +398,10 @@ public class GestionExcel
 		
 		CreationCelluleValeur(onglet, rd.getNumberCdsSeq(), 23, 13);
 		CreationCelluleValeur(onglet, rd.getNumberCdsSeqInvalid(), 24, 13);
-		CreationCelluleValeur(onglet, 0, 25, 13); //CDS DOUBLE
-		CreationCelluleValeur(onglet, rd.getCDSRestants(), 26, 13);
-		CreationCelluleValeur(onglet, rd.getCDSInvalide(), 27, 13);
-		CreationCelluleValeur(onglet, rd.getCDSTraites(), 28, 13);
+		//CreationCelluleValeur(onglet, 0, 25, 13); //CDS DOUBLE
+		CreationCelluleValeur(onglet, rd.getCDSRestants(), 25, 13);
+		CreationCelluleValeur(onglet, rd.getCDSInvalide(), 26, 13);
+		CreationCelluleValeur(onglet, rd.getCDSTraites(), 27, 13);
 	}
 	public static void CreateExcel(String chemin,  ArrayList<ResultData>rds)
 	{
