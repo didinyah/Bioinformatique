@@ -238,7 +238,7 @@ public class MainWindow {
 		frame.getContentPane().add(chckbxKeepTxt,gbctxt);
 		chckbxKeepTxt.setBounds(250, 300, 196, 23);;
 		
-		JButton btnDl = new JButton("Télécharger");
+		JButton btnDl = new JButton("Tï¿½lï¿½charger");
 		btnDl.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -269,7 +269,7 @@ public class MainWindow {
 				}
 				else
 				{
-	            	JOptionPane.showMessageDialog(null, "Veuillez sélectionner au moins un royaume");
+	            	JOptionPane.showMessageDialog(null, "Veuillez sï¿½lectionner au moins un royaume");
 				}
 			  }
 			});
@@ -291,9 +291,9 @@ public class MainWindow {
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				String path =  System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + "Genomes";
+				String path =  Configuration.RESULTS_FOLDER;
 				System.out.println(path);
-				DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Genomes");
+				DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Results");
 				rootNode = recGen(rootNode, path);
 				
 				JCheckBoxTree jcbt = new JCheckBoxTree();
@@ -331,8 +331,8 @@ public class MainWindow {
 		       InfoFrame.setVisible(true);
 		       InfoFrame.setResizable(false);
 		       
-		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
-		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gênes et de créer des fichiers XLSX en conséquence.<br><br><br>1. Sélectionnez les royaumes que vous désirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas nécessaire de cocher un royaume.<br><br><br>2. Les fichiers analysés sont des fichiers textes. Ils sont effacés automatiquement après l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont très volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Télécharger après avoir séléctionné au moins un royaume. Sinon, cliquez sur le bouton Consulter pour accéder aux fichiers déjà existants.<br><br><br>Cette application à été réalisée par Kévin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naïk Karst, Magdeleine Lebrun et Charlélie Morineau, <br> dans le cadre du cours de BioInformatique proposé par Christian Michel pour le Master ILC de l'université de Strasbourg.");
+		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gï¿½nes et de crï¿½er des fichiers XLSX en consï¿½quence.<br><br><br>1. Sï¿½lectionnez les royaumes que vous dï¿½sirez analyser.<br><br><br>2. Les fichiers analysï¿½s sont des fichiers textes. Ils sont effacï¿½s automatiquement aprï¿½s l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont trï¿½s volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Tï¿½lï¿½charger aprï¿½s avoir sï¿½lï¿½ctionnï¿½ au moins un royaume.<br><br><br>Cette application ï¿½ ï¿½tï¿½ rï¿½alisï¿½e par Kï¿½vin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naï¿½k Karst, Magdeleine Lebrun et Charlï¿½lie Morineau, <br> dans le cadre du cours de BioInformatique proposï¿½ par Christian Michel pour le Master ILC de l'universitï¿½ de Strasbourg.");
+		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des gï¿½nes et de crï¿½er des fichiers XLSX en consï¿½quence.<br><br><br>1. Sï¿½lectionnez les royaumes que vous dï¿½sirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas nï¿½cessaire de cocher un royaume.<br><br><br>2. Les fichiers analysï¿½s sont des fichiers textes. Ils sont effacï¿½s automatiquement aprï¿½s l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont trï¿½s volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Tï¿½lï¿½charger aprï¿½s avoir sï¿½lï¿½ctionnï¿½ au moins un royaume. Sinon, cliquez sur le bouton Consulter pour accï¿½der aux fichiers dï¿½jï¿½ existants.<br><br><br>Cette application ï¿½ ï¿½tï¿½ rï¿½alisï¿½e par Kï¿½vin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naï¿½k Karst, Magdeleine Lebrun et Charlï¿½lie Morineau, <br> dans le cadre du cours de BioInformatique proposï¿½ par Christian Michel pour le Master ILC de l'universitï¿½ de Strasbourg.");
 			   InfoFrame.getContentPane().add(info);
 		    }  
 		}); 
