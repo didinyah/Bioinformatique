@@ -363,6 +363,8 @@ public class GlobalJPanel extends JPanel{
 	public void setElement(int one){
 		if(threads.get("TELECHARGEMENT") != null)
 			threads.get("TELECHARGEMENT").enterData();
+		if(threads.get("ANALYSE") != null)
+			threads.get("ANALYSE").enterData();
 	}
 	
 	public void enterData(){
