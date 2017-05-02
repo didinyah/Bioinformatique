@@ -167,7 +167,7 @@ public class MainWindow {
 		gbclch.gridx = 0;
 		gbclch.gridy = 1;
 		gbclch.weightx = 1.0;
-		gbclch.weighty = 0.7;
+		gbclch.weighty = 1.0;
 		frame.getContentPane().add(lblCheck,gbclch);
 		
 		final JCheckBox chckbxEucaryotes = new JCheckBox("Eucaryotes");
@@ -178,7 +178,7 @@ public class MainWindow {
 		gbceuc.fill = GridBagConstraints.NONE;
 		gbceuc.anchor = GridBagConstraints.LINE_START;
 		gbceuc.gridx = 0;
-		gbceuc.gridy = 2;
+		gbceuc.gridy = 3;
 		gbceuc.weightx = 1.0;
 		gbceuc.weighty = 0.5;
 		gbceuc.insets = new Insets(0,15,0,0);
@@ -192,7 +192,7 @@ public class MainWindow {
 		gbcvir.fill = GridBagConstraints.NONE;
 		gbcvir.anchor = GridBagConstraints.LINE_START;
 		gbcvir.gridx = 0;
-		gbcvir.gridy = 3;
+		gbcvir.gridy = 5;
 		gbcvir.weightx = 1.0;
 		gbcvir.weighty = 0.5;
 		gbcvir.insets = new Insets(0,15,0,0);
@@ -206,7 +206,7 @@ public class MainWindow {
 		gbcpro.fill = GridBagConstraints.NONE;
 		gbcpro.anchor = GridBagConstraints.LINE_START;
 		gbcpro.gridx = 0;
-		gbcpro.gridy = 4;
+		gbcpro.gridy = 7;
 		gbcpro.weightx = 1.0;
 		gbcpro.weighty = 0.5;
 		gbcpro.insets = new Insets(0,15,0,0);
@@ -222,7 +222,7 @@ public class MainWindow {
 		gbcchx.gridx = 2;
 		gbcchx.gridy = 1;
 		gbcchx.weightx = 1.0;
-		gbcchx.weighty = 0.7;
+		gbcchx.weighty = 1.0;
 		frame.getContentPane().add(LblChoix,gbcchx);
 		
 		final JCheckBox chckbxKeepTxt = new JCheckBox("Garder les fichiers texte");
@@ -238,11 +238,28 @@ public class MainWindow {
 		frame.getContentPane().add(chckbxKeepTxt,gbctxt);
 		chckbxKeepTxt.setBounds(250, 300, 196, 23);;
 		
+		final JCheckBox chckbxZip = new JCheckBox("Archiver les fichiers");
+		chckbxZip.setOpaque(false);
+		chckbxZip.setMinimumSize(new Dimension(165,20));
+		GridBagConstraints gcbzip = new GridBagConstraints();
+		gcbzip.fill = GridBagConstraints.NONE;
+		gcbzip.anchor = GridBagConstraints.CENTER;
+		gcbzip.gridx = 2;
+		gcbzip.gridy = 4;
+		gcbzip.weightx = 1.0;
+		gcbzip.weighty = 0.5;
+		frame.getContentPane().add(chckbxZip,gcbzip);
+		chckbxZip.setBounds(250, 300, 196, 23);;
+		
 		JButton btnDl = new JButton("Telecharger");
 		btnDl.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				if(chckbxZip.isSelected())
+				{
+					Configuration.OPTION_ARCHIVE_FILES = true;
+				}
 				if(chckbxKeepTxt.isSelected())
 				{
 					Configuration.OPTION_DL_KEEPFILES = true;
@@ -277,7 +294,7 @@ public class MainWindow {
 		gbcdl.fill = GridBagConstraints.NONE;
 		gbcdl.anchor = GridBagConstraints.CENTER;
 		gbcdl.gridx = 2;
-		gbcdl.gridy = 3;
+		gbcdl.gridy = 6;
 		gbcdl.weightx = 1.0;
 		gbcdl.weighty = 0.5;
 		btnDl.setBounds(277, 211, 119, 25);
@@ -308,7 +325,7 @@ public class MainWindow {
 		gbccst.fill = GridBagConstraints.NONE;
 		gbccst.anchor = GridBagConstraints.CENTER;
 		gbccst.gridx = 2;
-		gbccst.gridy = 4;
+		gbccst.gridy = 8;
 		gbccst.weightx = 1.0;
 		gbccst.weighty = 0.5;
 		btnCst.setBounds(277, 211, 119, 25);
@@ -324,7 +341,7 @@ public class MainWindow {
 		    {  
 		       JFrame InfoFrame = new JFrame("A propos");
 		       //InfoFrame.setBounds(300, 300, 400, 390);
-		       InfoFrame.setBounds(300, 300, 400, 445);
+		       InfoFrame.setBounds(300, 300, 400, 480);
 		       InfoFrame.getContentPane().setBackground(new Color(255,255,255));
 		       InfoFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		       InfoFrame.getContentPane().setLayout(new BoxLayout(InfoFrame.getContentPane(), BoxLayout.PAGE_AXIS));
@@ -332,7 +349,7 @@ public class MainWindow {
 		       InfoFrame.setResizable(false);
 		       
 		       //JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des g�nes et de cr�er des fichiers XLSX en cons�quence.<br><br><br>1. S�lectionnez les royaumes que vous d�sirez analyser.<br><br><br>2. Les fichiers analys�s sont des fichiers textes. Ils sont effac�s automatiquement apr�s l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont tr�s volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton T�l�charger apr�s avoir s�l�ctionn� au moins un royaume.<br><br><br>Cette application � �t� r�alis�e par K�vin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Na�k Karst, Magdeleine Lebrun et Charl�lie Morineau, <br> dans le cadre du cours de BioInformatique propos� par Christian Michel pour le Master ILC de l'universit� de Strasbourg.");
-		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des genes et de creer des fichiers XLSX en consequence.<br><br><br>1. Selectionnez les royaumes que vous desirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas necessaire de cocher un royaume.<br><br><br>2. Les fichiers analyses sont des fichiers textes. Ils sont effaces automatiquement apres l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont tres volumineux.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Telecharger apres avoir selectionne au moins un royaume. Sinon, cliquez sur le bouton Consulter pour acceder aux fichiers deja existants.<br><br><br>Cette application a ete realisee par Kevin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naik Karst, Magdeleine Lebrun et Charlelie Morineau, <br> dans le cadre du cours de BioInformatique propose par Christian Michel pour le Master ILC de l'universite de Strasbourg.");
+		       JLabel info = new JLabel("<html><div style='text-align: center;'><br>Cette application permet d'analyser des genes et de creer des fichiers XLSX en consequence.<br><br><br>1. Selectionnez les royaumes que vous desirez analyser. Si vous souhaitez simplement consulter les fichiers existants, il n'est pas necessaire de cocher un royaume.<br><br><br>2. Les fichiers analyses sont des fichiers textes. Ils sont effaces automatiquement apres l'analyse. Si vous souhaitez les conserver, cochez la case en question.<br>ATTENTION : Les fichiers sont tres volumineux.<br>Une archive contenant les fichiers txt valides sera creee au meme endroit que les fichiers excels si l'option est cochee.<br>Si vous souhaitez lancer une analyse, cliquez sur le bouton Telecharger apres avoir selectionne au moins un royaume. Sinon, cliquez sur le bouton Consulter pour acceder aux fichiers deja existants.<br><br><br>Cette application a ete realisee par Kevin Bier, Alexandre Chavenon, Nicolas Grohmann, Dylan Heitz, Naik Karst, Magdeleine Lebrun et Charlelie Morineau, <br> dans le cadre du cours de BioInformatique propose par Christian Michel pour le Master ILC de l'universite de Strasbourg.");
 			   InfoFrame.getContentPane().add(info);
 		    }  
 		}); 
@@ -343,7 +360,7 @@ public class MainWindow {
 		gbcinf.fill = GridBagConstraints.NONE;
 		gbcinf.anchor = GridBagConstraints.LAST_LINE_END;
 		gbcinf.gridx = 2;
-		gbcinf.gridy = 5;
+		gbcinf.gridy = 9;
 		gbcinf.weightx = 1.0;
 		gbcinf.weighty = 0.5;
 		gbcinf.ipadx = 5;
