@@ -289,9 +289,16 @@ public class GlobalJPanel extends JPanel{
 			a.add(lines.get(3));
 			a.add(lines.get(4));
 			
-			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(0), lines.get(0), a, new Stack<String>(), s, dataCount);
-			threads.put(s, c);
-			c.start();
+
+			if(threads.containsKey("VIRUSES")){
+				ChargingCircleThread c = new ChargingCircleThread(this, circles.get(0), lines.get(0), a, new Stack<String>(), "VIRUSES", dataCount);
+				threads.put(s, c);
+				c.start();
+			} else {
+				ChargingCircleThread c = new ChargingCircleThread(this, circles.get(0), lines.get(0), a, new Stack<String>(), s, dataCount);
+				threads.put(s, c);
+				c.start();
+			}
 			
 			log("Début de l'analyse");
 		}
@@ -301,9 +308,15 @@ public class GlobalJPanel extends JPanel{
 			a.add(lines.get(7));
 			a.add(lines.get(8));
 			
-			ChargingCircleThread c = new ChargingCircleThread(this, circles.get(5), lines.get(5), a, new Stack<String>(), s, dataCount);
-			threads.put(s, c);
-			c.start();
+			if(threads.containsKey("PROKARYOTES")){
+				ChargingCircleThread c = new ChargingCircleThread(this, circles.get(5), lines.get(5), a, new Stack<String>(), "PROKARYOTES", dataCount);
+				threads.put(s, c);
+				c.start();
+			} else {
+				ChargingCircleThread c = new ChargingCircleThread(this, circles.get(5), lines.get(5), a, new Stack<String>(), s, dataCount);
+				threads.put(s, c);
+				c.start();
+			}
 			
 			log("Début du téléchargement");
 		}
@@ -345,6 +358,11 @@ public class GlobalJPanel extends JPanel{
 				System.out.println("Erreur de téléchargement");
 			}
 		}
+	}
+	
+	public void setElement(int one){
+		if(threads.get("TELECHARGEMENT") != null)
+			threads.get("TELECHARGEMENT").enterData();
 	}
 	
 	public void enterData(){

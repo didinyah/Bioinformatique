@@ -36,11 +36,11 @@ public class ChargingCircleThread extends Thread {
 	
 	//Constructor MiddleCircle
 	public ChargingCircleThread(GlobalJPanel j, ChargingCircle c, ChargingStick inStick, ArrayList<ChargingStick> d, Stack<String> s, String da, double dC){
-		if(da == "ANALYSE")
+		/*if(da == "ANALYSE")
 			name = "VIRUSES";
 		else if(da == "TELECHARGEMENT")
 			name = "PROKARYOTES";
-		else
+		else*/
 			name = da;
 		
 		jp = j;

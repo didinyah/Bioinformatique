@@ -93,6 +93,10 @@ public class Chargement extends Frame{
 		panel.setElement(s, dataCount);
 	}
 	
+	public void send(int one){
+		panel.setElement(one);
+	}
+	
 	public void log(String s){
 		panel.log(s);
 	}
