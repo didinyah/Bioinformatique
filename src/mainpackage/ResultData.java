@@ -140,6 +140,14 @@ public class ResultData {
     public Integer getNumberCdsSeqInvalid() {
         return numberCdsSeqInvalid;
     }
+    
+    public void setNumberCdsSeq(Integer numberCdsSeq) {
+        this.numberCdsSeq = numberCdsSeq;
+    }
+    
+    public void setNumberCdsSeqInvalid(Integer numberCdsSeqInvalid) {
+        this.numberCdsSeqInvalid = numberCdsSeqInvalid;
+    }
 
     // Optional var
 

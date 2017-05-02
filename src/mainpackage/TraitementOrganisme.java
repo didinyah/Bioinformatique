@@ -54,50 +54,48 @@ public class TraitementOrganisme {
 			// si on a déjà le fichier de l'organisme, on le DL pas
 			File orgExcel = new File(organism.getPath()+".xlsx");
 			if(!orgExcel.exists()) {
-				
-			}
-			
-			int nbRepliconsDL=0;
-			// On regarde tous les NC_... qu'on a pour pouvoir les DL
-			for (String key: organism.getReplicons().keySet()) {
-			    //System.out.println("key : " + key);
-				String valueID = organism.getReplicons().get(key);
-			    
-			    // FAIRE LES DL ICI
-			    String url = "";
-				try{
-					url = Utils.DOWNLOAD_NC_URL.replaceAll("<ID>", valueID.toString());
-					URL urlDL = new URL(url);
-					File f = new File(organism.getPath() + Configuration.DIR_SEPARATOR + organism.getName() + "_" + valueID + ".txt");
+				int nbRepliconsDL=0;
+				// On regarde tous les NC_... qu'on a pour pouvoir les DL
+				for (String key: organism.getReplicons().keySet()) {
+				    //System.out.println("key : " + key);
+					String valueID = organism.getReplicons().get(key);
+				    
+				    // FAIRE LES DL ICI
+				    String url = "";
+					try{
+						url = Utils.DOWNLOAD_NC_URL.replaceAll("<ID>", valueID.toString());
+						URL urlDL = new URL(url);
+						File f = new File(organism.getPath() + Configuration.DIR_SEPARATOR + organism.getName() + "_" + valueID + ".txt");
 
-					// On tï¿½lï¿½charge le replicon
-					System.out.println("Tï¿½lï¿½chargement du fichier : " + name + "_" + valueID.toString());
-					
-					// Ligne suivante : crï¿½ï¿½ le fichiers en brut avec la sï¿½quence complï¿½te
-					FileUtils.copyURLToFile(urlDL, f);
-					
-					// On envoie au chargement l'organisme si les replicons sont tous DL
-					System.out.println("nb replicons org " + organism.getReplicons().keySet().size());
-					System.out.println("nb replicons DL " + nbRepliconsDL);
-					if(organism.getReplicons().keySet().size()-1 == nbRepliconsDL) {
-						Organism orgTmp = new Organism();
-						orgTmp.setKingdom("TELECHARGEMENT");
-						orgTmp.setName(organism.getName());
-						charg.send(orgTmp);
+						// On tï¿½lï¿½charge le replicon
+						System.out.println("Tï¿½lï¿½chargement du fichier : " + name + "_" + key.toString());
+						
+						// Ligne suivante : crï¿½ï¿½ le fichiers en brut avec la sï¿½quence complï¿½te
+						FileUtils.copyURLToFile(urlDL, f);
+						
+						// On envoie au chargement l'organisme si les replicons sont tous DL
+						System.out.println("nb replicons org " + organism.getReplicons().keySet().size());
+						System.out.println("nb replicons DL " + nbRepliconsDL);
+						if(organism.getReplicons().keySet().size()-1 == nbRepliconsDL) {
+							Organism orgTmp = new Organism();
+							orgTmp.setKingdom("TELECHARGEMENT");
+							orgTmp.setName(organism.getName());
+							charg.send(orgTmp);
+						}
+						
+						// Lancement du thread d'analyse (suppression du fichier ï¿½ la fin du thread)
+						executorService.execute(new LancementAnalyse(f, organism, key, charg));
+						
+						//System.out.println(rd);
+						nbRepliconsDL++;
+						
+					}
+					catch(Exception e){
+						System.out.println(url);
+						e.printStackTrace();
 					}
 					
-					// Lancement du thread d'analyse (suppression du fichier ï¿½ la fin du thread)
-					executorService.execute(new LancementAnalyse(f, organism, key, charg));
-					
-					//System.out.println(rd);
-					nbRepliconsDL++;
-					
 				}
-				catch(Exception e){
-					System.out.println(url);
-					e.printStackTrace();
-				}
-				
 			}
 			System.out.println(countCurrent);
 			countCurrent++;
@@ -192,6 +190,9 @@ public class TraitementOrganisme {
 		ArrayList<ResultData> listMitochondrion = new ArrayList<ResultData>();
 		ArrayList<ResultData> listLinkage = new ArrayList<ResultData>();
 		
+		int nbCDSTotal = 0;
+		int nbCDSInvalidTotal = 0;
+		
 		for(String key: organism.getRepliconsTraites().keySet()) {
 			ResultData rd = organism.getRepliconsTraites().get(key);
 			rd.setOrganismName(organism.getName());
@@ -214,10 +215,12 @@ public class TraitementOrganisme {
 			else if(rd.isLinkage()) {
 				listLinkage.add(rd);
 			}
+			nbCDSTotal += rd.getNumberCdsSeq();
+			nbCDSInvalidTotal += rd.getNumberCdsSeqInvalid();
 		}
 		
 		// ResultData avec les infos de base (1 organisme)
-		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(1, listChromosome.size(), listPlasmid.size(), listDna.size(), organism.getModificationDate(), organism.getName());
+		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(1, listChromosome.size(), listPlasmid.size(), listDna.size(), organism.getModificationDate(), organism.getName(), nbCDSTotal, nbCDSInvalidTotal);
 		//System.out.println(rdGeneralInformation);
 		allResultData.add(rdGeneralInformation);
 		
@@ -289,6 +292,8 @@ public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, A
 		int nbDna = 0;
 		String lastModifDate = "";
 		int nbOrganism = 0;
+		int nbCDSTotal = 0;
+		int nbCDSInvalidTotal = 0;
 		
 		
 		for(ResultData rd: rd1) {
@@ -300,6 +305,8 @@ public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, A
 					lastModifDate = rd.getLastModifDate();
 				};
 				nbOrganism = rd.getNbOrganism();
+				nbCDSTotal = rd.getNumberCdsSeq();
+				nbCDSInvalidTotal = rd.getNumberCdsSeqInvalid();
 			}
 			else if(rd.getName().equals("Sum_Chloroplasts")) {
 				listChloroplast.add(rd);
@@ -348,11 +355,13 @@ public static ArrayList<ResultData> addResultsTotal(ArrayList<ResultData> rd1, A
 					lastModifDate = rd.getLastModifDate();
 				};
 				nbOrganism += rd.getNbOrganism();
+				nbCDSTotal += rd.getNumberCdsSeq();
+				nbCDSInvalidTotal += rd.getNumberCdsSeqInvalid();
 			}
 		}
 		
 		// ResultData avec les infos de base
-		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(nbOrganism, nbChromosome, nbPlasmid, nbDna, lastModifDate, totalName );
+		ResultData rdGeneralInformation = Utils.setGeneralInformationRD(nbOrganism, nbChromosome, nbPlasmid, nbDna, lastModifDate, totalName, nbCDSTotal, nbCDSInvalidTotal );
 		allResultData.add(rdGeneralInformation);
 		// On met les sommes de tout
 		if(!listChloroplast.isEmpty()) {

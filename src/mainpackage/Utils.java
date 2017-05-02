@@ -149,15 +149,17 @@ public class Utils {
 	// Fonctions utiles pour ResultData
 	
 	// On fait un resultdata contenant les infos suivantes : nb d'organismes, de chromosomes, de dna, de plasmids et la dernière date de modification de l'organisme
-	public static ResultData setGeneralInformationRD(int nbOrganism, int nbChromosome, int nbPlasmid, int nbDna, String lastModifDate, String name) {
+	public static ResultData setGeneralInformationRD(int nbOrganism, int nbChromosome, int nbPlasmid, int nbDna, String lastModifDate, String name, int numberCDS, int numberCDSInvalid) {
 		ResultData rdGeneralInformation = new ResultData();
 		rdGeneralInformation.setName("General_Information");
-		rdGeneralInformation.setNbOrganism(1);
+		rdGeneralInformation.setNbOrganism(nbOrganism);
 		rdGeneralInformation.setNbChromosome(nbChromosome);
 		rdGeneralInformation.setNbPlasmid(nbPlasmid);
 		rdGeneralInformation.setNbDna(nbDna);
 		rdGeneralInformation.setLastModifDate(lastModifDate);
 		rdGeneralInformation.setOrganismName(name);
+		rdGeneralInformation.setNumberCdsSeq(numberCDS);
+		rdGeneralInformation.setNumberCdsSeqInvalid(numberCDSInvalid);
 		return rdGeneralInformation;
 	}
 }
