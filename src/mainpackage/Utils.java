@@ -1,7 +1,14 @@
 package mainpackage;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /* Classe Utils
  * 
@@ -144,6 +151,40 @@ public class Utils {
 	
 	public static ArrayList<String> getExcelTitlesPhaseInfo(){
 		return EXCELTITLESPHASEINFO;
+	}
+	
+	// Zipper tous les fichiers d'un dossier
+	public static void ZipFiles(String path) {
+		try {
+			 final int BUFFER = 2048;
+	         BufferedInputStream origin = null;
+	         FileOutputStream dest = new FileOutputStream(path + ".zip");
+	         ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+	         //out.setMethod(ZipOutputStream.DEFLATED);
+	         byte data[] = new byte[BUFFER];
+	         // get a list of files from current directory
+	         File f = new File(path + Configuration.DIR_SEPARATOR);
+	         System.out.println("chemin : " + f.getPath());
+	         System.out.println("dossier ? : " + f.isDirectory());
+	         String files[] = f.list();
+
+	         for (int i=0; i<files.length; i++) {
+	            System.out.println("Adding: "+files[i]);
+	            FileInputStream fi = new FileInputStream(path + Configuration.DIR_SEPARATOR +files[i]);
+	            origin = new BufferedInputStream(fi, BUFFER);
+	            ZipEntry entry = new ZipEntry(files[i]);
+	            out.putNextEntry(entry);
+	            int count;
+	            while((count = origin.read(data, 0, BUFFER)) != -1) {
+	               out.write(data, 0, count);
+	            }
+	            origin.close();
+	         }
+	         out.close();
+	    } 
+		catch(Exception e) {
+			e.printStackTrace();
+	    }
 	}
 	
 	// Fonctions utiles pour ResultData

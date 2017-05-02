@@ -97,6 +97,23 @@ public class TraitementOrganisme {
 					
 				}
 			}
+			else {
+				charg.send(1); // on considère qu'on envoie le téléchargement et le virus de l'organisme si on a pas à le faire
+				//charg.send(1);
+			}
+			// On créé l'archive contenant toutes les séquences de l'organisme si l'user le veut
+			if(Configuration.OPTION_ARCHIVE_FILES) {
+				Utils.ZipFiles(organism.getPath());
+				// une fois zippé, si l'user ne veut pas conserver les fichiers txt, on les supprime
+				if(!Configuration.OPTION_DL_KEEPFILES) {
+					try {
+						FileUtils.deleteDirectory(new File(organism.getPath()+ Configuration.DIR_SEPARATOR));
+					} 
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 			System.out.println(countCurrent);
 			countCurrent++;
 			
