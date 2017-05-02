@@ -74,7 +74,7 @@ public class TreeGestion {
 			organisms.addAll(viruses.organisms());
 		}
 		
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Genomes");
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Results");
 		
 		int count = 0;
 		int countPro = 0;

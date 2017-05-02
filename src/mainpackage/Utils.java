@@ -93,13 +93,13 @@ public class Utils {
 	private static ArrayList<String> EXCELTITLESPHASEINFO = new ArrayList<String>(Arrays.asList(
 			"Informations", "Number of CDS sequences", "Number of invalid CDS"));
 	
-	// URL pour récupérer les données et créer l'arbre
+	// [WEB] URL pour rï¿½cupï¿½rer les donnï¿½es et crï¿½er l'arbre
 
 	public static String TREE_EUKARYOTES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Eukaryota&mode=2&filterText=%7C%7C--+All+Eukaryota+--%7C--+All+Eukaryota+--%7C%7C50%2C40%2C30%2C20%7Cnopartial%7Cnoanomalous&pageSize=100&page=";
 	public static String TREE_PROKARYOTES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Bacteria&mode=2&filterText=%7C%7C--+All+Prokaryotes+--%7C--+All+Prokaryotes+--%7C%7C50%2C40%7Cnopartial%7Cnoanomalous&pageSize=100&page=";
 	public static String TREE_VIRUSES_URL = "https://www.ncbi.nlm.nih.gov/genomes/Genome2BE/genome2srv.cgi?action=GetGenomes4Grid&king=Viruses&mode=2&pageSize=100&page=";
 	
-	// URL pour télécharger les données
+	// [WEB] URL pour tï¿½lï¿½charger les donnï¿½es
 	
 	public static String DOWNLOAD_NC_URL = "https://www.ncbi.nlm.nih.gov/sviewer/viewer.cgi?tool=portal&save=file&log$=seqview&db=nuccore&report=gbwithparts&sort=&from=begin&to=end&maxplex=3&id=<ID>";
 	
@@ -148,7 +148,7 @@ public class Utils {
 	
 	// Fonctions utiles pour ResultData
 	
-	// On fait un resultdata contenant les infos suivantes : nb d'organismes, de chromosomes, de dna, de plasmids et la dernière date de modification de l'organisme
+	// On fait un resultdata contenant les infos suivantes : nb d'organismes, de chromosomes, de dna, de plasmids et la derniï¿½re date de modification de l'organisme
 	public static ResultData setGeneralInformationRD(int nbOrganism, int nbChromosome, int nbPlasmid, int nbDna, String lastModifDate, String name, int numberCDS, int numberCDSInvalid) {
 		ResultData rdGeneralInformation = new ResultData();
 		rdGeneralInformation.setName("General_Information");
