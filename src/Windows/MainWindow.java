@@ -377,7 +377,7 @@ public class MainWindow {
 		for(String s : files)
 		{
 			File tmp = new File(path + Configuration.DIR_SEPARATOR + s);
-			String tmpn = tmp.getName().split("$.$")[0];
+			String tmpn = tmp.getName().split("\\.")[0];
 			if(tmp.isFile() && tmp.exists() && !tmp.getName().contains("Total"))
 			{
 				res.add(new DefaultMutableTreeNode(tmpn));

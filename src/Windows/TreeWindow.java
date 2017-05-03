@@ -125,12 +125,13 @@ public class TreeWindow {
 		final Desktop desktop = Desktop.getDesktop();
 		cbt.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent arg0) {
-            	//Cr�ation d'un arraylist temporaire car List n'a pas de fonction sort
+            	//Creation d'un arraylist temporaire car List n'a pas de fonction sort
             	ArrayList<String> tmp = new ArrayList<String>();
             	filespath.clear();
         		for(TreePath t : cbt.getCheckedPaths())
-        		{
-        			String path = System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + t.toString().replace(",", Configuration.DIR_SEPARATOR).replace("[", "").replace("]","").replace(" ", "");
+        		{		
+        				String path = System.getProperty("user.dir") + Configuration.DIR_SEPARATOR + t.toString().replace(", ", Configuration.DIR_SEPARATOR).replace("[", "").replace("]","").replace(" ", "");
+        			
         			File tempf = new File(path+".xlsx");
         			if(tempf.isFile() && tempf.exists() && !filespath.containsKey(tempf.getName()))
         			{
