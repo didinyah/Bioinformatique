@@ -40,7 +40,7 @@ public class TraitementOrganisme {
 		ExecutorService executorService = Executors.newFixedThreadPool(nbThread);
 		System.setProperty("https.protocols", "TLSv1.1");
 		
-		int countEnd = 10; // mettre listeOrga.size() pour tout
+		int countEnd = listeOrga.size(); // mettre listeOrga.size() pour tout
 		int countCurrent = 0;
 		
 		charg.send("TELECHARGEMENT", countEnd);

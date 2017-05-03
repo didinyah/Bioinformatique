@@ -76,8 +76,8 @@ public class MainWindow {
 		while(!clic){ 
 			System.out.println("");
 		}
-		int nbOrgaEnTout = nb_euk + nb_pro + nb_vir + 10*2; // nombre d'orga + nb d'analyses et nb de t�l�chargements
-		//int nbOrgaEnTout = (nb_euk + nb_pro + nb_vir)*3;
+		//int nbOrgaEnTout = nb_euk + nb_pro + nb_vir + 10*2; // nombre d'orga + nb d'analyses et nb de t�l�chargements
+		int nbOrgaEnTout = (nb_euk + nb_pro + nb_vir)*3;
 		int nbThread = 10;
 		int nbRoyaumesAAnalyser = 2; // analyse et DL
 		if(nb_euk > 0) {
@@ -267,17 +267,17 @@ public class MainWindow {
 				if(chckbxEucaryotes.isSelected())
 				{
 					Configuration.OPTION_DL_EUKARYOTES = true;
-					nb_euk = 25;
+					nb_euk = 345;
 				}
 				if(chckbxVirus.isSelected())
 				{
 					Configuration.OPTION_DL_VIRUSES = true;
-					nb_vir = 200;
+					nb_vir = 7100;
 				}
 				if(chckbxProcaryotes.isSelected())
 				{
 					Configuration.OPTION_DL_PROKARYOTES = true;
-					nb_pro = 63;
+					nb_pro = 2650;
 				}
 				if(Configuration.OPTION_DL_EUKARYOTES || Configuration.OPTION_DL_VIRUSES || Configuration.OPTION_DL_PROKARYOTES)
 				{
