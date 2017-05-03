@@ -182,6 +182,53 @@ public class GestionExcel
 		row.setRowStyle(cellStyle);
 	}
 	
+	public static String GetLastModificationDate(String filepath)
+	{
+		//System.out.println("Path : " + filepath);
+		String res = "1000/10/10";
+		//System.out.println(filepath);
+		File file = new File(filepath);
+		//System.out.println(file.toString());
+		try
+		{
+			XSSFWorkbook wbf = (XSSFWorkbook) WorkbookFactory.create(file);
+			
+			//System.out.println(rds.get(0).toString());
+			res = GetCelluleValeur("General Information",4,1, wbf);
+		}
+		 catch (EncryptedDocumentException e) {
+				System.out.println(e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidFormatException e) {
+				System.out.println(e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return res;
+		
+	}
+	
+	private static String GetCelluleValeur(String sheet ,int ligne ,int colonne, XSSFWorkbook wbf)
+	{
+		String res = "";
+		//System.out.println("Sheet : " + sheet);
+		XSSFSheet feuille =  wbf.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
+		if (row == null) {
+			row = feuille.createRow(ligne);
+		}
+		Cell cell = null;
+		cell = row.getCell((short) colonne);
+		res = cell.getStringCellValue();
+		
+		return res;
+	}
+	
 	public static void ColorierColonne(XSSFSheet sheet, int colonne, IndexedColors couleur, XSSFWorkbook wb)
 	{
 		Row row = null;
@@ -363,7 +410,7 @@ public class GestionExcel
 	public static void RemplirInfo(ResultData rd)
 	{
 		wb.getSheetAt(0);
-		System.out.println(rd.getOrganismName());
+		//System.out.println(rd.getOrganismName());
 		CreationCelluleValeur("General Information", rd.getOrganismName(), 2, 1);
 		CreationCelluleValeur("General Information", rd.getLastModifDate(), 4, 1); //last modification
 		CreationCelluleValeur("General Information", rd.getNumberCdsSeq(), 6, 1);
@@ -529,7 +576,7 @@ public class GestionExcel
 		
 	}*/
 	
-	public static void main(String[] args) 
+	/*public static void main(String[] args) 
 	{
 		testGeneration();
 		/*XSSFWorkbook wb = new XSSFWorkbook();
@@ -548,6 +595,6 @@ public class GestionExcel
 		/* pour �tre s�r que les r�sultats des formules soient update en temps r�el
 		 * 
 		 * FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
-		evaluator.evaluateAll();*/
-	}
+		evaluator.evaluateAll();
+	}*/
 }

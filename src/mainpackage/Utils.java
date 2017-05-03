@@ -164,8 +164,8 @@ public class Utils {
 	         byte data[] = new byte[BUFFER];
 	         // get a list of files from current directory
 	         File f = new File(path + Configuration.DIR_SEPARATOR);
-	         System.out.println("chemin : " + f.getPath());
-	         System.out.println("dossier ? : " + f.isDirectory());
+	         //System.out.println("chemin : " + f.getPath());
+	         //System.out.println("dossier ? : " + f.isDirectory());
 	         String files[] = f.list();
 
 	         for (int i=0; i<files.length; i++) {

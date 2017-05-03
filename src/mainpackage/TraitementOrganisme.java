@@ -51,9 +51,18 @@ public class TraitementOrganisme {
 			Organism organism = listeOrga.get(i);
 			String name = organism.getName();
 			
-			// si on a déjà le fichier de l'organisme, on le DL pas
+			// si on a dï¿½jï¿½ le fichier de l'organisme, on le DL pas
 			File orgExcel = new File(organism.getPath()+".xlsx");
-			if(!orgExcel.exists()) {
+			String dateOrganisme =  organism.getModificationDate();
+			String dateExcel =  organism.getModificationDate();
+			if(orgExcel!=null)
+			{
+				if(orgExcel.exists())
+				{
+					dateExcel = GestionExcel.GetLastModificationDate(orgExcel.getPath());
+				}
+			}
+			if(!orgExcel.exists() || !dateExcel.equals(dateOrganisme)) {
 				int nbRepliconsDL=0;
 				// On regarde tous les NC_... qu'on a pour pouvoir les DL
 				for (String key: organism.getReplicons().keySet()) {
@@ -98,10 +107,10 @@ public class TraitementOrganisme {
 				}
 			}
 			else {
-				charg.send(1); // on considère qu'on envoie le téléchargement et le virus de l'organisme si on a pas à le faire
+				charg.send(1); // on considï¿½re qu'on envoie le tï¿½lï¿½chargement et le virus de l'organisme si on a pas ï¿½ le faire
 				//charg.send(1);
 			}
-			// On créé l'archive contenant toutes les séquences de l'organisme si l'user le veut
+			// On crï¿½ï¿½ l'archive contenant toutes les sï¿½quences de l'organisme si l'user le veut
 			if(Configuration.OPTION_ARCHIVE_FILES) {
 				Utils.ZipFiles(organism.getPath());
 			}
@@ -129,7 +138,7 @@ public class TraitementOrganisme {
 			Organism organism = listeOrga.get(i);
 			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
 			
-			// une fois zippé, si l'user ne veut pas conserver les fichiers txt, on les supprime
+			// une fois zippï¿½, si l'user ne veut pas conserver les fichiers txt, on les supprime
 			if(!Configuration.OPTION_DL_KEEPFILES) {
 				File file = new File(organism.getPath()+ Configuration.DIR_SEPARATOR);
 				try {
@@ -140,7 +149,7 @@ public class TraitementOrganisme {
 				}
 			}
 			
-			// Créer les excel ici
+			// Crï¿½er les excel ici
 			//System.out.println(allDataOrga.get(0).toString());
 			GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
 			
@@ -148,7 +157,7 @@ public class TraitementOrganisme {
 			String groupOrg = organism.getGroup();
 			String kingdomOrg = organism.getKingdom();
 			
-			// si le sous groupe n'est pas connu, alors on l'ajoute au map, sinon on additionne les données des résultdata déjà existants
+			// si le sous groupe n'est pas connu, alors on l'ajoute au map, sinon on additionne les donnï¿½es des rï¿½sultdata dï¿½jï¿½ existants
 			if(mapSubGroupResult.get(subgroupOrg) == null) {
 				mapSubGroupResult.put(subgroupOrg, allDataOrga);
 			}
@@ -175,7 +184,7 @@ public class TraitementOrganisme {
 			}
 		}
 		
-		// Maintenant on créé les excel totaux
+		// Maintenant on crï¿½ï¿½ les excel totaux
 		// total_subgroup
 		for(String key: mapSubGroupResult.keySet()) {
 			ArrayList<ResultData> allRd = mapSubGroupResult.get(key);
@@ -192,7 +201,7 @@ public class TraitementOrganisme {
 			GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 		}
 		
-		System.out.println("fin des sommes des résultats");
+		System.out.println("fin des sommes des rï¿½sultats");
 		
 		// On affiche maintenant la fenï¿½tre pour consulter les excel
 		TreeWindow.displayTreeWindow(tree);
