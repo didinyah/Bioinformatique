@@ -411,6 +411,7 @@ public class GestionExcel
 			File file = new File("files/templateEdit.xlsx");
 			wb = (XSSFWorkbook) WorkbookFactory.create(file);
 			//System.out.println(rds.get(0).toString());
+			int CDSNonValides = 0;
 			for(int i = 0; i< rds.size() ; i++)
 			{
 				if(i==0)
@@ -418,8 +419,13 @@ public class GestionExcel
 					RemplirInfo(rds.get(i));
 				}
 				else
+				{
 					AjouterOnglet(rds.get(i));
+					if(rds.get(i).getName().contains("Sum"))
+						CDSNonValides = CDSNonValides + rds.get(i).getCDSInvalide() + rds.get(i).getNumberCdsSeqInvalid();
+				}
 			}
+			CreationCelluleValeur("General Information", CDSNonValides, 8, 1);
 			wb.removeSheetAt(1);
 			MajFormules();
 			CreationFichier(chemin);
