@@ -55,12 +55,9 @@ public class TraitementOrganisme {
 			File orgExcel = new File(organism.getPath()+".xlsx");
 			String dateOrganisme =  organism.getModificationDate();
 			String dateExcel =  organism.getModificationDate();
-			if(orgExcel!=null)
+			if(orgExcel.exists())
 			{
-				if(orgExcel.exists())
-				{
-					dateExcel = GestionExcel.GetLastModificationDate(orgExcel.getPath());
-				}
+				dateExcel = GestionExcel.GetLastModificationDate(orgExcel.getPath());
 			}
 			if(!orgExcel.exists() || !dateExcel.equals(dateOrganisme)) {
 				int nbRepliconsDL=0;
@@ -77,7 +74,7 @@ public class TraitementOrganisme {
 						File f = new File(organism.getPath() + Configuration.DIR_SEPARATOR + organism.getName() + "_" + valueID + ".txt");
 
 						// On t�l�charge le replicon
-						System.out.println("T�l�chargement du fichier : " + name + "_" + key.toString());
+						System.out.println("Telechargement du fichier : " + name + "_" + key.toString());
 						
 						// Ligne suivante : cr�� le fichiers en brut avec la s�quence compl�te
 						FileUtils.copyURLToFile(urlDL, f);
