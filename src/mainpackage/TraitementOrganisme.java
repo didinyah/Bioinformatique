@@ -57,7 +57,14 @@ public class TraitementOrganisme {
 			String dateExcel =  organism.getModificationDate();
 			if(orgExcel.exists())
 			{
-				dateExcel = GestionExcel.GetLastModificationDate(orgExcel.getPath());
+				// si le fichier est corrompu, on doit le reDL
+				try {
+					dateExcel = GestionExcel.GetLastModificationDate(orgExcel.getPath());
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					dateExcel = "RedownloadCarCorrompu";
+				}
 			}
 			if(!orgExcel.exists() || !dateExcel.equals(dateOrganisme)) {
 				int nbRepliconsDL=0;
@@ -106,6 +113,7 @@ public class TraitementOrganisme {
 			else {
 				charg.send(1); // on considï¿½re qu'on envoie le tï¿½lï¿½chargement et le virus de l'organisme si on a pas ï¿½ le faire
 				//charg.send(1);
+				//charg.log(organism.getName() +".xlsx existe deja et n'est pas a mettre a jour.");
 			}
 			// On crï¿½ï¿½ l'archive contenant toutes les sï¿½quences de l'organisme si l'user le veut
 			if(Configuration.OPTION_ARCHIVE_FILES) {
@@ -134,6 +142,7 @@ public class TraitementOrganisme {
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
 			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
+			// ArrayList<ResultData> allDataOrga = allResultsOrganismExcel(organism);
 			
 			// une fois zippï¿½, si l'user ne veut pas conserver les fichiers txt, on les supprime
 			if(!Configuration.OPTION_DL_KEEPFILES) {
@@ -298,6 +307,93 @@ public class TraitementOrganisme {
 			ResultData rd = organism.getRepliconsTraites().get(key);
 			allResultData.add(rd);
 		}
+		
+		return allResultData;
+	}
+	
+	// fonction utilisée SEULEMENT POUR FAIRE LES TOTAUX pour récupérer les infos d'un organisme 
+	public static ArrayList<ResultData> allResultsOrganismExcel(Organism organism) {
+		
+		ArrayList<ResultData> allResultData = new ArrayList<ResultData>();
+		
+		ResultData listChloroplast = new ResultData();
+		ResultData listChromosome = new ResultData();
+		ResultData listDna = new ResultData();
+		ResultData listPlasmid = new ResultData();
+		ResultData listMitochondrion = new ResultData();
+		ResultData listLinkage = new ResultData();
+		
+		
+		File orgExcel = new File(organism.getPath()+".xlsx");
+		String dateOrganisme =  organism.getModificationDate();
+		int nbChromosome = 0;
+		int nbPlasmid = 0;
+		int nbDna = 0;
+		String lastModifDate = "";
+		int nbOrganism = 0;
+		int nbCDSTotal = 0;
+		int nbCDSInvalidTotal = 0;
+		if(orgExcel.exists())
+		{
+			// si le fichier est corrompu, pas d'erreur bloquante
+			
+			// parcourir toutes les feuilles de l'excel et récuperer les sum et general information
+			try {
+				dateOrganisme = GestionExcel.GetLastModificationDate(orgExcel.getPath());
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// ResultData avec les infos de base (1 organisme)
+		/*ResultData rdGeneralInformation = Utils.setGeneralInformationRD(1, listChromosome.size(), listPlasmid.size(), listDna.size(), organism.getModificationDate(), organism.getName(), nbCDSTotal, nbCDSInvalidTotal);
+		//System.out.println(rdGeneralInformation);
+		allResultData.add(rdGeneralInformation);
+		
+		// On met les sommes de tout
+		if(!listChloroplast.isEmpty()) {
+			ResultData sumChloroplast = new ResultData();
+			sumChloroplast.setName("Sum_Chloroplasts");
+			sumChloroplast.fusions(listChloroplast);
+			sumChloroplast.setChloroplast(true);
+			allResultData.add(sumChloroplast);
+		}
+		if(!listChromosome.isEmpty()) {
+			ResultData sumChromosome = new ResultData();
+			sumChromosome.setName("Sum_Chromosomes");
+			sumChromosome.fusions(listChromosome);
+			sumChromosome.setChromosome(true);
+			allResultData.add(sumChromosome);
+		}
+		if(!listDna.isEmpty()) {
+			ResultData sumDna = new ResultData();
+			sumDna.setName("Sum_DNA");
+			sumDna.fusions(listDna);
+			sumDna.setDna(true);
+			allResultData.add(sumDna);
+		}
+		if(!listPlasmid.isEmpty()) {
+			ResultData sumPlasmid = new ResultData();
+			sumPlasmid.setName("Sum_Plasmids");
+			sumPlasmid.fusions(listPlasmid);
+			sumPlasmid.setPlasmid(true);
+			allResultData.add(sumPlasmid);
+		}
+		if(!listMitochondrion.isEmpty()) {
+			ResultData sumMitochondrion = new ResultData();
+			sumMitochondrion.setName("Sum_Mitochondrions");
+			sumMitochondrion.fusions(listMitochondrion);
+			sumMitochondrion.setMitochondrion(true);
+			allResultData.add(sumMitochondrion);
+		}
+		if(!listLinkage.isEmpty()) {
+			ResultData sumLinkage = new ResultData();
+			sumLinkage.setName("Sum_Linkages");
+			sumLinkage.fusions(listLinkage);
+			sumLinkage.setLinkage(true);
+			allResultData.add(sumLinkage);
+		}*/
 		
 		return allResultData;
 	}

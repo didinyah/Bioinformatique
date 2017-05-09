@@ -52,6 +52,7 @@ public class LancementAnalyse implements Runnable {
 				ArrayList<ResultData> allDataOrga = TraitementOrganisme.allResultsOrganism(organism);
 				
 				GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
+				
 			}
 			
 			// Suppression du fichier

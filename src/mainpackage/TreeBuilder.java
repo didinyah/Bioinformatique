@@ -115,7 +115,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 			if(replicons.size() != 0){
 				Elements organismTDs = organism.select("td");
 				Iterator<Element> tdIterator = organismTDs.iterator();
-				String organismName = tdIterator.next().text();
+				String organismName = tdIterator.next().text().replace(" ", "_").replace(":", "_");;
 				if(type == OrganismType.PROKARYOTES) {
 					tdIterator.next(); // Skip CladeID
 				}
