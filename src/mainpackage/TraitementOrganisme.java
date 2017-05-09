@@ -151,7 +151,7 @@ public class TraitementOrganisme {
 			
 			// Cr�er les excel ici
 			//System.out.println(allDataOrga.get(0).toString());
-			GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
+			//GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
 			
 			String subgroupOrg = organism.getSubgroup();
 			String groupOrg = organism.getGroup();

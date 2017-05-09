@@ -5,12 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.io.FileUtils;
+
 import mainpackage.Chargement.Chargement;
 
-// La classe suivante va se lancer dans plusieurs threads, elle se fait à la fin d'un DL de fichier pour analyse
+// La classe suivante va se lancer dans plusieurs threads, elle se fait ï¿½ la fin d'un DL de fichier pour analyse
 public class LancementAnalyse implements Runnable {
 
 	public File file;
@@ -33,7 +36,7 @@ public class LancementAnalyse implements Runnable {
 			System.out.println("Bonjour c'est moi le thread ! Je viens d'analyser " + file.getName());
 			//System.out.println(rd);
 			
-			// Ajout du ResultData obtenu à l'organisme et ajout des données utiles à partir de l'organisme
+			// Ajout du ResultData obtenu ï¿½ l'organisme et ajout des donnï¿½es utiles ï¿½ partir de l'organisme
 			rd.setName(keyReplicon);
 			HashMap<String, ResultData> hash = organism.getRepliconsTraites();
 			hash.put(keyReplicon, rd);
@@ -45,15 +48,19 @@ public class LancementAnalyse implements Runnable {
 				orgTmp.setKingdom("ANALYSE");
 				orgTmp.setName(organism.getName());
 				charg.send(orgTmp);
+				// si tous les replicons sont DL de l'organisme, on crÃ©Ã© l'excel
+				ArrayList<ResultData> allDataOrga = TraitementOrganisme.allResultsOrganism(organism);
+				
+				GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
 			}
 			
 			// Suppression du fichier
 			if(!Configuration.OPTION_DL_KEEPFILES && !Configuration.OPTION_ARCHIVE_FILES) {
 				if(file.delete()){
-	    			// System.out.println(file.getName() + " est supprimé !");
+	    			// System.out.println(file.getName() + " est supprimï¿½ !");
 	    		}
 				else{
-	    			System.out.println("La suppression a échoué " + file.getName());
+	    			System.out.println("La suppression a ï¿½chouï¿½ " + file.getName());
 	    		}
 			}
 		} 

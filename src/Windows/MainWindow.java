@@ -75,6 +75,7 @@ public class MainWindow {
 		window.frame.setVisible(true);
 		while(!clic){ 
 			System.out.println("");
+			//int wait = 0;
 		}
 		int nbOrgaEnTout = nb_euk + nb_pro + nb_vir + 10*2; // nombre d'orga + nb d'analyses et nb de t�l�chargements
 		//int nbOrgaEnTout = (nb_euk + nb_pro + nb_vir)*3;
