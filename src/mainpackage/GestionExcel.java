@@ -511,7 +511,7 @@ public class GestionExcel
 					int getNumberCdsSeqInvalid = 0, getCDSInvalide = 0;
 					Trinucleotide t;
 					Dinucleotide d;
-					for(int i = wbf.getNumberOfSheets(); i>=0 ; i--)
+					for(int i = wbf.getNumberOfSheets()-1; i>=0 ; i--)
 					{
 						temp = new ResultData();
 						sheet = wbf.getSheetAt(i);

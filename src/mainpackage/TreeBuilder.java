@@ -76,7 +76,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 		boolean cont = true;
 		
 		//charg.log("Début du téléchargement des organismes");
-		while(cont) {
+		while(cont && currentPage < 5) {
 			try{
 				List<Organism> result = retryer.call(this.pageCallable);
 				if(result == null){

@@ -141,8 +141,19 @@ public class TraitementOrganisme {
 		
 		for(int i=0; i<countEnd; i++){
 			Organism organism = listeOrga.get(i);
-			ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
-			// ArrayList<ResultData> allDataOrga = allResultsOrganismExcel(organism);
+			//ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
+			ArrayList<ResultData> allDataOrga = new ArrayList<ResultData>();
+			File orgExcel = new File(organism.getPath()+".xlsx");
+			if(orgExcel.exists())
+			{
+				// si le fichier est corrompu, on ne fait pas planter le calcul
+				try {
+					allDataOrga = GestionExcel.GetFromExcel(orgExcel.getAbsolutePath());
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
 			
 			// une fois zipp�, si l'user ne veut pas conserver les fichiers txt, on les supprime
 			if(!Configuration.OPTION_DL_KEEPFILES) {
