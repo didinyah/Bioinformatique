@@ -66,7 +66,6 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 		}
 		// 1293 éléments pour pages entre 1 et 10
 		this.charg = charg;
-		int nombreOrganismes = 1293;
 		this.type = type;
 		this.organismList = new ArrayList<Organism>();
 	}
@@ -76,7 +75,7 @@ public class TreeBuilder extends AbstractExecutionThreadService {
 		boolean cont = true;
 		
 		//charg.log("Début du téléchargement des organismes");
-		while(cont && currentPage < 5) {
+		while(cont) {
 			try{
 				List<Organism> result = retryer.call(this.pageCallable);
 				if(result == null){
