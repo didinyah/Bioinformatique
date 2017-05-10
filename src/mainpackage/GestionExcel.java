@@ -228,6 +228,40 @@ public class GestionExcel
 		
 		return res;
 	}
+
+	
+	private static int GetCelluleValeurInt(String sheet ,int ligne ,int colonne, XSSFWorkbook wbf)
+	{
+		int res = 0;
+		//System.out.println("Sheet : " + sheet);
+		XSSFSheet feuille =  wbf.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
+		if (row == null) {
+			row = feuille.createRow(ligne);
+		}
+		Cell cell = null;
+		cell = row.getCell((short) colonne);
+		res = (int)cell.getNumericCellValue();
+		
+		return res;
+	}
+
+	
+	private static double GetCelluleValeurDouble(String sheet ,int ligne ,int colonne, XSSFWorkbook wbf)
+	{
+		double res = 0;
+		//System.out.println("Sheet : " + sheet);
+		XSSFSheet feuille =  wbf.getSheet(sheet);
+		Row row = feuille.getRow(ligne);
+		if (row == null) {
+			row = feuille.createRow(ligne);
+		}
+		Cell cell = null;
+		cell = row.getCell((short) colonne);
+		res = cell.getNumericCellValue();
+		
+		return res;
+	}
 	
 	public static void ColorierColonne(XSSFSheet sheet, int colonne, IndexedColors couleur, XSSFWorkbook wb)
 	{
@@ -422,6 +456,139 @@ public class GestionExcel
 		CreationCelluleValeur("General Information", rd.getNbDna(), 5, 4); //dna
 	}
 	
+
+	public static HashMap<String, Double> GetColonneValeursDouble(String sheet, int colonne, int debutLigne, XSSFWorkbook wbf)
+	{
+		HashMap<String, Double> res = new HashMap<String, Double>();
+		ArrayList<String> tri = Utils.getListOfTriNucleotide();
+		for(int i =0; i < tri.size(); i++)
+		{
+			res.put(tri.get(i),GetCelluleValeurDouble(sheet, i+debutLigne, colonne, wbf));
+		}
+		return res;
+	}
+	
+
+	public static HashMap<String, Integer> GetColonneValeursInt(String sheet, int colonne, int debutLigne, XSSFWorkbook wbf)
+	{
+		HashMap<String, Integer> res = new HashMap<String, Integer>();
+		ArrayList<String> tri = Utils.getListOfTriNucleotide();
+		for(int i =0; i < tri.size(); i++)
+		{
+			res.put(tri.get(i),GetCelluleValeurInt(sheet, i+debutLigne, colonne, wbf));
+		}
+		return res;
+	}
+	
+	private static HashMap<String,Double> GetColonnePhaseDouble(String sheet, Phase phase, int dinucleotide,XSSFWorkbook wbf)
+	{
+		if(phase == Phase.PrefPhase0 || phase == Phase.PrefPhase1)
+			return GetColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*10, 1, wbf);
+		else
+			return GetColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*12, 1, wbf);
+	}
+	
+	private static HashMap<String,Integer> GetColonnePhaseInt(String sheet, Phase phase, int dinucleotide,XSSFWorkbook wbf)
+	{
+		if(phase == Phase.PrefPhase0 || phase == Phase.PrefPhase1)
+			return GetColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*10, 1, wbf);
+		else
+			return GetColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*12, 1, wbf);
+	}
+	
+	public static ArrayList<ResultData> GetFromExcel(String filepath)
+	{
+		ArrayList<ResultData>res = new ArrayList<ResultData>();
+		
+				File file = new File(filepath);
+				//System.out.println(file.toString());
+				try
+				{
+					XSSFWorkbook wbf = (XSSFWorkbook) WorkbookFactory.create(file);
+					XSSFSheet sheet;
+					ResultData temp;
+					String onglet = "";
+					int getNumberCdsSeqInvalid = 0, getCDSInvalide = 0;
+					Trinucleotide t;
+					Dinucleotide d;
+					for(int i = wbf.getNumberOfSheets(); i>=0 ; i--)
+					{
+						temp = new ResultData();
+						sheet = wbf.getSheetAt(i);
+						onglet = sheet.getSheetName();
+						t = null;
+						d = null;
+						if(onglet.equals("General Information"))
+						{
+							temp.setOrganismName(GetCelluleValeur("General Information", 2, 1, wbf));
+							temp.setLastModifDate(GetCelluleValeur("General Information", 4, 1, wbf));
+							temp.setNumberCdsSeq(GetCelluleValeurInt("General Information", 6, 1, wbf));
+							
+							temp.setNumberCdsSeqInvalid(GetCelluleValeurInt("General Information", 8, 1, wbf));
+							temp.setNbOrganism(GetCelluleValeurInt("General Information", 10, 1, wbf));
+							temp.setNbChromosome(GetCelluleValeurInt("General Information",3, 4, wbf));
+							temp.setNbPlasmid(GetCelluleValeurInt("General Information",4, 4, wbf));
+							temp.setNbDna(GetCelluleValeurInt("General Information",5, 4, wbf));
+							temp.setCDSInvalide(getCDSInvalide);
+							temp.setNumberCdsSeqInvalid(getNumberCdsSeqInvalid);
+						}
+						else
+						{
+							t  = new Trinucleotide();
+							d = new Dinucleotide();
+							
+							t.setFreqHMAP0(GetColonnePhaseDouble(onglet, Phase.FreqPhase0, 0, wbf));
+							t.setFreqHMAP1(GetColonnePhaseDouble(onglet, Phase.FreqPhase1, 0, wbf));
+							t.setFreqHMAP2(GetColonnePhaseDouble(onglet, Phase.FreqPhase2, 0, wbf));
+							t.setHMAP0(GetColonnePhaseInt(onglet, Phase.Phase0, 0, wbf));
+							t.setHMAP1(GetColonnePhaseInt(onglet, Phase.Phase1, 0, wbf));
+							t.setHMAP2(GetColonnePhaseInt(onglet, Phase.Phase2, 0, wbf));
+							t.setPrefHMAP0(GetColonnePhaseInt(onglet, Phase.PrefPhase0, 0, wbf));
+							t.setPrefHMAP1(GetColonnePhaseInt(onglet, Phase.PrefPhase1, 0, wbf));
+							t.setPrefHMAP2(GetColonnePhaseInt(onglet, Phase.PrefPhase2, 0, wbf));
+
+							d.setFreqHMAP0(GetColonnePhaseDouble(onglet, Phase.FreqPhase0, 1, wbf));
+							d.setFreqHMAP1(GetColonnePhaseDouble(onglet, Phase.FreqPhase1, 1, wbf));
+							d.setHMAP0(GetColonnePhaseInt(onglet, Phase.Phase0, 1, wbf));
+							d.setHMAP1(GetColonnePhaseInt(onglet, Phase.Phase1, 1, wbf));
+							d.setPrefHMAP0(GetColonnePhaseInt(onglet, Phase.PrefPhase0, 1, wbf));
+							d.setPrefHMAP1(GetColonnePhaseInt(onglet, Phase.PrefPhase1, 1, wbf));
+							
+							getCDSInvalide = GetCelluleValeurInt(onglet, 25, 13, wbf);
+							getNumberCdsSeqInvalid = GetCelluleValeurInt(onglet, 24, 13, wbf);
+							
+							temp.setNumberCdsSeq(GetCelluleValeurInt(onglet, 23, 13, wbf));
+							temp.setNumberCdsSeqInvalid(getNumberCdsSeqInvalid);
+							temp.setCDSInvalide(getCDSInvalide);
+							
+							temp.setTrinucleotide(t);
+							temp.setDinucleotid(d);
+							
+							
+						}
+						res.add(temp);
+					}
+					
+				}
+				 catch (EncryptedDocumentException e) 
+				{
+						System.out.println(e.getMessage());
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+				} catch (InvalidFormatException e) 
+				{
+					System.out.println(e.getMessage());
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) 
+				{
+					System.out.println(e.getMessage());
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return res;
+	}
+	
 	public static void AjouterOnglet(ResultData rd)
 	{
 		String onglet = rd.getName();
@@ -445,7 +612,6 @@ public class GestionExcel
 		
 		CreationCelluleValeur(onglet, rd.getNumberCdsSeq(), 23, 13);
 		CreationCelluleValeur(onglet, rd.getNumberCdsSeqInvalid(), 24, 13);
-		//CreationCelluleValeur(onglet, 0, 25, 13); //CDS DOUBLE
 		CreationCelluleValeur(onglet, rd.getCDSRestants(), 25, 13);
 		CreationCelluleValeur(onglet, rd.getCDSInvalide(), 26, 13);
 		CreationCelluleValeur(onglet, rd.getCDSTraites(), 27, 13);

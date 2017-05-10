@@ -66,6 +66,34 @@ public class Nucleotide {
 		return freqHMAP2;
 	}
 
+	public void setHMAP0(HashMap<String, Integer> hMAP0) {
+		HMAP0 = hMAP0;
+	}
+
+	public void setPrefHMAP0(HashMap<String, Integer> prefHMAP0) {
+		this.prefHMAP0 = prefHMAP0;
+	}
+
+	public void setPrefHMAP1(HashMap<String, Integer> prefHMAP1) {
+		this.prefHMAP1 = prefHMAP1;
+	}
+
+	public void setPrefHMAP2(HashMap<String, Integer> prefHMAP2) {
+		this.prefHMAP2 = prefHMAP2;
+	}
+
+	public void setFreqHMAP0(HashMap<String, Double> freqHMAP0) {
+		this.freqHMAP0 = freqHMAP0;
+	}
+
+	public void setFreqHMAP1(HashMap<String, Double> freqHMAP1) {
+		this.freqHMAP1 = freqHMAP1;
+	}
+
+	public void setFreqHMAP2(HashMap<String, Double> freqHMAP2) {
+		this.freqHMAP2 = freqHMAP2;
+	}
+
 	public HashMap<String, Integer> getHMAP(int phase) {
 		HashMap<String, Integer> HMAP = null;
 		switch(phase){

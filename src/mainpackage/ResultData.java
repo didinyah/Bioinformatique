@@ -128,9 +128,19 @@ public class ResultData {
     public Trinucleotide getTrinucleotide() {
         return ttt;
     }
+    
+    public void setTrinucleotide(Trinucleotide value)
+    {
+    	ttt = value;
+    }
 
     public Dinucleotide getDinucleotide() {
         return dd;
+    }
+    
+    public void setDinucleotid(Dinucleotide value)
+    {
+    	dd = value;
     }
 
     public Integer getNumberCdsSeq() {
@@ -280,6 +290,11 @@ public class ResultData {
     public int getCDSInvalide()
     {
     	return inBorneContentFail;
+    }
+    
+    public void setCDSInvalide(int nb)
+    {
+    	inBorneContentFail = nb;
     }
     // fusion function
     public void fusion(ResultData resultData){
