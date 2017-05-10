@@ -241,7 +241,14 @@ public class GestionExcel
 		}
 		Cell cell = null;
 		cell = row.getCell((short) colonne);
-		res = (int)cell.getNumericCellValue();
+		try
+		{
+			res = (int)cell.getNumericCellValue();
+		}
+		catch(Exception e)
+		{
+			
+		}
 		
 		return res;
 	}
@@ -258,7 +265,13 @@ public class GestionExcel
 		}
 		Cell cell = null;
 		cell = row.getCell((short) colonne);
-		res = cell.getNumericCellValue();
+		try
+		{
+			res = cell.getNumericCellValue();
+		}
+		catch(Exception e)
+		{
+		}
 		
 		return res;
 	}
@@ -457,43 +470,52 @@ public class GestionExcel
 	}
 	
 
-	public static HashMap<String, Double> GetColonneValeursDouble(String sheet, int colonne, int debutLigne, XSSFWorkbook wbf)
+	public static HashMap<String, Double> GetColonneValeursDouble(String sheet, int colonne, int debutLigne, XSSFWorkbook wbf, boolean dinucleotide)
 	{
 		HashMap<String, Double> res = new HashMap<String, Double>();
-		ArrayList<String> tri = Utils.getListOfTriNucleotide();
-		for(int i =0; i < tri.size(); i++)
+		ArrayList<String> nucleotide;
+		if(dinucleotide)
+			nucleotide = Utils.getListOfDiNucleotide();
+		else
+			nucleotide = Utils.getListOfTriNucleotide();
+			
+		for(int i =0; i < nucleotide.size(); i++)
 		{
-			res.put(tri.get(i),GetCelluleValeurDouble(sheet, i+debutLigne, colonne, wbf));
+			res.put(nucleotide.get(i),GetCelluleValeurDouble(sheet, i+debutLigne, colonne, wbf));
 		}
 		return res;
 	}
 	
 
-	public static HashMap<String, Integer> GetColonneValeursInt(String sheet, int colonne, int debutLigne, XSSFWorkbook wbf)
+	public static HashMap<String, Integer> GetColonneValeursInt(String sheet, int colonne, int debutLigne, XSSFWorkbook wbf, boolean dinucleotide)
 	{
 		HashMap<String, Integer> res = new HashMap<String, Integer>();
-		ArrayList<String> tri = Utils.getListOfTriNucleotide();
-		for(int i =0; i < tri.size(); i++)
+		ArrayList<String> nucleotide;
+		if(dinucleotide)
+			nucleotide = Utils.getListOfDiNucleotide();
+		else
+			nucleotide = Utils.getListOfTriNucleotide();
+		for(int i =0; i < nucleotide.size(); i++)
 		{
-			res.put(tri.get(i),GetCelluleValeurInt(sheet, i+debutLigne, colonne, wbf));
+			res.put(nucleotide.get(i).toLowerCase(),GetCelluleValeurInt(sheet, i+debutLigne, colonne, wbf));
 		}
 		return res;
 	}
 	
-	private static HashMap<String,Double> GetColonnePhaseDouble(String sheet, Phase phase, int dinucleotide,XSSFWorkbook wbf)
+	private static HashMap<String,Double> GetColonnePhaseDouble(String sheet, Phase phase, int dinucleotide,XSSFWorkbook wbf, boolean dinu)
 	{
 		if(phase == Phase.PrefPhase0 || phase == Phase.PrefPhase1)
-			return GetColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*10, 1, wbf);
+			return GetColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*10, 1, wbf, dinu);
 		else
-			return GetColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*12, 1, wbf);
+			return GetColonneValeursDouble(sheet, phase.ordinal()+2+dinucleotide*12, 1, wbf, dinu);
 	}
 	
-	private static HashMap<String,Integer> GetColonnePhaseInt(String sheet, Phase phase, int dinucleotide,XSSFWorkbook wbf)
+	private static HashMap<String,Integer> GetColonnePhaseInt(String sheet, Phase phase, int dinucleotide,XSSFWorkbook wbf, boolean dinu)
 	{
 		if(phase == Phase.PrefPhase0 || phase == Phase.PrefPhase1)
-			return GetColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*10, 1, wbf);
+			return GetColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*10, 1, wbf, dinu);
 		else
-			return GetColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*12, 1, wbf);
+			return GetColonneValeursInt(sheet, phase.ordinal()+2+dinucleotide*12, 1, wbf, dinu);
 	}
 	
 	public static ArrayList<ResultData> GetFromExcel(String filepath)
@@ -523,7 +545,6 @@ public class GestionExcel
 							temp.setOrganismName(GetCelluleValeur("General Information", 2, 1, wbf));
 							temp.setLastModifDate(GetCelluleValeur("General Information", 4, 1, wbf));
 							temp.setNumberCdsSeq(GetCelluleValeurInt("General Information", 6, 1, wbf));
-							
 							temp.setNumberCdsSeqInvalid(GetCelluleValeurInt("General Information", 8, 1, wbf));
 							temp.setNbOrganism(GetCelluleValeurInt("General Information", 10, 1, wbf));
 							temp.setNbChromosome(GetCelluleValeurInt("General Information",3, 4, wbf));
@@ -531,28 +552,33 @@ public class GestionExcel
 							temp.setNbDna(GetCelluleValeurInt("General Information",5, 4, wbf));
 							temp.setCDSInvalide(getCDSInvalide);
 							temp.setNumberCdsSeqInvalid(getNumberCdsSeqInvalid);
+							temp.setName("General_Information");
+							res.add(0,temp);
 						}
 						else
 						{
 							t  = new Trinucleotide();
 							d = new Dinucleotide();
-							
-							t.setFreqHMAP0(GetColonnePhaseDouble(onglet, Phase.FreqPhase0, 0, wbf));
-							t.setFreqHMAP1(GetColonnePhaseDouble(onglet, Phase.FreqPhase1, 0, wbf));
-							t.setFreqHMAP2(GetColonnePhaseDouble(onglet, Phase.FreqPhase2, 0, wbf));
-							t.setHMAP0(GetColonnePhaseInt(onglet, Phase.Phase0, 0, wbf));
-							t.setHMAP1(GetColonnePhaseInt(onglet, Phase.Phase1, 0, wbf));
-							t.setHMAP2(GetColonnePhaseInt(onglet, Phase.Phase2, 0, wbf));
-							t.setPrefHMAP0(GetColonnePhaseInt(onglet, Phase.PrefPhase0, 0, wbf));
-							t.setPrefHMAP1(GetColonnePhaseInt(onglet, Phase.PrefPhase1, 0, wbf));
-							t.setPrefHMAP2(GetColonnePhaseInt(onglet, Phase.PrefPhase2, 0, wbf));
+							temp.setName(onglet);
+							t.setFreqHMAP0(GetColonnePhaseDouble(onglet, Phase.FreqPhase0, 0, wbf, false));
+							t.setFreqHMAP1(GetColonnePhaseDouble(onglet, Phase.FreqPhase1, 0, wbf, false));
+							t.setFreqHMAP2(GetColonnePhaseDouble(onglet, Phase.FreqPhase2, 0, wbf, false));
+							t.setHMAP0(GetColonnePhaseInt(onglet, Phase.Phase0, 0, wbf, false));
+							t.setHMAP1(GetColonnePhaseInt(onglet, Phase.Phase1, 0, wbf, false));
+							t.setHMAP2(GetColonnePhaseInt(onglet, Phase.Phase2, 0, wbf, false));
+							t.setPrefHMAP0(GetColonnePhaseInt(onglet, Phase.PrefPhase0, 0, wbf, false));
+							t.setPrefHMAP1(GetColonnePhaseInt(onglet, Phase.PrefPhase1, 0, wbf, false));
+							t.setPrefHMAP2(GetColonnePhaseInt(onglet, Phase.PrefPhase2, 0, wbf, false));
 
-							d.setFreqHMAP0(GetColonnePhaseDouble(onglet, Phase.FreqPhase0, 1, wbf));
-							d.setFreqHMAP1(GetColonnePhaseDouble(onglet, Phase.FreqPhase1, 1, wbf));
-							d.setHMAP0(GetColonnePhaseInt(onglet, Phase.Phase0, 1, wbf));
-							d.setHMAP1(GetColonnePhaseInt(onglet, Phase.Phase1, 1, wbf));
-							d.setPrefHMAP0(GetColonnePhaseInt(onglet, Phase.PrefPhase0, 1, wbf));
-							d.setPrefHMAP1(GetColonnePhaseInt(onglet, Phase.PrefPhase1, 1, wbf));
+							d.setFreqHMAP0(GetColonnePhaseDouble(onglet, Phase.FreqPhase0, 1, wbf, true));
+							d.setFreqHMAP1(GetColonnePhaseDouble(onglet, Phase.FreqPhase1, 1, wbf, true));
+							d.setFreqHMAP2(GetColonnePhaseDouble(onglet, Phase.FreqPhase1, 1, wbf, true));
+							d.setHMAP0(GetColonnePhaseInt(onglet, Phase.Phase0, 1, wbf, true));
+							d.setHMAP1(GetColonnePhaseInt(onglet, Phase.Phase1, 1, wbf, true));
+							d.setHMAP2(GetColonnePhaseInt(onglet, Phase.Phase1, 1, wbf, true));
+							d.setPrefHMAP0(GetColonnePhaseInt(onglet, Phase.PrefPhase0, 1, wbf, true));
+							d.setPrefHMAP1(GetColonnePhaseInt(onglet, Phase.PrefPhase1, 1, wbf, true));
+							d.setPrefHMAP2(GetColonnePhaseInt(onglet, Phase.PrefPhase1, 1, wbf, true));
 							
 							getCDSInvalide = GetCelluleValeurInt(onglet, 25, 13, wbf);
 							getNumberCdsSeqInvalid = GetCelluleValeurInt(onglet, 24, 13, wbf);
@@ -563,10 +589,10 @@ public class GestionExcel
 							
 							temp.setTrinucleotide(t);
 							temp.setDinucleotid(d);
-							
-							
+
+							res.add(temp);
 						}
-						res.add(temp);
+						//System.out.println(temp);
 					}
 					
 				}
