@@ -64,6 +64,7 @@ public class TraitementOrganisme {
 				catch(Exception e) {
 					e.printStackTrace();
 					dateExcel = "RedownloadCarCorrompu";
+					charg.log("Fichier " + orgExcel.getName() + " corrompu, retelechargement");
 				}
 			}
 			if(!orgExcel.exists() || !dateExcel.equals(dateOrganisme)) {
@@ -113,7 +114,7 @@ public class TraitementOrganisme {
 			else {
 				charg.send(1); // on considï¿½re qu'on envoie le tï¿½lï¿½chargement et le virus de l'organisme si on a pas ï¿½ le faire
 				//charg.send(1);
-				//charg.log(organism.getName() +".xlsx existe deja et n'est pas a mettre a jour.");
+				charg.log(orgExcel.getName() +" existe deja et n'est pas a mettre a jour.");
 			}
 			// On crï¿½ï¿½ l'archive contenant toutes les sï¿½quences de l'organisme si l'user le veut
 			if(Configuration.OPTION_ARCHIVE_FILES) {
@@ -135,92 +136,100 @@ public class TraitementOrganisme {
 		System.out.println("fin d'analyse avec thread");
 		
 		// Ici, tous les organismes ont leurs resultdata sur chacun de leurs replicons, on fait la somme de tout
-		HashMap<String, ArrayList<ResultData>> mapSubGroupResult = new HashMap<String, ArrayList<ResultData>>();
-		HashMap<String, ArrayList<ResultData>> mapGroupResult = new HashMap<String, ArrayList<ResultData>>();
-		HashMap<String, ArrayList<ResultData>> mapKingdomResult = new HashMap<String, ArrayList<ResultData>>();
 		
-		for(int i=0; i<countEnd; i++){
-			Organism organism = listeOrga.get(i);
-			//ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
-			ArrayList<ResultData> allDataOrga = new ArrayList<ResultData>();
-			File orgExcel = new File(organism.getPath()+".xlsx");
-			if(orgExcel.exists())
-			{
-				// si le fichier est corrompu, on ne fait pas planter le calcul
-				try {
-					allDataOrga = GestionExcel.GetFromExcel(orgExcel.getAbsolutePath());
+		// Au cas où il y a un souci, on refait l'opération des totaux 2-3 fois
+		boolean toutOK = true;
+		int tries = 0;
+		while(toutOK || tries < Configuration.MAX_TRIES_TOTAL_RESULTS) {
+			HashMap<String, ArrayList<ResultData>> mapSubGroupResult = new HashMap<String, ArrayList<ResultData>>();
+			HashMap<String, ArrayList<ResultData>> mapGroupResult = new HashMap<String, ArrayList<ResultData>>();
+			HashMap<String, ArrayList<ResultData>> mapKingdomResult = new HashMap<String, ArrayList<ResultData>>();
+			
+			for(int i=0; i<countEnd; i++){
+				Organism organism = listeOrga.get(i);
+				//ArrayList<ResultData> allDataOrga = allResultsOrganism(organism);
+				ArrayList<ResultData> allDataOrga = new ArrayList<ResultData>();
+				File orgExcel = new File(organism.getPath()+".xlsx");
+				if(orgExcel.exists())
+				{
+					// si le fichier est corrompu, on ne fait pas planter le calcul
+					try {
+						allDataOrga = GestionExcel.GetFromExcel(orgExcel.getAbsolutePath());
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+						toutOK = false;
+					}
 				}
-				catch(Exception e) {
-					e.printStackTrace();
+				
+				// une fois zippï¿½, si l'user ne veut pas conserver les fichiers txt, on les supprime
+				if(!Configuration.OPTION_DL_KEEPFILES) {
+					File file = new File(organism.getPath()+ Configuration.DIR_SEPARATOR);
+					try {
+						FileUtils.deleteDirectory(file);
+					} 
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				// Crï¿½er les excel ici
+				//System.out.println(allDataOrga.get(0).toString());
+				//GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
+				
+				String subgroupOrg = organism.getSubgroup();
+				String groupOrg = organism.getGroup();
+				String kingdomOrg = organism.getKingdom();
+				
+				// si le sous groupe n'est pas connu, alors on l'ajoute au map, sinon on additionne les donnï¿½es des rï¿½sultdata dï¿½jï¿½ existants
+				if(mapSubGroupResult.get(subgroupOrg) == null) {
+					mapSubGroupResult.put(subgroupOrg, allDataOrga);
+				}
+				else {
+					mapSubGroupResult.put(subgroupOrg, addResultsTotal(mapSubGroupResult.get(subgroupOrg), allDataOrga, subgroupOrg));
+				}
+				
+				if(mapGroupResult.get(groupOrg) == null) {
+					mapGroupResult.put(groupOrg, allDataOrga);
+				}
+				else {
+					mapGroupResult.put(groupOrg, addResultsTotal(mapGroupResult.get(groupOrg), allDataOrga, groupOrg));
+				}
+				
+				if(mapKingdomResult.get(kingdomOrg) == null) {
+					mapKingdomResult.put(kingdomOrg, allDataOrga);
+				}
+				else {
+					mapKingdomResult.put(kingdomOrg, addResultsTotal(mapKingdomResult.get(kingdomOrg), allDataOrga, kingdomOrg));
+				}
+				
+				for(int j=0; j<allDataOrga.size(); j++) {
+					//System.out.println(allDataOrga.get(j));
 				}
 			}
 			
-			// une fois zippï¿½, si l'user ne veut pas conserver les fichiers txt, on les supprime
-			if(!Configuration.OPTION_DL_KEEPFILES) {
-				File file = new File(organism.getPath()+ Configuration.DIR_SEPARATOR);
-				try {
-					FileUtils.deleteDirectory(file);
-				} 
-				catch (IOException e) {
-					e.printStackTrace();
-				}
+			// Maintenant on crï¿½ï¿½ les excel totaux
+			// total_subgroup
+			for(String key: mapSubGroupResult.keySet()) {
+				ArrayList<ResultData> allRd = mapSubGroupResult.get(key);
+				GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 			}
-			
-			// Crï¿½er les excel ici
-			//System.out.println(allDataOrga.get(0).toString());
-			//GestionExcel.CreateExcel(organism.getPath()+".xlsx", allDataOrga);
-			
-			String subgroupOrg = organism.getSubgroup();
-			String groupOrg = organism.getGroup();
-			String kingdomOrg = organism.getKingdom();
-			
-			// si le sous groupe n'est pas connu, alors on l'ajoute au map, sinon on additionne les donnï¿½es des rï¿½sultdata dï¿½jï¿½ existants
-			if(mapSubGroupResult.get(subgroupOrg) == null) {
-				mapSubGroupResult.put(subgroupOrg, allDataOrga);
+			// total_group
+			for(String key: mapGroupResult.keySet()) {
+				ArrayList<ResultData> allRd = mapGroupResult.get(key);
+				GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 			}
-			else {
-				mapSubGroupResult.put(subgroupOrg, addResultsTotal(mapSubGroupResult.get(subgroupOrg), allDataOrga, subgroupOrg));
-			}
-			
-			if(mapGroupResult.get(groupOrg) == null) {
-				mapGroupResult.put(groupOrg, allDataOrga);
-			}
-			else {
-				mapGroupResult.put(groupOrg, addResultsTotal(mapGroupResult.get(groupOrg), allDataOrga, groupOrg));
-			}
-			
-			if(mapKingdomResult.get(kingdomOrg) == null) {
-				mapKingdomResult.put(kingdomOrg, allDataOrga);
-			}
-			else {
-				mapKingdomResult.put(kingdomOrg, addResultsTotal(mapKingdomResult.get(kingdomOrg), allDataOrga, kingdomOrg));
-			}
-			
-			for(int j=0; j<allDataOrga.size(); j++) {
-				//System.out.println(allDataOrga.get(j));
+			// total_kingdom
+			for(String key: mapKingdomResult.keySet()) {
+				ArrayList<ResultData> allRd = mapKingdomResult.get(key);
+				GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 			}
 		}
 		
-		// Maintenant on crï¿½ï¿½ les excel totaux
-		// total_subgroup
-		for(String key: mapSubGroupResult.keySet()) {
-			ArrayList<ResultData> allRd = mapSubGroupResult.get(key);
-			GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
-		}
-		// total_group
-		for(String key: mapGroupResult.keySet()) {
-			ArrayList<ResultData> allRd = mapGroupResult.get(key);
-			GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
-		}
-		// total_kingdom
-		for(String key: mapKingdomResult.keySet()) {
-			ArrayList<ResultData> allRd = mapKingdomResult.get(key);
-			GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
-		}
 		
-		System.out.println("fin des sommes des rï¿½sultats");
+		System.out.println("fin des sommes des resultats");
 		
-		// On affiche maintenant la fenï¿½tre pour consulter les excel
+		// On affiche maintenant la fenetre pour consulter les excel
 		TreeWindow.displayTreeWindow(tree);
 	}
 	

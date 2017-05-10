@@ -10,4 +10,5 @@ public class Configuration {
 	public static Boolean OPTION_DL_KEEPFILES = false;
 	public static Boolean OPTION_ARCHIVE_FILES = false;
 	public static String RESULTS_FOLDER = System.getProperty("user.dir")+ Configuration.DIR_SEPARATOR +"Results";
+	public static int MAX_TRIES_TOTAL_RESULTS = 3;
 }
