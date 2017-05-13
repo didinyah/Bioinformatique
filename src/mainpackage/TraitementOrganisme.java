@@ -139,8 +139,8 @@ public class TraitementOrganisme {
 		
 		// Au cas où il y a un souci, on refait l'opération des totaux 2-3 fois
 		boolean toutOK = true;
-		int tries = 0;
-		while(toutOK || tries < Configuration.MAX_TRIES_TOTAL_RESULTS) {
+		int tries = 1;
+		while(toutOK || tries <= Configuration.MAX_TRIES_TOTAL_RESULTS) {
 			HashMap<String, ArrayList<ResultData>> mapSubGroupResult = new HashMap<String, ArrayList<ResultData>>();
 			HashMap<String, ArrayList<ResultData>> mapGroupResult = new HashMap<String, ArrayList<ResultData>>();
 			HashMap<String, ArrayList<ResultData>> mapKingdomResult = new HashMap<String, ArrayList<ResultData>>();
@@ -224,6 +224,9 @@ public class TraitementOrganisme {
 				ArrayList<ResultData> allRd = mapKingdomResult.get(key);
 				GestionExcel.CreateExcel(Configuration.RESULTS_FOLDER + Configuration.DIR_SEPARATOR + "Total_" + key +".xlsx", allRd);
 			}
+			
+			System.out.println("essai de total num " + tries);
+			tries++;
 		}
 		
 		
