@@ -142,7 +142,7 @@ public class MainWindow {
 		    }
 		}
 
-		ImageIcon image = new ImageIcon("files/gene1modif2.jpg");
+		ImageIcon image = new ImageIcon(this.getClass().getResource("/gene1modif2.jpg"));
 		ImageLabel label = new ImageLabel("");
 		label.setIcon(image);
 		GridBagConstraints gbcimg = new GridBagConstraints();
