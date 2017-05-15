@@ -138,9 +138,10 @@ public class TraitementOrganisme {
 		// Ici, tous les organismes ont leurs resultdata sur chacun de leurs replicons, on fait la somme de tout
 		
 		// Au cas où il y a un souci, on refait l'opération des totaux 2-3 fois
-		boolean toutOK = true;
+		boolean toutOK = false;
 		int tries = 1;
-		while(toutOK || tries <= Configuration.MAX_TRIES_TOTAL_RESULTS) {
+		while(!toutOK && tries <= Configuration.MAX_TRIES_TOTAL_RESULTS) {
+			toutOK = true;
 			HashMap<String, ArrayList<ResultData>> mapSubGroupResult = new HashMap<String, ArrayList<ResultData>>();
 			HashMap<String, ArrayList<ResultData>> mapGroupResult = new HashMap<String, ArrayList<ResultData>>();
 			HashMap<String, ArrayList<ResultData>> mapKingdomResult = new HashMap<String, ArrayList<ResultData>>();
